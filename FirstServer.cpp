@@ -6,7 +6,7 @@
 #include <fcntl.h>
 #include <unistd.h>
 
-#define PORT_N 9909
+#define PORT_N 9999
 /*
     struct sockaddr_in {
         short       sin_family;  family
@@ -20,7 +20,138 @@ fd_set fr, fw, fe; // fd set is a struct with two things , fd_count and socketFd
                    // socket descriptors for fr - reading, fw - writing and fe - exceptions 
 
 int     socketFd;
-int     nArrclient[5];
+int     nArrclient[5] = {0};
+int     maxFd = 0;
+
+void HandleNewConnection() 
+
+{
+
+	//nNewClient will be a new file descriptor
+
+	//and now the client communication will take place 
+
+	//using this file descriptor/socket only
+
+	int nNewClient = accept(socketFd, NULL, NULL );
+
+	//If you accept the value in second parameter, then it
+
+	//will be 
+
+	if (nNewClient < 0)
+
+	{
+
+		std::cout << std::endl << "Not able to get a new client socket";
+
+	}
+
+	else
+
+	{
+
+		int nIndex;
+
+		for (nIndex = 0; nIndex < 5; nIndex++)
+
+		{
+
+			if (nArrclient[nIndex] == 0)
+
+			{
+
+				nArrclient[nIndex] = nNewClient;
+
+				if (nNewClient > maxFd)
+
+				{
+
+					maxFd = nNewClient + 1;
+
+				}
+
+				break;
+
+			}
+
+		}
+
+
+
+		if (nIndex == 5)
+
+		{
+
+			std::cout << std::endl << "Server busy. Cannot accept anymore connections";
+
+		}
+
+	}
+
+}
+
+
+
+void HandleDataFromClient()
+
+{
+
+	for (int nIndex = 0; nIndex < 5; nIndex++)
+
+	{
+
+		if (nArrclient[nIndex] > 0)
+
+		{
+
+			if (FD_ISSET(nArrclient[nIndex], &fr))
+
+			{ 
+
+				//Read the data from client
+
+				char sBuff[255] = { 0 };
+
+				int nRet = recv(nArrclient[nIndex], sBuff, 255, 0);
+
+				if (nRet < 0)
+
+				{
+
+					//This happens when client closes connection abruptly
+
+					std::cout << std::endl << "Error at client socket";
+
+					close(nArrclient[nIndex]);
+
+					nArrclient[nIndex] = 0;
+
+				}
+
+				else
+
+				{
+
+					std::cout << std::endl << "Received data from:"
+
+						<< nArrclient[nIndex]
+
+						<< "[Message:" << sBuff << "]";
+
+					break;
+
+				}
+
+			}
+
+		}
+
+	}
+
+}
+
+
 
 void    processNewMessage(int cl_sock)
 {
@@ -117,7 +248,7 @@ int main()
                                        // you will write inet_addr("127.0.0.0"); 
 
     memset(&(serv.sin_zero), 0, 8); // Gotta initialise the array to zeroes 
-
+    /*
     // int setsockopt(int sockfd, int level, int optname, const void *optval, socklen_t optlen);
     int n = 0;
     int optlen = sizeof(n);
@@ -129,10 +260,10 @@ int main()
         std::cout << "The set sock option failed \n";
         exit(1);
     }
-
+*/
     // Bind the socket to the local port 
 
-    ret = bind(socketFd, (sockaddr*)&serv, sizeof(sockaddr));
+    ret = bind(socketFd, (struct sockaddr*)&serv, sizeof(struct sockaddr));
     if (ret < 0)
     {
         std::cout << "Socket binding is failed to bind to local port \n";
@@ -154,7 +285,7 @@ int main()
         std::cout << "Stared listening to local to port \n";
 
     // Keep waiting for new requests and proceed as per the request 
-    int maxFd = socketFd;
+    maxFd = socketFd + 1;
     struct timeval tv;
     tv.tv_sec = 1;
     tv.tv_usec = 0;
@@ -164,41 +295,35 @@ int main()
 
         // Initialise all socket fd to zero
         FD_ZERO(&fr);
-        FD_ZERO(&fw);
-        FD_ZERO(&fe);
+        
         // set socketfd to read and exception not write;
         FD_SET(socketFd, &fr); 
-        FD_SET(socketFd, &fe);
+      
     
         for (int i = 0; i < 5; i++)
         {
-            if(nArrclient[i] != 0)
-            {
+            if(nArrclient[i] > 0)
                 FD_SET(nArrclient[i], &fr);
-                FD_SET(nArrclient[i], &fe);
-            }
         }
     
-        ret = select(maxFd + 1, &fr, &fw, &fe, &tv);
-        if (ret > 0)
+        ret = select(maxFd, &fr, NULL, NULL, &tv);
+        if (ret < 0)
         {
-            std::cout << "Data incoming on port, processing now..\n"; 
-            std::cout << ret;
-            processNewRequest();
+            std::cout << "Failed \n";
+            exit (1);
         }
-        else if (ret == 0) 
+        else if (ret == 0)
         {
-            std::cout << ret;
-            //std::cout << "no one is trying to connect \n";
+            std::cout << "no clients\n";
         }
         else 
         {
-            std::cout << ret;
-            std::cout << "Select system call Failed \n";
-            exit(1);
+            if (FD_ISSET(socketFd, &fr))
+                HandleNewConnection();
+            else
+                HandleDataFromClient();
         }
-    }
-
     
+    }
     return (0);
 }

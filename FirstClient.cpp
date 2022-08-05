@@ -6,7 +6,7 @@
 #include <netinet/in.h>
 #include <arpa/inet.h>
 
-#define PORT_N 9909
+#define PORT_N 9999
 
 
 
@@ -39,6 +39,16 @@ int main()
         std::cout << "connection failed \n";
         exit(1);
     }
+    char    sBuff[1024] = {0,};
+    while (1)
+    {
+        printf("\n Type Message\n");
+        fgets(sBuff, 1023, stdin);
+        send(C_socketFd, sBuff, strlen(sBuff), 0);
+    }
+    
+    
+    /*
     else 
     {
         std::cout << "connection successful.\n";
@@ -51,9 +61,7 @@ int main()
         
         while (1)
         {
-            //fgets(buff, 256, stdin);
-            for(int a = 0; a < 10; a++)
-                buff[a] = 'h';
+            fgets(buff, 256, stdin);
             send(C_socketFd, buff, 256, 0);
             std::cout << "Press a key to get a response from the server \n";
             getchar();
@@ -62,4 +70,5 @@ int main()
 
         }
     }
+    */
 }
