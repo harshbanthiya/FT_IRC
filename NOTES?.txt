@@ -122,3 +122,11 @@ The third argument contains the address of the variable that stores the size of 
 
 
 _________________________________________________
+
+
+
+http://se.inf.ethz.ch/student_projects/fabian_gremper/Report.pdf
+https://datatracker.ietf.org/doc/html/rfc1459
+http://oomon.sourceforge.net/?p=faq
+https://www.geeksforgeeks.org/internet-relay-chat-irc/
+https://wikimonde.com/article/Internet_Relay_Chat
