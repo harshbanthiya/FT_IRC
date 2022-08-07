@@ -36,11 +36,16 @@ struct sockaddr_in {
         struct  in_addr sin_addr;
         char    sin_zero[8]; 
 
+https://stackoverflow.com/questions/10918008/c-initializing-sockaddr-in
+https://cplusplus.com/forum/general/168147/
+https://stackoverflow.com/questions/1276294/getting-ipv4-address-from-a-sockaddr-structure/1276304#1276304
 _________________________________________
 
 htons()
 
 Convert data to network byte order;
+
+https://cpp.hotexamples.com/examples/-/-/htons/cpp-htons-function-examples.html
 
 
 _________________________________________
@@ -51,16 +56,19 @@ bind(hListen, (SOCKADDR*)&tListenAddr, sizeof(tListenAddr));
 bind(socket, address of socket component structure, size of structure);
 Connecting the address information to the socket = The role of the Listen socket is only to approve the connection, but it binds the address information set above to the socket using the bind function.
 
+https://en.cppreference.com/w/cpp/utility/functional/bind
 _________________________________________
 
 Listen()
 Changes the state of a socket to a state that is listening for connections. = Puts the socket into a connection waiting state.
 
+https://cpp.hotexamples.com/examples/-/-/listen/cpp-listen-function-examples.html
 _________________________________________
 
 kqueue()
 The kqueue() system call allocates a kqueue file descriptor. This file descriptor gives the user a method to find out if a kernel event (kevent) has occurred or if a condition holds, depending on the filter.
 
+https://dev.to/frevib/a-tcp-server-with-kqueue-527
 _________________________________________
 
 
@@ -85,6 +93,7 @@ The kevent(), kevent64(), and kevent_qos() system calls return the number of eve
 EV_SET64()
 The EV_SET() macro is provided to easily initialize the kevent structure. Similarly, EV_SET64() initializes a kevent64_s structure and EV_SET_QOS() initializes a kevent_qos_s structure.
 
+https://www.manpagez.com/man/2/kevent64/
 
 __________________________________________
 
@@ -102,6 +111,9 @@ void *buf : pointer to the buffer to store the received message
 size_t len ​​: The size of the transmitted message (in bytes)
 int flag : flag (optional)
 return: number of bytes actually transmitted (received), -1 on failure
+
+https://man7.org/linux/man-pages/man2/recv.2.html
+https://www.binarytides.com/receive-full-data-with-recv-socket-function-in-c/
 _________________________________________________
 
 
@@ -130,3 +142,4 @@ https://datatracker.ietf.org/doc/html/rfc1459
 http://oomon.sourceforge.net/?p=faq
 https://www.geeksforgeeks.org/internet-relay-chat-irc/
 https://wikimonde.com/article/Internet_Relay_Chat
+https://cplusplus.com/reference/utility/pair/
