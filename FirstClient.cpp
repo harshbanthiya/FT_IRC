@@ -34,6 +34,9 @@ int main()
 
     memset(&(serv.sin_zero), 0, 8); // Gotta initialise the array to zeroes 
     ret = connect(C_socketFd, (struct sockaddr *)&serv, sizeof(serv));
+
+	std::cout << "ret = " <<  ret << std::endl;
+
     if (ret < 0)
     {
         std::cout << "connection failed \n";
@@ -43,7 +46,7 @@ int main()
     while (1)
     {
         printf("\n Type Message\n");
-        fgets(sBuff, 1023, stdin);
+        fgets(sBuff, 1024, stdin);
         send(C_socketFd, sBuff, strlen(sBuff), 0);
     }
     

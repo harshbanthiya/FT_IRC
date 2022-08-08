@@ -135,7 +135,7 @@ The third argument contains the address of the variable that stores the size of 
 
 _________________________________________________
 
-
+client-> connect()
 
 http://se.inf.ethz.ch/student_projects/fabian_gremper/Report.pdf
 https://datatracker.ietf.org/doc/html/rfc1459

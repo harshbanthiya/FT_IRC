@@ -3,18 +3,20 @@
 #include <sys/types.h>
 #include <sys/socket.h>
 #include <iostream>
+#include <netinet/in.h>
+#include <arpa/inet.h>
 #include <fcntl.h>
 #include <unistd.h>
 
 #define PORT_N 9999
-/*
-    struct sockaddr_in {
-        short       sin_family;  family
-        u_short     sin_port;    port 
-        struct      in_addr sin_addr;  machine address / IP address
-        char        sin_zero[8];    special array needs to be initialised to zero 
-    }
-*/
+
+    // struct sockaddr_in {
+    //     short       sin_family; // family
+    //     u_short     sin_port;  //  port 
+    //     struct      in_addr sin_addr;//  machine address / IP address
+    //     char        sin_zero[8]; //   special array needs to be initialised to zero 
+    // };
+
 
 fd_set fr, fw, fe; // fd set is a struct with two things , fd_count and socketFd array
                    // socket descriptors for fr - reading, fw - writing and fe - exceptions 
@@ -244,7 +246,7 @@ int main()
 
     serv.sin_family = AF_INET;
     serv.sin_port = htons(PORT_N); // Host to network short 
-    serv.sin_addr.s_addr = INADDR_ANY; // IP address of my own machine  if  you need to put another IP address 
+    serv.sin_addr.s_addr = inet_addr("127.0.0.1"); // IP address of my own machine  if  you need to put another IP address 
                                        // you will write inet_addr("127.0.0.0"); 
 
     memset(&(serv.sin_zero), 0, 8); // Gotta initialise the array to zeroes 
@@ -306,7 +308,7 @@ int main()
                 FD_SET(nArrclient[i], &fr);
         }
     
-        ret = select(maxFd, &fr, NULL, NULL, &tv);
+        ret = select(maxFd, &fr, &fw, &fe, &tv);
         if (ret < 0)
         {
             std::cout << "Failed \n";
