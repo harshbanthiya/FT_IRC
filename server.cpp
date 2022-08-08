@@ -1,127 +1,96 @@
-/* ************************************************************************** */
-/*                                                                            */
-/*                                                        :::      ::::::::   */
-/*   server.cpp                                         :+:      :+:    :+:   */
-/*                                                    +:+ +:+         +:+     */
-/*   By: hbanthiy <hbanthiy@student.42.fr>          +#+  +:+       +#+        */
-/*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2022/07/27 16:03:14 by hbanthiy          #+#    #+#             */
-/*   Updated: 2022/07/27 16:58:47 by hbanthiy         ###   ########.fr       */
-/*                                                                            */
-/* ************************************************************************** */
-
+#include <sys/types.h>
+#include <arpa/inet.h>
+#include <netdb.h>
 #include <iostream>
 #include <string.h>
-#include <sys/types.h>
-#include <sys/socket.h>
-#include <netinet/in.h>
-#include <arpa/inet.h>
-#include <stdlib.h>
+#include <string>
 #include <unistd.h>
+#include <sys/socket.h>
+#include <sstream>
+
+#define PORT_N  5000 
 
 int main()
 {
-    int     client, server;
-    int     portNum = 1500;
 
-    bool    isExit = false;
-    int     bufsize = 1024;
+    // SERVER
+    struct sockaddr_in serv = {
+        .sin_family = AF_INET,
+        .sin_addr.s_addr = INADDR_ANY,
+        .sin_port = htons(PORT_N)
+    };
 
-    char    buffer[bufsize];
-    
-    struct sockaddr_in server_addr;
-    socklen_t size;
-
-    // init sockets
-
-    client = socket(AF_INET, SOCK_STREAM, 0);
-    if (client < 0)
+    int option = 1;
+    int saddrSize = sizeof(serv);
+    int socketServer = socket(AF_INET, SOCK_STREAM, 0);
+    setsockopt(socketServer, SOL_SOCKET, SO_REUSEADDR | SO_REUSEPORT, &option, sizeof(option));
+    if (socketServer == -1)
     {
-        std::cout << "Error estabishing connection" << std::endl;
-        exit(1);
-    }
-
-    std::cout << "Server Socket Connection created.." << std::endl;
-
-    server_addr.sin_family = AF_INET;
-    server_addr.sin_addr.s_addr = htons(INADDR_ANY);
-    server_addr.sin_port = htons(portNum);
-
-    // binding socket 
-
-    if (bind(client, (struct  sockaddr *) &server_addr, sizeof(server_addr)) < 0)
-    {
-        std::cout << "Error binding socket..." << std::endl;
+        std::cerr << "Not able to create socket \n";
         return (-1);
     }
 
-    size = sizeof(server_addr);
-    std::cout << "Looking for clients.." << std::endl;
+    // CLIENT
 
-    // Listening socket 
-    listen(client, 1);
+    struct sockaddr_in client_addr;
+    socklen_t   caddrSize =  sizeof(client_addr);
+    int     socketClient;
 
-    // Accept Client 
-    server = accept(client ,(struct sockaddr *)&server_addr, &size);
+    // Bind socket to ip+port
+    bind(socketServer, (struct sockaddr*)&serv, sizeof(serv));
 
-    if (server < 0)
+    // Listening 
+    listen(socketServer, SOMAXCONN);
+    // Print
+    std::stringstream ss;
+    ss << PORT_N;
+    std::cout << "[Server] listening on port " << ss.str() << std::endl;
+
+
+
+    char buff[4096];
+    int sizeInBytesOfReceivedData;
+
+    // while waiting for client
+
+    while (true)
     {
-        std::cout << "Error on accepting .. " << std::endl;
-      //  exit(1);
-    }
+        // Accept connection from clients;
+        socketClient = accept(socketServer, (struct sockaddr*)&client_addr, (socklen_t*)&caddrSize);
+        std::cout << "[Server] Client connection successful." << std::endl;
 
-
-    while (server > 0)
-    {
-        strcpy(buffer, "Server Connected...\n");
-        send(server, buffer, bufsize, 0);
-
-        std::cout << "Connected with client..." << std::endl;
-        std::cout << "Enter # to end the connection " << std::endl;
-        std::cout << "Client :";
-        do{
-            recv(server, buffer, bufsize, 0);
-            std::cout << buffer << " ";
-            if (*buffer == '#')
-            {
-                *buffer = '*';
-                isExit = true;
-            }
-        }while(*buffer != '*');
-
-        do{
-            std::cout << "\n Server: " ;
-            do{
-                std::cin >> buffer;
-                send(server, buffer, bufsize, 0);
-                if (*buffer == '#')
-                {
-                    send(server,buffer, bufsize, 0);
-                    *buffer = '*';
-                    isExit = true;
-                }
-            }while (*buffer != '*');
-
-
-            std::cout << "Client: ";
-            do{
-                recv(server, buffer, bufsize, 0);
-                std::cout << buffer << " ";
-                if (*buffer == '#')
-                {
-                    *buffer = '*';
-                    isExit = true;
-                }
-            }while (*buffer != '*');
+        // Try to find out who is the client 
+        char hostClient[NI_MAXHOST];
+        char portClient[NI_MAXSERV];
+        memset(hostClient, 0, NI_MAXHOST);
+        memset(portClient, 0, NI_MAXSERV);
+        if (getnameinfo((sockaddr*)&client_addr, sizeof(client_addr), hostClient, NI_MAXHOST, portClient, NI_MAXSERV, 0) == 0)
+        {
+            std::cout << "-->" << hostClient << " connected to the port " << portClient << std::endl;
+        }
+        else 
+        {
+            inet_ntop(AF_INET, &client_addr.sin_addr, hostClient, NI_MAXHOST);
+            std::cout << "--> " << hostClient << " Connected to the port " << ntohs(client_addr.sin_port) << std::endl;
+        }
         
-
-        }while(!isExit);
-        std::cout << "Connection terminated with IP " << inet_ntoa(server_addr.sin_addr);
-        close(server);
-        std::cout << "Goodbye" << std::endl;
-        isExit = false;
-        exit(1);
+        // Receive our data
+        sizeInBytesOfReceivedData = recv(socketClient, buff, 4096, 0);
+        if (sizeInBytesOfReceivedData == -1)
+        {
+            std::cerr << "Error receiving message. Quiting";
+            break;
+        }
+        else if (sizeInBytesOfReceivedData == 0)
+        {   
+            std::cout << "Client Disconnected" << std::endl;
+            break ;
+        }
+        send(socketClient, buff, sizeInBytesOfReceivedData + 1, 0);
+        std::cout << std::string(buff, 0, sizeInBytesOfReceivedData) << std::endl;
+        close(socketClient);
     }
-    close(client);
+
     return (0);
+
 }
