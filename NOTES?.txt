@@ -33,7 +33,7 @@ struct sockaddr {
 struct sockaddr_in {
         short   sin_family; 
         u_short sin_port; 
-        struct  in_addr sin_addr;
+        struct  in_addr sin_addr; / IP_ADDRESS
         char    sin_zero[8]; 
 
 https://stackoverflow.com/questions/10918008/c-initializing-sockaddr-in
