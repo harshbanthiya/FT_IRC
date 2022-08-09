@@ -22,7 +22,7 @@ int main()
 
     int option = 1;
     int saddrSize = sizeof(serv);
-    int socketServer = socket(AF_INET, SOCK_STREAM, 0);
+    int socketServer = socket(AF_INET, SOCK_STREAM, IPPROTO_TCP);
     setsockopt(socketServer, SOL_SOCKET, SO_REUSEADDR | SO_REUSEPORT, &option, sizeof(option));
     if (socketServer == -1)
     {
