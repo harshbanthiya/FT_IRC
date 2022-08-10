@@ -143,3 +143,8 @@ http://oomon.sourceforge.net/?p=faq
 https://www.geeksforgeeks.org/internet-relay-chat-irc/
 https://wikimonde.com/article/Internet_Relay_Chat
 https://cplusplus.com/reference/utility/pair/
+
+https://www.tutorialspoint.com/unix_sockets/socket_structures.htm
+https://en.wikipedia.org/wiki/List_of_Internet_Relay_Chat_commands
+https://fr.wikipedia.org/wiki/Internet_Relay_Chat#Les_canaux
+https://beej.us/guide/bgnet/html/
