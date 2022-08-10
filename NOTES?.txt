@@ -20,7 +20,6 @@ CLOSE()                           CLOSE()
 
 _________________________________________
 
-
 sockaddr
 Depends on protocol selected.
 struct sockaddr struct and sockaddr _ used with IPv4.
@@ -36,6 +35,7 @@ struct sockaddr_in {
         struct  in_addr sin_addr; / IP_ADDRESS
         char    sin_zero[8]; 
 
+https://www.programcreek.com/cpp/?CodeExample=init+socket
 https://stackoverflow.com/questions/10918008/c-initializing-sockaddr-in
 https://cplusplus.com/forum/general/168147/
 https://stackoverflow.com/questions/1276294/getting-ipv4-address-from-a-sockaddr-structure/1276304#1276304
@@ -142,4 +142,6 @@ https://datatracker.ietf.org/doc/html/rfc1459
 http://oomon.sourceforge.net/?p=faq
 https://www.geeksforgeeks.org/internet-relay-chat-irc/
 https://wikimonde.com/article/Internet_Relay_Chat
-https://cplusplus.com/reference/utility/pair/
+https://cplusplus.
+
+
