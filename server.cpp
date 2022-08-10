@@ -23,7 +23,11 @@ int main()
     int option = 1;
     int saddrSize = sizeof(serv);
     int socketServer = socket(AF_INET, SOCK_STREAM, 0);
-    setsockopt(socketServer, SOL_SOCKET, SO_REUSEADDR | SO_REUSEPORT, &option, sizeof(option));
+    if (setsockopt(socketServer, SOL_SOCKET, SO_REUSEADDR , &option, sizeof(option)))
+	{
+		perror("setsockopt");
+		printf("Fuck here");
+	}
     if (socketServer == -1)
     {
         std::cerr << "Not able to create socket \n";
