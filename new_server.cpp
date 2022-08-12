@@ -13,7 +13,7 @@
 // node - "www.example.com" or IP
 // service - "http" or port number 
 
-#define PORT_N "5000"
+#define PORT_N "6667"
 
 // get sockaddr, Ipv4 or Ipv6
 void    *get_in_addr(struct sockaddr *s)
@@ -187,7 +187,7 @@ int main(int argc, char *argv[])
                             int dest_fd = pfds[j].fd;
                             // Except the listener and ourselves
                             if (dest_fd != listener && dest_fd != sender_fd)
-                            {
+							{
                                 if (send(dest_fd, buff, nbytes, 0) == -1)
                                     std::cerr << "Poll Server : Send failed\n";
                             }  
