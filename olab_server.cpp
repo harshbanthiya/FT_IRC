@@ -5,7 +5,7 @@
 #include <sys/socket.h>
 #include <unistd.h>
 #define PORT 8080
-if (setsockopt(socketServer, SOL_SOCKET, SO_REUSEADDR , &option, sizeof(option)))
+// if (setsockopt(socketServer, SOL_SOCKET, SO_REUSEADDR , &option, sizeof(option)))
 int main(int argc, char const* argv[])
 {
     int server_fd, new_socket, valread;
@@ -22,9 +22,9 @@ int main(int argc, char const* argv[])
     }
   
     // Forcefully attaching socket to the port 8080
-    if (setsockopt(server_fd, SOL_SOCKET, SO_REUSEADDR | SO_REUSEPORT, &opt, sizeof(opt)) == -1) {
+    if (setsockopt(server_fd, SOL_SOCKET, SO_REUSEADDR, &opt, sizeof(opt)) == -1 ||
+	setsockopt(server_fd, SOL_SOCKET, SO_REUSEPORT, &opt, sizeof(opt)) == -1) {
         perror("setsockopt");
-		printf("here");
         exit(EXIT_FAILURE);
     }
     address.sin_family = AF_INET;
@@ -34,7 +34,8 @@ int main(int argc, char const* argv[])
                                     // This function swaps the endianness of a short.
   
     // Forcefully attaching socket to the port 8080
-    if (bind(server_fd, (struct sockaddr*)&address, sizeof(address)) < 0) {
+    if (bind(server_fd, (struct sockaddr*)&address, sizeof(address)) < 0) 
+	{
         perror("bind failed");
         exit(EXIT_FAILURE);
     }

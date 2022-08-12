@@ -26,7 +26,8 @@ int main()
     if (setsockopt(socketServer, SOL_SOCKET, SO_REUSEADDR , &option, sizeof(option)))
 	{
 		perror("setsockopt");
-		printf("Fuck here");
+        exit(EXIT_FAILURE);
+
 	}
     if (socketServer == -1)
     {
