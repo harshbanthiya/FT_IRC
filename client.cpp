@@ -1,87 +1,87 @@
-/* ************************************************************************** */
-/*                                                                            */
-/*                                                        :::      ::::::::   */
-/*   client.cpp                                         :+:      :+:    :+:   */
-/*                                                    +:+ +:+         +:+     */
-/*   By: hbanthiy <hbanthiy@student.42.fr>          +#+  +:+       +#+        */
-/*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2022/07/27 16:18:40 by hbanthiy          #+#    #+#             */
-/*   Updated: 2022/07/27 16:56:36 by hbanthiy         ###   ########.fr       */
-/*                                                                            */
-/* ************************************************************************** */
-
-#include <iostream>
+#include <unistd.h>
+#include <errno.h>
 #include <string.h>
+#include <string>
+#include <netdb.h>
 #include <sys/types.h>
 #include <sys/socket.h>
 #include <netinet/in.h>
 #include <arpa/inet.h>
-#include <stdlib.h>
-#include <unistd.h>
-#include <netdb.h>
+#include <iostream>
 
+#define PORT_N "5000"
+#define MAXDATASIZE 100 
 
-int main()
+// get sockaddr, Ipv4 or Ipv6
+void    *get_in_addr(struct sockaddr *s)
 {
-    int     client;
-    int     portNum = 1500;
+    if (s->sa_family == AF_INET)
+        return &(((struct sockaddr_in *)s)->sin_addr);
+        
+    return &(((struct sockaddr_in6 *)s)->sin6_addr);   
+}
 
-    bool    isExit = false;
-    int     bufsize = 1024;
+int main(int argc, char *argv[])
+{
+    int                 sockfd, numbytes;
+    char                buff[MAXDATASIZE];
+    struct  addrinfo    hints, *servinfo, *p;
+    int                 ret;
+    char                s[INET6_ADDRSTRLEN];
 
-    char    buffer[bufsize];
-    char    *ip = "127.0.0.1";
-
-    struct sockaddr_in server_addr;
-
-    // init socket 
-
-    client = socket(AF_INET, SOCK_STREAM, 0);
-      if (client < 0)
+    if (argc != 2)
     {
-        std::cout << "Error creating socket.. " << std::endl;
+        std::cerr << "Usage: ./client  hostname";
         exit(1);
     }
 
-    std::cout << "Client Socket created.." << std::endl;
-    server_addr.sin_family = AF_INET;
-    server_addr.sin_port = htons(portNum);
+    // Setting up the struct 
+    memset(&hints, 0, sizeof(hints));
+    hints.ai_family = AF_UNSPEC;
+    hints.ai_socktype = SOCK_STREAM;
 
-    // connecting socket server
-    if (connect(client, (struct sockaddr *)&server_addr, sizeof(server_addr)) == 0)
-        std::cout << "Connecting to server.." << std::endl;
-    
-    recv(client, buffer, bufsize, 0);
-    std::cout << "Connection confirmed" << std::endl;
-    std::cout << "Enter # to end the connection " << std::endl;
+    if ((ret = getaddrinfo(argv[1], PORT_N, &hints, &servinfo)) != 0)
+    {
+        std::cerr << "Client setup failed " << gai_strerror(ret) << " quiting!\n";
+        return (1); 
+    }
 
-    do{
-        std::cout << "Client: ";
-        do{
-            std::cin >> buffer;
-            send(client, buffer, bufsize, 0);
-            if (*buffer == '#')
-            {
-                send(client, buffer, bufsize, 0);
-                *buffer = '*';
-                isExit = true;
-            }
-        }while (*buffer != 42);
-        std::cout << "Server: ";
-        do{
-            recv(client, buffer, bufsize, 0);
-            std::cout << buffer << " ";
-            if (*buffer == '#')
-            {
-                *buffer = '*';
-                isExit = true;
-            }
-        }while (*buffer != 42);
-        std::cout << std::endl;
-    }while (!isExit);
-    std::cout << "Connection terminated.. \n";
-    std::cout << "Goodbye.. \n";
+    // Loop through and connect to the first one
+    for (p = servinfo; p != NULL; p = p->ai_next)
+    {
+        if ((sockfd = socket(p->ai_family, p->ai_socktype, p->ai_protocol)) == -1)
+        {
+            std::cerr << "Client : Socket Failed \n";
+            continue ;
+        }
+        if (connect(sockfd, p->ai_addr, p->ai_addrlen) == -1)
+        {
+            close(sockfd);
+            std::cerr << "Cient : Connection failed \n";
+            continue ;
+        }
+        break ;
+    }
 
-    close(client);
+    if (p == NULL)
+    {
+        std::cerr << "Client: has failed to connect! Quiting!\n";
+        return 2;
+    }
+
+    inet_ntop(p->ai_family, get_in_addr((struct sockaddr *)p->ai_addr), s, sizeof(s));
+    std::cout << "Client : connecting to " << s << std::endl;
+    freeaddrinfo(servinfo);
+
+    if ((numbytes = recv(sockfd, buff, MAXDATASIZE - 1, 0)) == -1)
+    {
+        std::cerr << "client : recv error \n";
+        exit(1);
+    }
+
+    buff[numbytes] = '\0';
+    std::cout << buff << '\n';
+    close(sockfd);
     return (0);
+
 }
