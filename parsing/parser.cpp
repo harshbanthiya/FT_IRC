@@ -162,6 +162,13 @@ std::vector<std::string> split_string(const std::string& str,
 	return strings;
 }
 
+class Command {
+private:
+	std::string _command;
+
+public:
+};
+
 void parse_command(char *buff)
 {
 	//std::unordered_map<std::string, int> irc_commands; //int as placeholder for function pointer
@@ -170,14 +177,13 @@ void parse_command(char *buff)
 	for (std::vector<std::string>::iterator it = block.begin(); it != block.end(); it++) { //should use iterators maybe ? i like the array style tho :(
 		std::string input = *it;
 		std::cout << input << std::endl;
-		for (int i = 0; i < 56; i++) {
+		for (int i = 0; i < 24; i++) {
 			if (input.find(_available[i], 0) != std::string::npos) {
 				std::cout << "command: " << _available[i] << std::endl;
 				std::cout << "parameters: " << input.substr(0 + _available[i].length(), input.length()) << std::endl;
 				break;
 			}
-			//for some reason, I get an extra print of command and parameters even though theres nothing showing up. This also allows ignored commands to get through... wonder if I should run a check for ignored instead
-			// i wish c++ objects had a .contain method
+
 		}
 	}
 }
