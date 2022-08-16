@@ -3,33 +3,22 @@
 
 # include <iostream>
 # include <string>
-# define MAX_PARAMS 15
 
-class Command
+class Command_handler
 {
 
 	public:
 
-		Command();
-		Command(std::string command, int num);
-		Command( Command const &src);
-		~Command();
+		Command_handler();
+		Command_handler( Command_handler const & src );
+		~Command_handler();
 
-		std::string 	get_command();
-		void 			set_command(std::string cmd);
-
-		int 			get_num_params();
-		void 			set_num_params(int n);
-
-		std::string 	get_param(int i);
-		void 			set_param(int n, std::string val);
-		Command &		operator=( Command const & rhs );
+		Command_handler &		operator=( Command_handler const & rhs );
 
 	private:
-		std::string    	command;
-    	int     		num_params;
-    	std::string 	params[MAX_PARAMS];
 
 };
 
-#endif
+std::ostream &			operator<<( std::ostream & o, Command_handler const & i );
+
+#endif /* ********************************************************* Command_handler_H */

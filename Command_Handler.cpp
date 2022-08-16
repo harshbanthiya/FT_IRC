@@ -1,51 +1,55 @@
-#include "Command_Handler.hpp"
+#include "Command_handler.hpp"
 
-Command::Command() : command{NULL}, num_params{0}{}
+/*
+** ------------------------------- CONSTRUCTOR --------------------------------
+*/
 
-Command::Command(std::string cmd, int num) : command{cmd}, num_params{num}{}
-
-Command::Command( const Command &rhs ){*this = rhs;}
-
-Command::~Command(){}
-
-std::string 	Command::get_command()
+Command_handler::Command_handler()
 {
-	return (command);
-}
-void 			Command::set_command(std::string cmd)
-{
-		command = cmd;
 }
 
-int 			Command::get_num_params()
+Command_handler::Command_handler( const Command_handler & src )
 {
-	return (num_params);
-}
-void 			Command::set_num_params(int n)
-{
-		num_params = n;
-}
-
-std::string 	Command::get_param(int i)
-{
-	return (params[i]);
-}
-void 			Command::set_param(int n, std::string val)
-{
-	if (n >= 0 && n < MAX_PARAMS)
-		params[n] = val;
-	
 }
 
 
-Command &				Command::operator=( Command const &rhs)
+/*
+** -------------------------------- DESTRUCTOR --------------------------------
+*/
+
+Command_handler::~Command_handler()
 {
-	if ( this == &rhs )
-		return(*this);
-	
-	this->command = rhs.command;
-	this->num_params = rhs.num_params;
-	for(int i = 0; i < MAX_PARAMS; i++)
-		this->params[i] = rhs.params[i];
+}
+
+
+/*
+** --------------------------------- OVERLOAD ---------------------------------
+*/
+
+Command_handler &				Command_handler::operator=( Command_handler const & rhs )
+{
+	//if ( this != &rhs )
+	//{
+		//this->_value = rhs.getValue();
+	//}
 	return *this;
 }
+
+std::ostream &			operator<<( std::ostream & o, Command_handler const & i )
+{
+	//o << "Value = " << i.getValue();
+	return o;
+}
+
+
+/*
+** --------------------------------- METHODS ----------------------------------
+*/
+
+
+/*
+** --------------------------------- ACCESSOR ---------------------------------
+*/
+
+
+/* ************************************************************************** */
