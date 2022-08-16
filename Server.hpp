@@ -6,7 +6,7 @@
 /*   By: hbanthiy <hbanthiy@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/08/15 19:55:13 by hbanthiy          #+#    #+#             */
-/*   Updated: 2022/08/16 10:55:26 by hbanthiy         ###   ########.fr       */
+/*   Updated: 2022/08/16 15:33:29 by hbanthiy         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,7 +23,9 @@
 #include <netinet/in.h>
 #include <arpa/inet.h>
 #include <netdb.h>
-#include <list>
+#include <fcntl.h>
+#include <vector>
+#include <map>
 #include "Client.hpp"
 
 #define PORT 	6667
@@ -39,8 +41,13 @@ class Server
 
 		Server &		operator=( Server const & rhs );
 
-	// Getters 
+		void 			init();
+		void 			execute();
 
+	// Getters 
+		std::vector<Client *> 		get_all_clients();
+		Client* 			  		get_client(std::string &nickname);
+		
 
 
 	// Setters 
@@ -49,14 +56,15 @@ class Server
 	
 	unsigned int		port; 
 	unsigned int 		total_client_count;
+	int 				fd;
 	
-	
-	pollfd				p_fd;
-	struct sockaddr_in6 addr_info;
-	std::string 		passwrd;
-	std::string 		server_ip_addr;
-	std::list<Client> 	list_of_all_clients;
-
+	std::vector<pollfd> 	pfds;
+	struct sockaddr_in6 	addr_info;
+	std::string 			passwrd;
+	std::string 			server_ip_addr;
+	std::map<int, Client*> 	list_of_all_clients;
+	void 					acceptClient();
+	void 					pollin_adjust(Client *c)
 	
 	// channel list 
 	// Operator list
@@ -80,6 +88,10 @@ class Server
 	};
 	
 	class ListenFailException : public std::exception
+	{
+		public: virtual const char* what() const throw();
+	};
+	class FcntlFailException : public std::exception
 	{
 		public: virtual const char* what() const throw();
 	};

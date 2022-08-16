@@ -4,9 +4,15 @@
 # include <iostream>
 # include <string>
 # define MAX_PARAMS 15
+# include "Server.hpp"
+# include "Client.hpp"
 
+
+class Client;
+class Server;
 class Command
 {
+
 
 	public:
 
@@ -26,6 +32,8 @@ class Command
 		Command &		operator=( Command const & rhs );
 
 	private:
+		Client 			*client;
+		Server 			*server;
 		std::string    	command;
     	int     		num_params;
     	std::string 	params[MAX_PARAMS];
