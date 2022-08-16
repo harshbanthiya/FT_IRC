@@ -1,87 +1,58 @@
-#include <unistd.h>
-#include <errno.h>
-#include <string.h>
-#include <string>
-#include <netdb.h>
-#include <sys/types.h>
-#include <sys/socket.h>
-#include <netinet/in.h>
-#include <arpa/inet.h>
-#include <iostream>
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   client.cpp                                         :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: hbanthiy <hbanthiy@student.42.fr>          +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2022/08/15 19:08:30 by hbanthiy          #+#    #+#             */
+/*   Updated: 2022/08/15 21:17:44 by hbanthiy         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
 
-#define PORT_N "5000"
-#define MAXDATASIZE 100 
+#include "Client.hpp"
 
-// get sockaddr, Ipv4 or Ipv6
-void    *get_in_addr(struct sockaddr *s)
+
+Client::Client(int fd) : nickname(""), username(""), realname(""), hostname("")
 {
-    if (s->sa_family == AF_INET)
-        return &(((struct sockaddr_in *)s)->sin_addr);
-        
-    return &(((struct sockaddr_in6 *)s)->sin6_addr);   
+	// remember to implement IP address function. 
+	client_ip_addr = "";
+	p_fd.fd = fd;
+	p_fd.events = POLLIN | POLLOUT | POLLERR | POLLHUP;
+	nickname_set = false;
+	user_set = false;
+} 
+
+Client::Client( const Client & rhs){*this = rhs;}
+Client::~Client(){}
+
+Client&		Client::operator=( Client const & rhs )
+{
+	if ( this == &rhs )
+		return (*this);
+	this->nickname = rhs.nickname;
+	this->username = rhs.username;
+	this->realname = rhs.realname;
+	this->hostname = rhs.hostname;
+	this->p_fd.fd =  rhs.p_fd.fd;
+	this->p_fd.events = POLLIN | POLLOUT | POLLERR | POLLHUP;
+	return *this;
 }
 
-int main(int argc, char *argv[])
-{
-    int                 sockfd, numbytes;
-    char                buff[MAXDATASIZE];
-    struct  addrinfo    hints, *servinfo, *p;
-    int                 ret;
-    char                s[INET6_ADDRSTRLEN];
+// Getters
+std::string	 		Client::get_nickname(void) const {return nickname;}
+std::string	 		Client::get_username(void) const {return username;}
+std::string	 		Client::get_realname(void) const {return realname;}
+std::string	 		Client::get_hostname(void) const {return hostname;}
+std::string	 		Client::get_client_ip_addr(void) const {return client_ip_addr;}
+bool 				Client::get_nick_bool(void) {return nickname_set;}
+bool 				Client::get_user_bool(void) {return user_set;}
 
-    if (argc != 2)
-    {
-        std::cerr << "Usage: ./client  hostname";
-        exit(1);
-    }
-
-    // Setting up the struct 
-    memset(&hints, 0, sizeof(hints));
-    hints.ai_family = AF_UNSPEC;
-    hints.ai_socktype = SOCK_STREAM;
-
-    if ((ret = getaddrinfo(argv[1], PORT_N, &hints, &servinfo)) != 0)
-    {
-        std::cerr << "Client setup failed " << gai_strerror(ret) << " quiting!\n";
-        return (1); 
-    }
-
-    // Loop through and connect to the first one
-    for (p = servinfo; p != NULL; p = p->ai_next)
-    {
-        if ((sockfd = socket(p->ai_family, p->ai_socktype, p->ai_protocol)) == -1)
-        {
-            std::cerr << "Client : Socket Failed \n";
-            continue ;
-        }
-        if (connect(sockfd, p->ai_addr, p->ai_addrlen) == -1)
-        {
-            close(sockfd);
-            std::cerr << "Cient : Connection failed \n";
-            continue ;
-        }
-        break ;
-    }
-
-    if (p == NULL)
-    {
-        std::cerr << "Client: has failed to connect! Quiting!\n";
-        return 2;
-    }
-
-    inet_ntop(p->ai_family, get_in_addr((struct sockaddr *)p->ai_addr), s, sizeof(s));
-    std::cout << "Client : connecting to " << s << std::endl;
-    freeaddrinfo(servinfo);
-
-    if ((numbytes = recv(sockfd, buff, MAXDATASIZE - 1, 0)) == -1)
-    {
-        std::cerr << "client : recv error \n";
-        exit(1);
-    }
-
-    buff[numbytes] = '\0';
-    std::cout << buff << '\n';
-    close(sockfd);
-    return (0);
-
-}
+// Setters 
+void 				Client::set_nickname(std::string nick_n){nickname = nick_n;}
+void 				Client::set_username(std::string user_n){username = user_n;}
+void 				Client::set_realname(std::string real_n){realname = real_n;}
+void 				Client::set_hostname(std::string host_n){hostname = host_n;}
+void 				Client::set_client_ip_addr(std::string ip_addr){client_ip_addr = ip_addr;}
+void 				Client::set_nick_bool(bool new_val){nickname_set = new_val;}
+void 				Client::set_user_bool(bool new_val){user_set = new_val;}
