@@ -5,83 +5,54 @@
 /*                                                    +:+ +:+         +:+     */
 /*   By: hbanthiy <hbanthiy@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2022/07/27 16:18:40 by hbanthiy          #+#    #+#             */
-/*   Updated: 2022/07/27 16:56:36 by hbanthiy         ###   ########.fr       */
+/*   Created: 2022/08/15 19:08:30 by hbanthiy          #+#    #+#             */
+/*   Updated: 2022/08/15 21:17:44 by hbanthiy         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include <iostream>
-#include <string.h>
-#include <sys/types.h>
-#include <sys/socket.h>
-#include <netinet/in.h>
-#include <arpa/inet.h>
-#include <stdlib.h>
-#include <unistd.h>
-#include <netdb.h>
+#include "Client.hpp"
 
 
-int main()
+Client::Client(int fd) : nickname(""), username(""), realname(""), hostname("")
 {
-    int     client;
-    int     portNum = 1500;
+	// remember to implement IP address function. 
+	client_ip_addr = "";
+	p_fd.fd = fd;
+	p_fd.events = POLLIN | POLLOUT | POLLERR | POLLHUP;
+	nickname_set = false;
+	user_set = false;
+} 
 
-    bool    isExit = false;
-    int     bufsize = 1024;
+Client::Client( const Client & rhs){*this = rhs;}
+Client::~Client(){}
 
-    char    buffer[bufsize];
-    char    *ip = "127.0.0.1";
-
-    struct sockaddr_in server_addr;
-
-    // init socket 
-
-    client = socket(AF_INET, SOCK_STREAM, 0);
-      if (client < 0)
-    {
-        std::cout << "Error creating socket.. " << std::endl;
-        exit(1);
-    }
-
-    std::cout << "Client Socket created.." << std::endl;
-    server_addr.sin_family = AF_INET;
-    server_addr.sin_port = htons(portNum);
-
-    // connecting socket server
-    if (connect(client, (struct sockaddr *)&server_addr, sizeof(server_addr)) == 0)
-        std::cout << "Connecting to server.." << std::endl;
-    
-    recv(client, buffer, bufsize, 0);
-    std::cout << "Connection confirmed" << std::endl;
-    std::cout << "Enter # to end the connection " << std::endl;
-
-    do{
-        std::cout << "Client: ";
-        do{
-            std::cin >> buffer;
-            send(client, buffer, bufsize, 0);
-            if (*buffer == '#')
-            {
-                send(client, buffer, bufsize, 0);
-                *buffer = '*';
-                isExit = true;
-            }
-        }while (*buffer != 42);
-        std::cout << "Server: ";
-        do{
-            recv(client, buffer, bufsize, 0);
-            std::cout << buffer << " ";
-            if (*buffer == '#')
-            {
-                *buffer = '*';
-                isExit = true;
-            }
-        }while (*buffer != 42);
-        std::cout << std::endl;
-    }while (!isExit);
-    std::cout << "Connection terminated.. \n";
-    std::cout << "Goodbye.. \n";
-
-    close(client);
-    return (0);
+Client&		Client::operator=( Client const & rhs )
+{
+	if ( this == &rhs )
+		return (*this);
+	this->nickname = rhs.nickname;
+	this->username = rhs.username;
+	this->realname = rhs.realname;
+	this->hostname = rhs.hostname;
+	this->p_fd.fd =  rhs.p_fd.fd;
+	this->p_fd.events = POLLIN | POLLOUT | POLLERR | POLLHUP;
+	return *this;
 }
+
+// Getters
+std::string	 		Client::get_nickname(void) const {return nickname;}
+std::string	 		Client::get_username(void) const {return username;}
+std::string	 		Client::get_realname(void) const {return realname;}
+std::string	 		Client::get_hostname(void) const {return hostname;}
+std::string	 		Client::get_client_ip_addr(void) const {return client_ip_addr;}
+bool 				Client::get_nick_bool(void) {return nickname_set;}
+bool 				Client::get_user_bool(void) {return user_set;}
+
+// Setters 
+void 				Client::set_nickname(std::string nick_n){nickname = nick_n;}
+void 				Client::set_username(std::string user_n){username = user_n;}
+void 				Client::set_realname(std::string real_n){realname = real_n;}
+void 				Client::set_hostname(std::string host_n){hostname = host_n;}
+void 				Client::set_client_ip_addr(std::string ip_addr){client_ip_addr = ip_addr;}
+void 				Client::set_nick_bool(bool new_val){nickname_set = new_val;}
+void 				Client::set_user_bool(bool new_val){user_set = new_val;}
