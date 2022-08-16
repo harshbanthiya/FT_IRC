@@ -165,19 +165,21 @@ std::vector<std::string> split_string(const std::string& str,
 class Command {
 private:
 	std::string _command;
-
+	std::string _parameters;
 public:
+	bool isCommandAvailable(std::string command); //check if command is in the available list
+	void executeCommand(void); //execute command, fetches from unordered map
 };
 
 void parse_command(char *buff)
 {
 	//std::unordered_map<std::string, int> irc_commands; //int as placeholder for function pointer
-	std::vector<std::string> block = split_string(std::string(buff), "\n"); //so each line in here represents a command that we can then parse
+	std::vector<std::string> block = split_string(std::string(buff), "\r\n"); //so each line in here represents a command that we can then parse. Each line finishes with a CRLF, hence why this specific delimiter
 
-	for (std::vector<std::string>::iterator it = block.begin(); it != block.end(); it++) { //should use iterators maybe ? i like the array style tho :(
+	for (std::vector<std::string>::iterator it = block.begin(); it != block.end(); it++) { //iterate through the current block
 		std::string input = *it;
 		std::cout << input << std::endl;
-		for (int i = 0; i < 24; i++) {
+		for (int i = 0; i < 24; i++) { //string arrays dont have iterators, should switch to vector here but im lazy
 			if (input.find(_available[i], 0) != std::string::npos) {
 				std::cout << "command: " << _available[i] << std::endl;
 				std::cout << "parameters: " << input.substr(0 + _available[i].length(), input.length()) << std::endl;
