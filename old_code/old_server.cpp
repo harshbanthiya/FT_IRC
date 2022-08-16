@@ -10,10 +10,12 @@
 #include <sstream>
 #include <netinet/in.h>
 
+
 // node - "www.example.com" or IP
 // service - "http" or port number 
-
+#define IP "127.0.0.1"
 #define PORT_N "6667"
+#define MAX_BUFF 512
 
 // get sockaddr, Ipv4 or Ipv6
 void    *get_in_addr(struct sockaddr *s)
@@ -104,7 +106,7 @@ int main(int argc, char *argv[])
     int                         newfd;                         
     struct  sockaddr_storage    remoteaddr;  // client address
     socklen_t                   addrlen;
-    char                        buff[256];
+    char                        buff[MAX_BUFF];
     char                        remoteIP[INET6_ADDRSTRLEN];
 
     // Lets start with 5 client connections 
@@ -188,8 +190,12 @@ int main(int argc, char *argv[])
                             // Except the listener and ourselves
                             if (dest_fd != listener && dest_fd != sender_fd)
 							{
-                                if (send(dest_fd, buff, nbytes, 0) == -1)
+                                if (send(dest_fd, "CAP * LS", 4, 0) == -1)
+                                {
                                     std::cerr << "Poll Server : Send failed\n";
+                                    exit(1);
+                                }    
+
                             }  
                         }
                     }
