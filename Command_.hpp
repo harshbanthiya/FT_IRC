@@ -34,10 +34,11 @@ class Command
 	private:
 		Client 			*client;
 		Server 			*server;
+
 		std::string    	command;
     	int     		num_params;
     	std::string 	params[MAX_PARAMS];
-
+		
 };
 
 #endif
