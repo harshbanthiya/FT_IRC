@@ -41,3 +41,22 @@ void Command::reply(Client &client, unsigned short code, std::string arg1, std::
 	client.sendTo(client, scode + " " ); // + getReplies(code, arg1, arg2, arg3, arg4, arg5, arg6, arg7));
 }
 void Command::reply(unsigned short code, std::string arg1, std::string arg2, std::string arg3, std::string arg4, std::string arg5, std::string arg6, std::string arg7) { reply(*client, code, arg1, arg2, arg3, arg4, arg5, arg6, arg7); }
+
+std::vector<std::string> split_string(const std::string& str,
+									  const std::string& delimiter)
+{
+	std::vector<std::string> strings;
+
+	std::string::size_type pos = 0;
+	std::string::size_type prev = 0;
+	while ((pos = str.find(delimiter, prev)) != std::string::npos)
+	{
+		strings.push_back(str.substr(prev, pos - prev));
+		prev = pos + delimiter.size();
+	}
+
+	// To get the last substring (or only, if delimiter is not found)
+	strings.push_back(str.substr(prev));
+
+	return strings;
+}

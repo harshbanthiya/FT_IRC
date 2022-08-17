@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Client.hpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: sheeed <sheeed@student.42.fr>              +#+  +:+       +#+        */
+/*   By: hbanthiy <hbanthiy@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/08/15 18:53:47 by hbanthiy          #+#    #+#             */
-/*   Updated: 2022/08/16 23:42:52 by sheeed           ###   ########.fr       */
+/*   Updated: 2022/08/15 19:54:51 by hbanthiy         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,7 +22,7 @@
 # include "Server.hpp"
 # include "Command_.hpp"
 
-class Command; 
+class Command;
 class Server ;
 
 class Client
@@ -46,7 +46,7 @@ class Client
 		void			append_buffer(int std_n, const std::string& new_buff);
 		void			clear_buffer(int std_n);
 		void 			sendTo(Client &toclient, std::string message);
-		// Getters 
+		// Getters
 		
 		std::string	 		get_nickname(void) const;
 		std::string	 		get_username(void) const;
@@ -61,7 +61,7 @@ class Client
 		int 				get_fd;
 		std::string 		getprefix();
 
-		// Setters 
+		// Setters
 		void 				set_status(ClientStatus status);
 		void 				set_nickname(std::string nick_n);
 		void 				set_username(std::string user_n);
@@ -71,7 +71,7 @@ class Client
 		void 				set_nick_bool(bool val);
 		void 				set_user_bool(bool val);
 		void 				set_registered(bool val);
-	
+
 	private:
 		Client(void);
 		std::map<std::string, void (*) (Command *)>command_function;
@@ -83,9 +83,11 @@ class Client
 		std::string 	hostname;
 		std::string 	client_ip_addr;
 		sockaddr_in6	client_addr;
-		std::string 	buffer[2]; // IN buffer 0 and out buffer is 1 
-		ClientStatus	status; 
+		std::string 	buffer[2]; // IN buffer 0 and out buffer is 1
+		ClientStatus	status;
 		int 			fd;
+		struct sockaddr_in6 client_addr_info;
+		pollfd			p_fd;
 		bool 			nickname_set;  // To check if nickname & user are already set
  		bool 			user_set;
 		bool			registered;

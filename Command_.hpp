@@ -63,5 +63,5 @@ class Command
 		// std::string getReplies(); functions reply 
 
 };
-
+std::vector<std::string> split_string(const std::string& str, const std::string& delimiter);
 #endif
