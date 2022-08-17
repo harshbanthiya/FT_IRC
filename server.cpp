@@ -95,7 +95,7 @@ void Server::execute()
 					cl->append_buffer(0, std::string(buffer));
 					if (!cl->get_registered())
 					{
-
+						//login
 					}
 				}
 			{

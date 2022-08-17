@@ -1,19 +1,10 @@
-# **************************************************************************** #
-#                                                                              #
-#                                                         :::      ::::::::    #
-#    Makefile                                           :+:      :+:    :+:    #
-#                                                     +:+ +:+         +:+      #
-#    By: hbanthiy <hbanthiy@student.42.fr>          +#+  +:+       +#+         #
-#                                                 +#+#+#+#+#+   +#+            #
-#    Created: 2022/08/16 12:14:47 by hbanthiy          #+#    #+#              #
-#    Updated: 2022/08/16 12:18:22 by hbanthiy         ###   ########.fr        #
-#                                                                              #
-# **************************************************************************** #
+
 
 CC := c++
 CPPFLAGS := -Wall -Wextra -Werror -std=c++98
 NAME :=	irc
-SRCS :=	client.cpp Command_.cpp Command_handler.cpp main_test.cpp server.cpp  
+SRCS :=	client.cpp Command_.cpp main_test.cpp server.cpp 
+# Command_handler.cpp  
 OBJS_DIR := object_files
 OBJS := $(addprefix $(OBJS_DIR)/,$(SRCS:.cpp=.o))
 
