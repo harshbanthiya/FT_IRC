@@ -13,8 +13,7 @@ Command::Command(Client *_client, Server *_server, std::string message) : client
 		trailer = message;
 		message = tmp;
 	}
-
-	// parameters = split(message, " "); need to write a split
+	parameters = split_string(message, " "); //these end with \r\n, to keep in mind
 	command_name = *(parameters.begin());
 	parameters.erase(parameters.begin());
 
