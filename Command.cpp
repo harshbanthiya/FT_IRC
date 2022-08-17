@@ -1,18 +1,32 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   Command_.cpp                                       :+:      :+:    :+:   */
+/*   Command.cpp                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: hbanthiy <hbanthiy@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/08/17 13:37:38 by hbanthiy          #+#    #+#             */
-/*   Updated: 2022/08/17 16:25:48 by hbanthiy         ###   ########.fr       */
+/*   Updated: 2022/08/17 18:44:52 by hbanthiy         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "Command_.hpp"
+#include "Command.hpp"
 #include <sstream>
 
+std::vector<std::string> split(std::string str, std::string delimiter)
+{
+	std::vector<std::string> values = std::vector<std::string>();
+
+	size_t position;
+	while ((position = str.find(delimiter)) != std::string::npos)
+	{
+		values.push_back(str.substr(0, position));
+		str.erase(0, position + delimiter.length());
+	}
+	values.push_back(str);
+
+	return values;
+}
 // This function needs love 
 irc::Command::Command(Client *_client, Server *_server, std::string message) : client(_client), server(_server), query(message)
 {
@@ -26,7 +40,7 @@ irc::Command::Command(Client *_client, Server *_server, std::string message) : c
 		message = tmp;
 	}
 
-	// parameters = split(message, " "); need to write a split
+	parameters = split(message, " ");
 	prefix = *(parameters.begin());
 	parameters.erase(parameters.begin());
 
@@ -50,6 +64,6 @@ void irc::Command::reply(Client &client, unsigned short code, std::string arg1, 
 	while (scode.length() < 3)
 		scode = "0" + scode;
 
-	client.sendTo(client, scode + " " ); // + getReplies(code, arg1, arg2, arg3, arg4, arg5, arg6, arg7));
+	client.sendTo(client, scode + " " + getReplies(code, arg1, arg2, arg3, arg4, arg5, arg6, arg7));
 }
 void irc::Command::reply(unsigned short code, std::string arg1, std::string arg2, std::string arg3, std::string arg4, std::string arg5, std::string arg6, std::string arg7) { reply(*client, code, arg1, arg2, arg3, arg4, arg5, arg6, arg7); }

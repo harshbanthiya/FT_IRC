@@ -7,7 +7,7 @@
 #include <arpa/inet.h>
 #include <netdb.h>
 #include "Client.hpp"
-#include "Command_.hpp"
+#include "Command.hpp"
 
 int main(int argc, char *argv[])
 {

@@ -6,7 +6,7 @@
 /*   By: hbanthiy <hbanthiy@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/08/15 19:08:30 by hbanthiy          #+#    #+#             */
-/*   Updated: 2022/08/17 16:36:45 by hbanthiy         ###   ########.fr       */
+/*   Updated: 2022/08/17 18:31:34 by hbanthiy         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,12 +17,16 @@
 #define MAX_SIZE 4096
 #define END_DELIM "\r\n"
 
+void NICK(irc::Command *command);
+void USER(irc::Command *command);
+void PASS(irc::Command *command);
+
 void post_registration(irc::Command *command)
 {
 	command->reply(1, command->getClient().getprefix());
 	command->reply(2, command->getClient().get_hostname());
-	//command->reply(3, command->getServer().getUpTime());
-	//command->reply(4, command->getServer().getConfig().get("name"), command->getServer().getConfig().get("version"), command->getServer().getConfig().get("user_mode"), command->getServer().getConfig().get("channel_givemode") + command->getServer().getConfig().get("channel_togglemode") + command->getServer().getConfig().get("channel_setmode"));
+	command->reply(3, command->getServer().getUpTime());
+	command->reply(4, std::string("HLOIRC"), std::string("1.01"), std::string("aiwro"), std::string("Oov") + std::string("imnpt") + std::string("kl"));
 
 }
 void irc::Client::dispatch()
@@ -77,16 +81,21 @@ void irc::Client::dispatch()
 
 
 irc::Client::Client(int _fd, sockaddr_in addr_) : command_function(), 
-											 fd(_fd), 
-											 buffer(),
 											 commands(),
 											 waitingtoSend(),
-											 status(PASSWORD),
-											 client_addr(), 
 											 nickname(""), 
 											 username(""), 
 											 realname(""), 
-											 hostname("")
+											 hostname(""),
+											 buffer(),
+											 status(PASSWORD),
+											 fd(_fd)
+											 
+											 
+										
+											 
+											
+										
 {
 	fcntl(fd, F_SETFL, O_NONBLOCK);
 	client_ip_addr = inet_ntoa(addr_.sin_addr);
@@ -99,8 +108,9 @@ irc::Client::Client(int _fd, sockaddr_in addr_) : command_function(),
 	else 
 		this->hostname = hostname;
 	// remember to implement IP address function. 
-	command_function["PASS"]; //= // PASS FUNCTION POINTER ;
-	command_function["NICK"]; //= ; // NICK FUNCTION POINTER
+	command_function["PASS"] = PASS;
+	command_function["NICK"] = NICK;
+	command_function["USER"] = USER;
 
 	client_ip_addr = "";
 	nickname_set = false;
@@ -133,7 +143,9 @@ bool 				irc::Client::get_nick_bool(void) {return nickname_set;}
 bool 				irc::Client::get_user_bool(void) {return user_set;}
 bool 				irc::Client::get_registered(void) {return registered;}
 int 				irc::Client::get_fd() { return fd; }
+time_t 				irc::Client::getLastPing() { return last_ping; }
 irc::ClientStatus 	irc::Client::get_status() { return status; }
+/*
 std::string&		irc::Client::get_buffer(int std_n)
 {
 	if (std_n == 0)
@@ -142,7 +154,7 @@ std::string&		irc::Client::get_buffer(int std_n)
 		return buffer[1];
 	return buffer[0];
 }
-
+*/
 // Setters 
 void 				irc::Client::set_nickname(std::string nick_n){nickname = nick_n;}
 void 				irc::Client::set_username(std::string user_n){username = user_n;}
@@ -152,8 +164,9 @@ void 				irc::Client::set_client_ip_addr(std::string ip_addr){client_ip_addr = i
 void 				irc::Client::set_nick_bool(bool new_val){nickname_set = new_val;}
 void 				irc::Client::set_user_bool(bool new_val){user_set = new_val;}
 void 				irc::Client::set_registered(bool new_val){registered = new_val;}
-
-void	irc::Client::append_buffer(int std_n, const std::string& content )
+void 				irc::Client::set_status(ClientStatus stat){this->status = stat;}
+/*
+void				irc::Client::append_buffer(int std_n, const std::string& content )
 {
 	if (std_n == 0)
 		buffer[0].append(content);
@@ -168,7 +181,7 @@ void	irc::Client::clear_buffer(int std_n)
 	if (std_n == 1)
 		buffer[1].clear();
 }
-
+*/
 std::string irc::Client::getprefix()
 {
 	if (status == PASSWORD || status == REGISTER)
@@ -186,26 +199,28 @@ std::string irc::Client::getprefix()
 
 void irc::Client::receive_from(Server *server)
 {
-	char buffer[MAX_SIZE];
-	ssize_t size;
-
-	size = recv(fd, &buffer, MAX_SIZE, 0);
-	if (size == -1)
-		return ;
-	if (size == 0)
 	{
-		status = DELETE;
-		return ;
-	}
-	buffer[size] = '\0';
-	this->append_buffer(0, std::string(buffer));
 
+		char buffer[MAX_SIZE];
+		ssize_t size;
+
+		size = recv(fd, &buffer, MAX_SIZE, 0);
+		if (size == -1)
+			return ;
+		if (size == 0)
+		{
+			status = DELETE;
+			return ;
+		}
+		buffer[size] = 0;
+		this->buffer += buffer;
+	}
 	std::string delimiter(END_DELIM);
 	size_t 		position;
-	while ((position = this->buffer[0].find(delimiter)) != std::string::npos)
+	while ((position = buffer.find(delimiter)) != std::string::npos)
 	{
-		std::string message = this->buffer[0].substr(0, position);
-		this->buffer[0].erase(0, position + delimiter.length());
+		std::string message = buffer.substr(0, position);
+		buffer.erase(0, position + delimiter.length());
 		if (!message.length())
 			continue;
 		if (DEBUG)
@@ -216,7 +231,7 @@ void irc::Client::receive_from(Server *server)
 			strftime(buffer, 80, "%Y-%m-%d %H:%M:%S", now);
 			std::cout << "[" << buffer << "] " << fd << " < " << message << std::endl;
 		}
-		commands.push_back(new Command(this, server, message));
+		commands.push_back(new irc::Command(this, server, message));
 	}
 	dispatch();
 }
@@ -225,7 +240,7 @@ void irc::Client::write(std::string message){waitingtoSend.push_back(message);}
 
 void irc::Client::push()
 {
-	if (!buffer[1].size())
+	if (!waitingtoSend.size())
 		return ;
 	std::string buffer;
 	for (std::vector<std::string>::iterator it = waitingtoSend.begin(); it != waitingtoSend.end(); ++it)

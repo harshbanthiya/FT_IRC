@@ -6,7 +6,7 @@
 /*   By: hbanthiy <hbanthiy@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/08/15 18:53:47 by hbanthiy          #+#    #+#             */
-/*   Updated: 2022/08/17 16:18:02 by hbanthiy         ###   ########.fr       */
+/*   Updated: 2022/08/17 18:25:16 by hbanthiy         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,13 +15,13 @@
 
 # include <iostream>
 # include <string>
+# include <vector>
 # include <map>
-# include "Command_.hpp"
 # include <netinet/in.h>
 # include <poll.h>
 # include "Server.hpp"
-# include "Command_.hpp"
-
+# include "Command.hpp"
+# include <ctime>
 
 namespace irc
 {
@@ -68,7 +68,7 @@ namespace irc
 			ClientStatus 		get_status();
 			int 				get_fd();
 			std::string 		getprefix();
-
+			time_t				getLastPing();
 			// Setters 
 			void 				set_status(ClientStatus status);
 			void 				set_nickname(std::string nick_n);
@@ -82,8 +82,8 @@ namespace irc
 		
 		private:
 			Client(void);
-			std::map<std::string, void (*) (Command *)>command_function;
-			std::vector<Command *> commands;
+			std::map<std::string, void (*) (irc::Command *)>command_function;
+			std::vector<irc::Command *> commands;
 			std::vector<std::string> waitingtoSend;
 			std::string 	nickname;
 			std::string 	username;
@@ -91,7 +91,7 @@ namespace irc
 			std::string 	hostname;
 			std::string 	client_ip_addr;
 			sockaddr_in6	client_addr;
-			std::string 	buffer[2]; // IN buffer 0 and out buffer is 1 
+			std::string 	buffer; // IN buffer 0 and out buffer is 1 
 			ClientStatus	status; 
 			int 			fd;
 			bool 			nickname_set;  // To check if nickname & user are already set
@@ -101,6 +101,7 @@ namespace irc
 			void 			dispatch();
 			void 			write(std::string message);
 			void 			push();
+			time_t 			last_ping;
 	};
 }
 #endif	

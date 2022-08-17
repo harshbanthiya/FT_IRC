@@ -3,8 +3,20 @@
 #define MAX_BUFF_SIZE 4096
 #define END_DELIM "\r\n"
 
-irc::Server::Server(unsigned int port, std::string passwd) : port(port), passwrd(passwd)
+std::string currentTime()
 {
+	time_t t = std::time(0);
+	struct tm *now = std::localtime(&t);
+	std::string time(asctime(now));
+	time.erase(--time.end());
+	return time;
+}
+
+irc::Server::Server(int _port, std::string passwd) : port(_port), passwrd(passwd)
+{
+	upTime = currentTime();
+	last_ping = std::time(0);
+
 }
 
 irc::Server::Server( const Server & src )
@@ -37,28 +49,42 @@ void 	irc::Server::acceptClient()
 	pfds.back().events = POLLIN;
 
 	if (DEBUG)
-		std::cout << "new user" << inet_ntoa(address.sin_addr) << ":" << ntohs(address.sin_port) << " (" << fd << ")" << std::endl; 
+		std::cout << "new user " << inet_ntoa(address.sin_addr) << ":" << ntohs(address.sin_port) << " (" << fd << ")" << std::endl; 
  }
+
+void irc::Server::sendPing()
+{
+	time_t 	current =std::time(0);
+	int timeout = 3000;
+
+	for (std::map<int, irc::Client*>::iterator it = list_of_all_clients.begin(); it != list_of_all_clients.end(); ++it)
+		if (current - (*it).second->getLastPing() >= 300)
+		{
+			(*it).second->set_status(DELETE);
+		}
+		else if ((*it).second->get_status() == ONLINE)
+			(*it).second->write("PING" + (*it).second->get_nickname());
+}
 
 // Init and Execute 
 void 	irc::Server::init()
 {
 	int 	yes = 1;
 
-	if ((fd = socket(AF_INET6, SOCK_STREAM, 0)) == -1)
+	if ((fd = socket(AF_INET, SOCK_STREAM, 0)) == -1)
 		throw Server::SocketFailException();
 	if (setsockopt(fd, SOL_SOCKET, SO_REUSEADDR, &yes, sizeof(yes)) == -1)
 		throw Server::SetsockoptFailException();
 	if (fcntl(fd, F_SETFL, O_NONBLOCK) < 0)
 		throw Server::FcntlFailException();
 
-	addr_info.sin6_family = AF_INET6;
-	addr_info.sin6_addr = in6addr_any;
-	addr_info.sin6_port = htons(port);
+	addr_info.sin_family = AF_INET;
+	addr_info.sin_addr.s_addr = INADDR_ANY;
+	addr_info.sin_port = htons(port);
 	
 	if ((bind(fd, (struct sockaddr*)&this->addr_info, sizeof(this->addr_info)) == -1))
 		throw Server::BindFailException();
-	if (listen(fd, addr_info.sin6_port) == -1)
+	if (listen(fd, addr_info.sin_port) == -1)
 		throw Server::ListenFailException();
 
 	pfds.push_back(pollfd());
@@ -69,8 +95,13 @@ void 	irc::Server::init()
 void irc::Server::execute()
 {
 	std::vector<Client *> clients = get_all_clients();
-	if (poll(&pfds[0], pfds.size(), -1) == -1)
+	if (poll(&pfds[0], pfds.size(), (60 * 1000) / 10) == -1)
 		return ;
+	if (std::time(0) - last_ping >= 60)
+	{
+		sendPing();
+		last_ping = std::time(0);
+	}
 	else 
 	{
 		if (pfds[0].revents == POLLIN)
@@ -106,7 +137,7 @@ irc::Client *			  irc::Server::get_client(std::string &nickname)
 	}
 	return (NULL);
 }
-
+std::string irc::Server::getUpTime() { return upTime; }
 void 		irc::Server::disconnect_client(irc::Client &client)
 {
 	// Make logic here to go through each channel the user is a part of and remove it 

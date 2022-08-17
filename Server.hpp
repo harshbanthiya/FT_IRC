@@ -6,7 +6,7 @@
 /*   By: hbanthiy <hbanthiy@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/08/15 19:55:13 by hbanthiy          #+#    #+#             */
-/*   Updated: 2022/08/17 16:32:20 by hbanthiy         ###   ########.fr       */
+/*   Updated: 2022/08/17 18:10:48 by hbanthiy         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,6 +26,8 @@
 #include <vector>
 #include <map>
 #include "Client.hpp"
+#include <ctime>
+
 #ifndef DEBUG
 	#define DEBUG 0
 #endif
@@ -40,7 +42,7 @@ namespace irc
 
 		public:
 
-			Server(unsigned int port, std::string paswd);
+			Server(int port, std::string paswd);
 			Server( Server const & src );
 			~Server();
 
@@ -53,19 +55,21 @@ namespace irc
 			std::vector<Client *> 		get_all_clients();
 			Client* 			  		get_client(std::string &nickname);
 			void 						disconnect_client(Client &client);
-
+			std::string 				getUpTime();
+			void 						sendPing();
 
 
 		// Setters 
 
 		private:
 		
-		unsigned int			port; 
+		int						port; 
 		unsigned int 			total_client_count;
 		int 					fd;
-		
+		time_t					last_ping;
+		std::string 			upTime;
 		std::vector<pollfd> 	pfds;
-		struct sockaddr_in6 	addr_info;
+		struct sockaddr_in 		addr_info;
 		std::string 			passwrd;
 		std::string 			server_ip_addr;
 		std::map<int, Client*> 	list_of_all_clients;
