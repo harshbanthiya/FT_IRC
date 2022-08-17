@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Server.hpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: hbanthiy <hbanthiy@student.42.fr>          +#+  +:+       +#+        */
+/*   By: sheeed <sheeed@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/08/15 19:55:13 by hbanthiy          #+#    #+#             */
-/*   Updated: 2022/08/16 15:33:29 by hbanthiy         ###   ########.fr       */
+/*   Updated: 2022/08/16 21:45:58 by sheeed           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -47,16 +47,17 @@ class Server
 	// Getters 
 		std::vector<Client *> 		get_all_clients();
 		Client* 			  		get_client(std::string &nickname);
-		
+		void 						disconnect_client(Client &client);
+
 
 
 	// Setters 
 
 	private:
 	
-	unsigned int		port; 
-	unsigned int 		total_client_count;
-	int 				fd;
+	unsigned int			port; 
+	unsigned int 			total_client_count;
+	int 					fd;
 	
 	std::vector<pollfd> 	pfds;
 	struct sockaddr_in6 	addr_info;
@@ -64,7 +65,6 @@ class Server
 	std::string 			server_ip_addr;
 	std::map<int, Client*> 	list_of_all_clients;
 	void 					acceptClient();
-	void 					pollin_adjust(Client *c)
 	
 	// channel list 
 	// Operator list

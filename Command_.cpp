@@ -1,51 +1,43 @@
 #include "Command_.hpp"
+#include <sstream>
 
-Command::Command() : command{NULL}, num_params{0}{}
-
-Command::Command(std::string cmd, int num) : command{cmd}, num_params{num}{}
-
-Command::Command( const Command &rhs ){*this = rhs;}
-
-Command::~Command(){}
-
-std::string 	Command::get_command()
+// This function needs love 
+Command::Command(Client *_client, Server *_server, std::string message) : client(_client), server(_server), query(message)
 {
-	return (command);
-}
-void 			Command::set_command(std::string cmd)
-{
-		command = cmd;
-}
+	std::string delimiter(":");
+	size_t position;
+	if ((position = message.find(delimiter)) != std::string::npos)
+	{
+		std::string tmp = message.substr(0, position);
+		message.erase(0, position + delimiter.length());
+		trailer = message;
+		message = tmp;
+	}
 
-int 			Command::get_num_params()
-{
-	return (num_params);
-}
-void 			Command::set_num_params(int n)
-{
-		num_params = n;
+	// parameters = split(message, " "); need to write a split
+	command_name = *(parameters.begin());
+	parameters.erase(parameters.begin());
+
+	for (size_t index = 0; index < command_name.length(); ++index)
+		command_name[index] = std::toupper(command_name[index]);
 }
 
-std::string 	Command::get_param(int i)
-{
-	return (params[i]);
-}
-void 			Command::set_param(int n, std::string val)
-{
-	if (n >= 0 && n < MAX_PARAMS)
-		params[n] = val;
-	
-}
+Client& Command::getClient() { return *client; }
+Server& Command::getServer() { return *server; }
 
+std::string Command::get_command() { return command_name; }
+std::vector<std::string> Command::getParameters() { return parameters; }
+std::string Command::getTrailer() { return trailer; }
+std::string Command::getQuery() { return query; }
 
-Command &				Command::operator=( Command const &rhs)
+void Command::reply(Client &client, unsigned short code, std::string arg1, std::string arg2, std::string arg3, std::string arg4, std::string arg5, std::string arg6, std::string arg7)
 {
-	if ( this == &rhs )
-		return(*this);
-	
-	this->command = rhs.command;
-	this->num_params = rhs.num_params;
-	for(int i = 0; i < MAX_PARAMS; i++)
-		this->params[i] = rhs.params[i];
-	return *this;
+	std::stringstream sscode;
+	sscode << code;
+	std::string scode = sscode.str();
+	while (scode.length() < 3)
+		scode = "0" + scode;
+
+	client.sendTo(client, scode + " " ); // + getReplies(code, arg1, arg2, arg3, arg4, arg5, arg6, arg7));
 }
+void Command::reply(unsigned short code, std::string arg1, std::string arg2, std::string arg3, std::string arg4, std::string arg5, std::string arg6, std::string arg7) { reply(*client, code, arg1, arg2, arg3, arg4, arg5, arg6, arg7); }
