@@ -6,9 +6,8 @@
 #include <netinet/in.h>
 #include <arpa/inet.h>
 #include <netdb.h>
-#include "structs.hpp"
 #include "Client.hpp"
-#include "Command.hpp"
+#include "Command_.hpp"
 
 int main(int argc, char *argv[])
 {

@@ -3,33 +3,30 @@
 #define MAX_BUFF_SIZE 4096
 #define END_DELIM "\r\n"
 
-Server::Server(unsigned int port, std::string passwd) : port{port}, passwrd{passwd}
+irc::Server::Server(unsigned int port, std::string passwd) : port(port), passwrd(passwd)
 {
 }
 
-Server::Server( const Server & src )
+irc::Server::Server( const Server & src )
 {
 }
 
 
-Server::~Server()
+irc::Server::~Server()
 {
+	std::vector<Client *> clients = get_all_clients();
+	for (std::vector<Client *>::iterator it = clients.begin(); it != clients.end(); ++it)
+		disconnect_client(*(*it));
 }
 
-Server &				Server::operator=( Server const & rhs )
-{
-	//if ( this != &rhs )
-	//{
-		//this->_value = rhs.getValue();
-	//}
-	return *this;
-}
-
-void 	Server::acceptClient()
+void 	irc::Server::acceptClient()
 {
 	if (list_of_all_clients.size() == MAX_CLIENTS)
+	{
 		close(fd);
-	struct 	sockaddr_in6 	address;
+		return ;
+	}
+	struct 	sockaddr_in 	address;
 	socklen_t 	csin_len 	= sizeof(address);
 	int 	fd = accept(this->fd, (struct sockaddr *)&address, &csin_len);
 	if (fd == -1)
@@ -38,10 +35,13 @@ void 	Server::acceptClient()
 	pfds.push_back(pollfd());
 	pfds.back().fd = fd;
 	pfds.back().events = POLLIN;
-}
+
+	if (DEBUG)
+		std::cout << "new user" << inet_ntoa(address.sin_addr) << ":" << ntohs(address.sin_port) << " (" << fd << ")" << std::endl; 
+ }
 
 // Init and Execute 
-void 	Server::init()
+void 	irc::Server::init()
 {
 	int 	yes = 1;
 
@@ -66,7 +66,7 @@ void 	Server::init()
 	pfds.back().events = POLLIN;
 }
 
-void Server::execute()
+void irc::Server::execute()
 {
 	std::vector<Client *> clients = get_all_clients();
 	if (poll(&pfds[0], pfds.size(), -1) == -1)
@@ -77,59 +77,29 @@ void Server::execute()
 			acceptClient();
 		else 
 			for (std::vector<pollfd>::iterator it = pfds.begin(); it != pfds.end(); ++it)
-			{	
-				if((*it).revents == POLLIN)
-				{
-					char 	buffer[MAX_BUFF_SIZE + 1];
-					ssize_t size;
-					Client 	*cl;
-
-					cl = list_of_all_clients[(*it).fd];
-					size = recv((*it).fd, buffer, MAX_BUFF_SIZE, MSG_DONTWAIT);
-					if (size <= 0)
-					{
-						remove_client((*it).fd);
-						continue ;
-					}
-					buffer[size] = '\0';
-					cl->append_buffer(0, std::string(buffer));
-					if (!cl->get_registered())
-					{
-
-					}
-				}
-			{
-				
+				if ((*it).revents == POLLIN)
+					this->list_of_all_clients[(*it).fd]->receive_from(this);
 	}
+	for (std::vector<irc::Client *>::iterator it = clients.begin(); it != clients.end(); ++it)
+		if ((*it)->get_status() == DELETE)
+			disconnect_client(*(*it));
+	clients = get_all_clients();
+	for (std::vector<irc::Client *>::iterator it = clients.begin(); it != clients.end(); ++it)
+		(*it)->push();
+	
 }
 
-
-/*	
-	std::string delimiter(END_DELIM);
-	size_t 		position;
-	while ((position = buffer.find(delimiter)) != std::string::npos)
-	{
-		std::string	message = buffer.substr(0, position);
-		buffer.erase(0, position + delimiter.length());
-		if (!message.length())
-			continue ;
-				
-	}
-}
-*/
-// Getters
-
-std::vector<Client *> Server::get_all_clients()
+std::vector<irc::Client *> irc::Server::get_all_clients()
 {
-	std::vector<Client *> clients = std::vector<Client *>();
+	std::vector<irc::Client *> clients = std::vector<irc::Client *>();
 
-	for (std::map<int, Client *>::iterator it = this->list_of_all_clients.begin(); it != this->list_of_all_clients.end(); ++it)
+	for (std::map<int, irc::Client *>::iterator it = this->list_of_all_clients.begin(); it != this->list_of_all_clients.end(); ++it)
 			clients.push_back(it->second);
 	return clients;
 }
-Client *			  Server::get_client(std::string &nickname)
+irc::Client *			  irc::Server::get_client(std::string &nickname)
 {
-	for (std::map<int, Client *>::iterator it = this->list_of_all_clients.begin(); it != this->list_of_all_clients.end(); ++it)
+	for (std::map<int, irc::Client *>::iterator it = this->list_of_all_clients.begin(); it != this->list_of_all_clients.end(); ++it)
 	{
 		if ((*it).second->get_nickname() == nickname)
 			return ((*it).second);
@@ -137,27 +107,40 @@ Client *			  Server::get_client(std::string &nickname)
 	return (NULL);
 }
 
+void 		irc::Server::disconnect_client(irc::Client &client)
+{
+	// Make logic here to go through each channel the user is a part of and remove it 
+	for(std::vector<pollfd>::iterator it_p = pfds.begin(); it_p != pfds.end(); ++it_p)
+		if((*it_p).fd == client.get_fd())
+		{
+			pfds.erase(it_p);
+			break ;
+		}
+	list_of_all_clients.erase(client.get_fd());
+	delete &client;
+}
+
 // Exceptions 
-const char*	Server::SocketFailException::what() const throw()
+const char*	irc::Server::SocketFailException::what() const throw()
 {
 	return "Error:  Socket Failed\n";
 }
 
-const char*	Server::SetsockoptFailException::what() const throw()
+const char*	irc::Server::SetsockoptFailException::what() const throw()
 {
 	return "Error: Setsockopt() Failed\n";
 }
 
-const char*	Server::BindFailException::what() const throw()
+const char*	irc::Server::BindFailException::what() const throw()
 {
 	return "Error: Bind() Failed\n";
 }
 
-const char*	Server::ListenFailException::what() const throw()
+const char*	irc::Server::ListenFailException::what() const throw()
 {
 	return "Error: listen() Failed\n";
 }
-const char*	Server::FcntlFailException::what() const throw()
+const char*	irc::Server::FcntlFailException::what() const throw()
 {
 	return "Error: Fcntl() Failed\n";
 }
