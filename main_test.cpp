@@ -6,7 +6,7 @@
 /*   By: hbanthiy <hbanthiy@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/08/16 12:18:18 by hbanthiy          #+#    #+#             */
-/*   Updated: 2022/08/16 14:05:24 by hbanthiy         ###   ########.fr       */
+/*   Updated: 2022/08/17 17:28:14 by hbanthiy         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,7 +26,7 @@ int main(int argc, char **argv)
     }
     try 
 	{
-	    Server server(atoi(argv[1]), argv[2]);
+	    irc::Server server(atoi(argv[1]), argv[2]);
         signal(SIGINT, handler);
         server.init();  
 		   while (!stop)
