@@ -6,6 +6,7 @@ std::string RPL_YOURHOST(std::string servername, std::string ver) { return ":You
 std::string RPL_CREATED(std::string date) { return ":This server was created " + date; }
 std::string RPL_MYINFO(std::string servername, std::string version, std::string umodes, std::string cmodes) { return servername + " " + version + " " + umodes + " " + cmodes; }
 std::string RPL_BOUNCE(std::string server, std::string port) { return ":Try server " + server + ", port " + port; }
+std::string ERR_NOORIGIN() { return ":No origin specified"; }
 
 std::string irc::Command::getReplies(unsigned short code, std::string arg1, std::string arg2, std::string arg3, std::string arg4, std::string arg5, std::string arg6, std::string arg7)
 {
@@ -28,6 +29,8 @@ std::string irc::Command::getReplies(unsigned short code, std::string arg1, std:
 		return target + RPL_MYINFO(arg1, arg2, arg3, arg4);
 	case 005:
 		return target + RPL_BOUNCE(arg1, arg2);
+	case 409:
+		return target + ERR_NOORIGIN();
     default: 
        return std::string();
     }

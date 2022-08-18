@@ -75,3 +75,10 @@ void PASS(irc::Command *command)
 		command->getClient().set_status(irc::REGISTER);
 	//password is correct, send nothing
 }
+
+void PING(class irc::Command *command)
+{
+	if (command->getParameters().size() == 0)
+		return command->reply(409);
+	command->getClient().sendTo(command->getClient(), "PONG :" + command->getParameters()[0]);
+}
