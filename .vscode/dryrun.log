@@ -1,6 +1,0 @@
-make --dry-run --keep-going --print-directory
-make: Entering directory `/Users/hbanthiy/FT_IRC'
-echo "Usage: ./irc  port password - To begin running the server"
- 
-make: Leaving directory `/Users/hbanthiy/FT_IRC'
- 

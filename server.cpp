@@ -21,6 +21,7 @@ irc::Server::Server(int _port, std::string passwd) : port(_port), passwrd(passwd
 
 irc::Server::Server( const Server & src )
 {
+	(void)src;
 }
 
 
@@ -55,7 +56,7 @@ void 	irc::Server::acceptClient()
 void irc::Server::sendPing()
 {
 	time_t 	current =std::time(0);
-	int timeout = 3000;
+	//int timeout = 3000;
 
 	for (std::map<int, irc::Client*>::iterator it = list_of_all_clients.begin(); it != list_of_all_clients.end(); ++it)
 		if (current - (*it).second->getLastPing() >= 300)
@@ -137,6 +138,10 @@ irc::Client *			  irc::Server::get_client(std::string &nickname)
 	}
 	return (NULL);
 }
+std::string irc::Server::getPasswrd() {
+	return passwrd;
+}
+
 std::string irc::Server::getUpTime() { return upTime; }
 void 		irc::Server::disconnect_client(irc::Client &client)
 {

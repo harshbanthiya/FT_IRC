@@ -14,7 +14,7 @@ CC := c++
 CPPFLAGS := -std=c++98 -g
 ARGUMENTS = 6667 password
 NAME :=	irc
-SRCS :=	client.cpp Command.cpp main_test.cpp server.cpp replies.cpp USER.cpp NICK.cpp PASS.cpp
+SRCS :=	client.cpp Command.cpp main_test.cpp server.cpp replies.cpp command_user.cpp
 OBJS_DIR := object_files
 OBJS := $(addprefix $(OBJS_DIR)/,$(SRCS:.cpp=.o))
 

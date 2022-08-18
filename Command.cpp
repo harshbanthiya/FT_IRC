@@ -62,7 +62,7 @@ void irc::Command::reply(Client &client, unsigned short code, std::string arg1, 
 	sscode << code;
 	std::string scode = sscode.str();
 	while (scode.length() < 3)
-		scode = "0" + scode;
+		scode = "00" + scode;
 
 	client.sendTo(client, scode + " " + getReplies(code, arg1, arg2, arg3, arg4, arg5, arg6, arg7));
 }
