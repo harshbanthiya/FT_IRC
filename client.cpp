@@ -6,7 +6,7 @@
 /*   By: hbanthiy <hbanthiy@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/08/15 19:08:30 by hbanthiy          #+#    #+#             */
-/*   Updated: 2022/08/17 18:31:34 by hbanthiy         ###   ########.fr       */
+/*   Updated: 2022/08/18 15:44:28 by hbanthiy         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,6 +20,7 @@
 void NICK(irc::Command *command);
 void USER(irc::Command *command);
 void PASS(irc::Command *command);
+void PING(irc::Command *command);
 
 void post_registration(irc::Command *command)
 {
@@ -111,6 +112,7 @@ irc::Client::Client(int _fd, sockaddr_in addr_) : command_function(),
 	command_function["PASS"] = PASS;
 	command_function["NICK"] = NICK;
 	command_function["USER"] = USER;
+	command_function["PING"] = PING;
 
 	client_ip_addr = "";
 	nickname_set = false;
