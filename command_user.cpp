@@ -25,10 +25,12 @@ void NICK(irc::Command *command)
 		return command->reply(431); //ERR_NONICKNAMEGIVEN
 	}
 	if (check_if_username_exists(command->getServer(), command->getParameters()[0]) == false) { //nickname is not in use
-		if (isdigit(command->getParameters()[0][0]) || command->getParameters()[0].find_first_of(".?! ") || command->getParameters()[0][0] == '-') //if the first char is a number, or whole thing contains banned chars
+		if (isdigit(command->getParameters()[0][0]) != 0 || command->getParameters()[0].find_first_of(".?! ") != std::string::npos || command->getParameters()[0][0] == '-') //if the first char is a number, or whole thing contains banned chars
 		{
 			return command->reply(432); //ERR_ERRONEUSNICKNAME
 		}
+		if (client.get_status() == irc::ONLINE)
+			command->reply(client, 0, client.get_nickname(), command->getprefix(), command->getParameters()[0]); //if online, send back a reply
 		return client.set_nickname(command->getParameters()[0]); //0 because only 1 parameter, also dont forget to remove CRLF here
 	}
 	else
