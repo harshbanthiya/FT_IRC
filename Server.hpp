@@ -57,6 +57,7 @@ namespace irc
 			void 						disconnect_client(Client &client);
 			std::string 				getUpTime();
 			void 						sendPing();
+			std::string getPasswrd();
 
 
 		// Setters 

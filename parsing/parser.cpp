@@ -17,6 +17,7 @@
 #include <sys/socket.h>
 #include <sstream>
 #include <unordered_map>
+#include <vector>
 
 std::string commands[] = {
 		"ADMIN",
@@ -77,19 +78,115 @@ std::string commands[] = {
 		"WHOWAS"
 };
 
-void parse_command(char *buff)
-{
-	//std::unordered_map<std::string, int>() irc_commands; //int as placeholder for function pointer
+std::string _ignored[] = {
+		"CAP",
+		"CNOTICE",
+		"CPRIVMSG",
+		"CONNECT",
+		"ENCAP",
+		"ERROR",
+		"HELP",
+		"INFO",
+		"ISON",
+		"KNOCK",
+		"LINKS",
+		"LUSERS",
+		"NAMESX",
+		"PONG",
+		"REHASH",
+		"RULES",
+		"SERVER",
+		"SERVICE",
+		"SERVLIST",
+		"SQUERY",
+		"SQUIT",
+		"SETNAME",
+		"SILENCE",
+		"STATS",
+		"SUMMON",
+		"TRACE",
+		"UHNAMES",
+		"USERHOST",
+		"USERIP",
+		"USERS",
+		"WALLOPS",
+		"WATCH",
+		"WHOIS",
+		"WHOWAS"
+};
 
-	std::string input = std::string(buff);
-	std::cout << input << std::endl;
-	for (int i = 0;i < 56;i++)
+std::string _available[] = {
+		"ADMIN", //return information about server admins of the current server
+		"AWAY", //set current status to away(afk). without a parameter, the status is removed or inactive
+		"DIE", //shutdown server
+		"INVITE", //invite somebody to channel. channel doesnt need to exist, but if it does, only its members should be able to invite
+		"JOIN", //join a channel
+		"KICK", //kick user from channel
+		"KILL", //kill client connection from entire server rather than channel
+		"LIST", //list available channels
+		"MODE", //set channel mode, or user modes
+		"MOTD", //return server message of the day
+		"NAMES",
+		"NICK", //set account nickname on server
+		"NOTICE",
+		"OPER", //allows to login as Operator (channel ?? server ??)
+		"PART",
+		"PASS", //password login
+		"PING", //ping server for timestamp
+		"PRIVMSG", //send private message to user
+		"QUIT", //end connection ?
+		"TIME", //display time
+		"TOPIC", //display channel topic
+		"USER", //userrname login
+		"VERSION", //display server version
+		"WHO" //display list of users on a channel. @ users are channel ops, * users are irc ops
+};
+
+//thank you stack overflow
+std::vector<std::string> split_string(const std::string& str,
+									  const std::string& delimiter)
+{
+	std::vector<std::string> strings;
+
+	std::string::size_type pos = 0;
+	std::string::size_type prev = 0;
+	while ((pos = str.find(delimiter, prev)) != std::string::npos)
 	{
-		if (input.find(commands[i], 0) != std::string::npos) {
-			std::cout << "command: " << commands[i] << std::endl;
-			std::cout << "parameters: " << input.substr(0, commands[i].length()) << std::endl;
-			break;
-		}
+		strings.push_back(str.substr(prev, pos - prev));
+		prev = pos + delimiter.size();
 	}
 
+	// To get the last substring (or only, if delimiter is not found)
+	strings.push_back(str.substr(prev));
+
+	return strings;
+}
+
+class Command {
+private:
+	std::string _command;
+	std::string _parameters;
+public:
+	bool isCommandAvailable(std::string command); //check if command is in the available list
+	void executeCommand(void); //execute command, fetches from unordered map
+};
+
+void parse_command(char *buff)
+{
+	//std::unordered_map<std::string, int> irc_commands; //int as placeholder for function pointer
+	irc_command[str_command]
+	std::vector<std::string> block = split_string(std::string(buff), "\r\n"); //so each line in here represents a command that we can then parse. Each line finishes with a CRLF, hence why this specific delimiter
+
+	for (std::vector<std::string>::iterator it = block.begin(); it != block.end(); it++) { //iterate through the current block
+		std::string input = *it;
+		std::cout << input << std::endl;
+		for (int i = 0; i < 24; i++) { //string arrays dont have iterators, should switch to vector here but im lazy
+			if (input.find(_available[i], 0) != std::string::npos) {
+				std::cout << "command: " << _available[i] << std::endl;
+				std::cout << "parameters: " << input.substr(0 + _available[i].length(), input.length()) << std::endl;
+				break;
+			}
+
+		}
+	}
 }

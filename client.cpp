@@ -6,7 +6,7 @@
 /*   By: olabrecq <olabrecq@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/08/15 19:08:30 by hbanthiy          #+#    #+#             */
-/*   Updated: 2022/08/18 14:20:04 by olabrecq         ###   ########.fr       */
+/*   Updated: 2022/08/18 15:03:32 by olabrecq         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,10 +17,30 @@
 #define MAX_SIZE 4096
 #define END_DELIM "\r\n"
 
-void NICK(irc::Command *command);
-void USER(irc::Command *command);
-void PASS(irc::Command *command);
 void ADMIN(irc::Command *command);
+// void AWAY(irc::Command *command);
+void DIE(irc::Command *command);
+void INVITE(irc::Command *command);
+// void JOIN(irc::Command *command);
+// void KICK(irc::Command *command);
+// void KILL(irc::Command *command);
+// void LIST(irc::Command *command);
+// void MODE(irc::Command *command);
+// void MOTD(irc::Command *command);
+// void NAMES(irc::Command *command);
+void NICK(irc::Command *command);
+// void NOTICE(irc::Command *command);
+// void OPER(irc::Command *command);
+// void PART(irc::Command *command);
+void PASS(irc::Command *command);
+// void PING(irc::Command *command);
+// void PRIVMSG(irc::Command *command);
+// void QUIT(irc::Command *command);
+// void TIME(irc::Command *command);
+// void TOPIC(irc::Command *command);
+void USER(irc::Command *command);
+// void VERSION(irc::Command *command);
+// void WHO(irc::Command *command);
 
 void post_registration(irc::Command *command) 
 {
@@ -109,10 +129,30 @@ irc::Client::Client(int _fd, sockaddr_in addr_) : command_function(),
 	else 
 		this->hostname = hostname;
 	// remember to implement IP address function. 
-	command_function["PASS"] = PASS;
-	command_function["NICK"] = NICK;
-	command_function["USER"] = USER;
 	command_function["ADMIN"] = ADMIN;
+	// command_function["AWAY"] = AWAY;
+	command_function["DIE"] = DIE;
+	// command_function["INVITE"] = INVITE;
+	// command_function["JOIN"] = JOIN;
+	// command_function["KICK"] = KICK;
+	// command_function["LIST"] = LIST;
+	// command_function["MODE"] = MODE;
+	// command_function["MOTD"] = MOTD;
+	// command_function["NAMES"] = NAMES;
+	command_function["NICK"] = NICK;
+	// command_function["NOTICE"] = NOTICE;
+	// command_function["OPER"] = OPER;
+	// command_function["PART"] = PART;
+	command_function["PASS"] = PASS;
+	// command_function["PING"] = PING;
+	// command_function["PRIVMSG"] = PRIVMSG;
+	// command_function["QUIT"] = QUIT;
+	// command_function["TIME"] = TIME;
+	// command_function["TOPIC"] = TOPIC;
+	command_function["USER"] = USER;
+	// command_function["VERSION"] = VERSION;
+	// command_function["WHO"] = WHO;
+	
 
 	client_ip_addr = "";
 	nickname_set = false;
