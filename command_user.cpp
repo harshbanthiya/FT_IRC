@@ -1,9 +1,9 @@
 //
 // Created by Louis-gabriel Laplante on 8/17/22.
 //
-#include "Client.hpp"
-#include "Server.hpp"
+
 #include "Command.hpp"
+#include "Utils.hpp"
 
 bool check_if_username_exists(irc::Server server, std::string nickname)
 {
@@ -21,9 +21,29 @@ void NICK(irc::Command *command)
 {
 	irc::Client &client = command->getClient();
 	if (!command->getParameters().size())
-	{
 		return command->reply(431); //ERR_NONICKNAMEGIVEN
-	}
+	std::string nickname = command->getParameters()[0];
+	
+	// Separated 432 in 3 parts for clarity and better error handling 
+	if (nickname.length() > 9)
+		return (command->reply(432, nickname));
+	size_t index = 0;
+	if (!irc::isLetter(nickname[index]) && !irc::isSpecial(nickname[index]))
+		return (command->reply(432, nickname));
+	++index;
+	for (; index < nickname.length(); ++index)
+		if (!irc::isLetter(nickname[index]) && !irc::isSpecial(nickname[index]) && !irc::isDigit(nickname[index]) && nickname[index] != '-')
+			return command->reply(432, nickname);
+	
+	// For 433 Nickinuse we will loop through list of all clients in Server class
+	std::vector<irc::Client *>clients = command->getServer().get_all_clients();
+	for (std::vector<irc::Client *>::iterator it = clients.begin(); it != clients.end(); ++it)
+		if (nickname == (*it)->get_nickname())
+			return (command->reply(433, nickname));
+	
+	// Else set nick name
+	command->getClient().set_nickname(nickname);
+	/*
 	if (check_if_username_exists(command->getServer(), command->getParameters()[0]) == false) { //nickname is not in use
 		if (isdigit(command->getParameters()[0][0]) != 0 || command->getParameters()[0].find_first_of(".?! ") != std::string::npos || command->getParameters()[0][0] == '-') //if the first char is a number, or whole thing contains banned chars
 		{
@@ -33,10 +53,7 @@ void NICK(irc::Command *command)
 			command->reply(client, 0, client.get_nickname(), command->getprefix(), command->getParameters()[0]); //if online, send back a reply
 		return client.set_nickname(command->getParameters()[0]); //0 because only 1 parameter, also dont forget to remove CRLF here
 	}
-	else
-	{
-		return command->reply(433); //ERR_NICKNAMEINUSE
-	}
+	*/
 }
 
 void USER(irc::Command *command)

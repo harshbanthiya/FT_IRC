@@ -2,19 +2,11 @@
 #define MAX_CLIENTS 20
 #define MAX_BUFF_SIZE 4096
 #define END_DELIM "\r\n"
-
-std::string currentTime()
-{
-	time_t t = std::time(0);
-	struct tm *now = std::localtime(&t);
-	std::string time(asctime(now));
-	time.erase(--time.end());
-	return time;
-}
+#include "Utils.hpp"
 
 irc::Server::Server(int _port, std::string passwd) : port(_port), passwrd(passwd)
 {
-	upTime = currentTime();
+	upTime = irc::currentTime();
 	last_ping = std::time(0);
 
 }

@@ -6,13 +6,13 @@
 /*   By: hbanthiy <hbanthiy@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/08/15 19:08:30 by hbanthiy          #+#    #+#             */
-/*   Updated: 2022/08/18 15:44:28 by hbanthiy         ###   ########.fr       */
+/*   Updated: 2022/08/19 13:56:18 by hbanthiy         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "Client.hpp"
-#include <ctime>
 #include <fcntl.h>
+#include "Utils.hpp"
 
 #define MAX_SIZE 4096
 #define END_DELIM "\r\n"
