@@ -5,6 +5,9 @@
 #include "Command.hpp"
 #include "Utils.hpp"
 
+#include <fstream>
+std::ifstream infile("welcome_screen.txt");
+
 bool check_if_username_exists(irc::Server server, std::string nickname)
 {
 	std::vector<irc::Client *> clients = server.get_all_clients();
@@ -100,4 +103,14 @@ void PING(class irc::Command *command)
 	if (command->getParameters().size() == 0)
 		return command->reply(409);
 	command->getClient().sendTo(command->getClient(), "PONG :" + command->getParameters()[0]);
+}
+
+void PRINT_WELCOME(irc::Command *command)
+{
+	std::string line;
+	while (std::getline(infile, line))
+	{
+		command->reply(372, line);
+	}
+	infile.close();
 }

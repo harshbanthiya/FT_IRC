@@ -6,7 +6,7 @@
 /*   By: hbanthiy <hbanthiy@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/08/19 13:34:27 by hbanthiy          #+#    #+#             */
-/*   Updated: 2022/08/19 14:45:22 by hbanthiy         ###   ########.fr       */
+/*   Updated: 2022/08/19 15:31:04 by hbanthiy         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,6 +16,7 @@
 #include <iostream>
 #include <cstdlib>
 #include <sstream>
+
 
 
 std::string irc::currentTime()
@@ -45,4 +46,3 @@ std::vector<std::string> irc::split(std::string str, std::string delimiter)
 
 	return values;
 }
-

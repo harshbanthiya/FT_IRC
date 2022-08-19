@@ -10,7 +10,7 @@ std::string ERR_NOORIGIN() { return ":No origin specified"; }
 std::string ERR_NONICKNAMEGIVEN() { return ":No nickname given"; }
 std::string ERR_ERRONEUSNICKNAME(std::string nick) { return nick + " :Erroneus nickname"; }
 std::string ERR_NICKNAMEINUSE(std::string nick) { return nick + " :Nickname is already in use"; }
-
+std::string RPL_PRINTWELCOME(std::string text) { return "- " + text; }
 std::string irc::Command::getReplies(unsigned short code, std::string arg1, std::string arg2, std::string arg3, std::string arg4, std::string arg5, std::string arg6, std::string arg7)
 {
 	std::string target;
@@ -32,6 +32,8 @@ std::string irc::Command::getReplies(unsigned short code, std::string arg1, std:
 		return target + RPL_MYINFO(arg1, arg2, arg3, arg4);
 	case 005:
 		return target + RPL_BOUNCE(arg1, arg2);
+	case 372:
+		return target + RPL_PRINTWELCOME(arg1);
 	case 409:
 		return target + ERR_NOORIGIN();
 	case 431:
