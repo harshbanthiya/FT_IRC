@@ -6,7 +6,7 @@
 /*   By: hbanthiy <hbanthiy@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/08/19 13:34:27 by hbanthiy          #+#    #+#             */
-/*   Updated: 2022/08/19 13:40:18 by hbanthiy         ###   ########.fr       */
+/*   Updated: 2022/08/19 14:45:22 by hbanthiy         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,7 +18,7 @@
 #include <sstream>
 
 
-std::string currentTime()
+std::string irc::currentTime()
 {
 	time_t t = std::time(0);
 	struct tm *now = std::localtime(&t);
@@ -31,7 +31,7 @@ bool irc::isLetter(char c) { return (c >= 'A' && c <= 'Z') || (c >= 'a' && c <= 
 bool irc::isSpecial(char c) { return (c >= '[' && c <= '`') || (c >= '{' && c <= '}'); }
 bool irc::isDigit(char c) { return (c >= '0' && c <= '9'); }
 
-std::vector<std::string> split(std::string str, std::string delimiter)
+std::vector<std::string> irc::split(std::string str, std::string delimiter)
 {
 	std::vector<std::string> values = std::vector<std::string>();
 

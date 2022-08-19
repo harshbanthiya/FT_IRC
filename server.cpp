@@ -1,15 +1,11 @@
 #include "Server.hpp"
+#include "Utils.hpp"
 #define MAX_CLIENTS 20
 #define MAX_BUFF_SIZE 4096
 #define END_DELIM "\r\n"
-#include "Utils.hpp"
 
-irc::Server::Server(int _port, std::string passwd) : port(_port), passwrd(passwd)
-{
-	upTime = irc::currentTime();
-	last_ping = std::time(0);
-
-}
+irc::Server::Server(int _port, std::string passwd) : port(_port), last_ping(std::time(0)),  upTime(currentTime()), passwrd(passwd)
+{}
 
 irc::Server::Server( const Server & src )
 {
