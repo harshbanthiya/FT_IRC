@@ -85,7 +85,12 @@ void ADMIN(irc::Command *command)
     }
 }
 
-void DIE(irc::Command *command)
-{
+// void DIE(irc::Command *command)
+// {
 	
+// }
+
+void QUIT(irc::Command *command)
+{
+	return (command->reply(69));
 }

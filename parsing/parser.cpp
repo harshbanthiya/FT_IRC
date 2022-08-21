@@ -119,6 +119,7 @@ std::string _available[] = {
 		"ADMIN", //return information about server admins of the current server
 		"AWAY", //set current status to away(afk). without a parameter, the status is removed or inactive
 		"DIE", //shutdown server
+		"ERROR", // send error cmd to client
 		"INVITE", //invite somebody to channel. channel doesnt need to exist, but if it does, only its members should be able to invite
 		"JOIN", //join a channel
 		"KICK", //kick user from channel

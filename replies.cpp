@@ -10,8 +10,8 @@ std::string RPL_BOUNCE(std::string server, std::string port) { return ":Try serv
 std::string RPL_ADMINME(std::string server) { return server + " :Administrative info"; } //256
 std::string RPL_ADMINLOC1(void) { return "Name     - The Routing Team"; } // 257
 std::string RPL_ADMINLOC2(void) { return "Nickname - #Routing"; } //258
-std::string RPL_ADMINEMAIL(void) {return "E-Mail   - routing@";} // 259
-
+std::string RPL_ADMINEMAIL(void) { return "E-Mail   - routing@"; } // 259
+void QUIT_MSG(void) { exit(0); }
 // Error msg
 std::string ERR_NOSUCHSERVER(std::string servername) { return servername + " :No such server"; }// 402
 
@@ -43,7 +43,9 @@ std::string irc::Command::getReplies(unsigned short code, std::string arg1, std:
 	case 258:
 		return target + RPL_ADMINLOC2();
 	case 259:
-		return target + RPL_ADMINEMAIL(); 
+		return target + RPL_ADMINEMAIL();
+	case 69:
+		QUIT_MSG();
     default:
        return std::string();
     }

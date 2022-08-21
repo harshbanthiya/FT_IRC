@@ -6,7 +6,7 @@
 /*   By: olabrecq <olabrecq@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/08/15 19:08:30 by hbanthiy          #+#    #+#             */
-/*   Updated: 2022/08/18 15:03:32 by olabrecq         ###   ########.fr       */
+/*   Updated: 2022/08/18 15:12:03 by olabrecq         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,7 +19,7 @@
 
 void ADMIN(irc::Command *command);
 // void AWAY(irc::Command *command);
-void DIE(irc::Command *command);
+// void DIE(irc::Command *command);
 void INVITE(irc::Command *command);
 // void JOIN(irc::Command *command);
 // void KICK(irc::Command *command);
@@ -35,7 +35,7 @@ void NICK(irc::Command *command);
 void PASS(irc::Command *command);
 // void PING(irc::Command *command);
 // void PRIVMSG(irc::Command *command);
-// void QUIT(irc::Command *command);
+void QUIT(irc::Command *command);
 // void TIME(irc::Command *command);
 // void TOPIC(irc::Command *command);
 void USER(irc::Command *command);
@@ -131,7 +131,7 @@ irc::Client::Client(int _fd, sockaddr_in addr_) : command_function(),
 	// remember to implement IP address function. 
 	command_function["ADMIN"] = ADMIN;
 	// command_function["AWAY"] = AWAY;
-	command_function["DIE"] = DIE;
+	// command_function["DIE"] = DIE;
 	// command_function["INVITE"] = INVITE;
 	// command_function["JOIN"] = JOIN;
 	// command_function["KICK"] = KICK;
@@ -146,7 +146,7 @@ irc::Client::Client(int _fd, sockaddr_in addr_) : command_function(),
 	command_function["PASS"] = PASS;
 	// command_function["PING"] = PING;
 	// command_function["PRIVMSG"] = PRIVMSG;
-	// command_function["QUIT"] = QUIT;
+	command_function["QUIT"] = QUIT;
 	// command_function["TIME"] = TIME;
 	// command_function["TOPIC"] = TOPIC;
 	command_function["USER"] = USER;
