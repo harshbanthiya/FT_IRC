@@ -1,23 +1,11 @@
 #include "Server.hpp"
+#include "Utils.hpp"
 #define MAX_CLIENTS 20
 #define MAX_BUFF_SIZE 4096
 #define END_DELIM "\r\n"
 
-std::string currentTime()
-{
-	time_t t = std::time(0);
-	struct tm *now = std::localtime(&t);
-	std::string time(asctime(now));
-	time.erase(--time.end());
-	return time;
-}
-
-irc::Server::Server(int _port, std::string passwd) : port(_port), passwrd(passwd)
-{
-	upTime = currentTime();
-	last_ping = std::time(0);
-
-}
+irc::Server::Server(int _port, std::string passwd) : port(_port), last_ping(std::time(0)),  upTime(currentTime()), passwrd(passwd)
+{}
 
 irc::Server::Server( const Server & src )
 {
@@ -101,6 +89,7 @@ void irc::Server::execute()
 		return ;
 	if (std::time(0) - last_ping >= 60)
 	{
+		printf("Ping\n");
 		sendPing();
 		last_ping = std::time(0);
 	}
@@ -112,6 +101,7 @@ void irc::Server::execute()
 			for (std::vector<pollfd>::iterator it = pfds.begin(); it != pfds.end(); ++it)
 				if ((*it).revents == POLLIN)
 					this->list_of_all_clients[(*it).fd]->receive_from(this);
+
 	}
 	for (std::vector<irc::Client *>::iterator it = clients.begin(); it != clients.end(); ++it)
 		if ((*it)->get_status() == DELETE)
@@ -144,6 +134,7 @@ std::string irc::Server::getPasswrd() {
 }
 
 std::string irc::Server::getUpTime() { return upTime; }
+
 void 		irc::Server::disconnect_client(irc::Client &client)
 {
 	// Make logic here to go through each channel the user is a part of and remove it 

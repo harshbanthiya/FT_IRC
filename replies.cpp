@@ -11,9 +11,15 @@ std::string RPL_ADMINME(std::string server) { return server + " :Administrative 
 std::string RPL_ADMINLOC1(void) { return "Name     - The Routing Team"; } // 257
 std::string RPL_ADMINLOC2(void) { return "Nickname - #Routing"; } //258
 std::string RPL_ADMINEMAIL(void) { return "E-Mail   - routing@"; } // 259
-void QUIT_MSG(void) { exit(0); }
+
 // Error msg
 std::string ERR_NOSUCHSERVER(std::string servername) { return servername + " :No such server"; }// 402
+std::string ERR_NOORIGIN() { return ":No origin specified"; }
+std::string ERR_NONICKNAMEGIVEN() { return ":No nickname given"; }
+std::string ERR_ERRONEUSNICKNAME(std::string nick) { return nick + " :Erroneus nickname"; }
+std::string ERR_NICKNAMEINUSE(std::string nick) { return nick + " :Nickname is already in use"; }
+std::string RPL_PRINTWELCOME(std::string text) { return "- " + text; }
+void QUIT_MSG(void) { exit(0); }
 
 std::string irc::Command::getReplies(unsigned short code, std::string arg1, std::string arg2, std::string arg3, std::string arg4, std::string arg5, std::string arg6, std::string arg7)
 {
@@ -46,7 +52,17 @@ std::string irc::Command::getReplies(unsigned short code, std::string arg1, std:
 		return target + RPL_ADMINEMAIL();
 	case 69:
 		QUIT_MSG();
-    default:
+	case 372:
+		return target + RPL_PRINTWELCOME(arg1);
+	case 409:
+		return target + ERR_NOORIGIN();
+	case 431:
+		return target + ERR_NONICKNAMEGIVEN();
+	case 432:
+		return target + ERR_ERRONEUSNICKNAME(arg1);
+	case 433:
+		return target + ERR_NICKNAMEINUSE(arg1);
+    default: 
        return std::string();
     }
 }

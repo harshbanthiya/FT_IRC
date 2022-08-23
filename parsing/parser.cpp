@@ -175,7 +175,7 @@ public:
 void parse_command(char *buff)
 {
 	//std::unordered_map<std::string, int> irc_commands; //int as placeholder for function pointer
-	irc_command[str_command]
+	irc_command[str_command];
 	std::vector<std::string> block = split_string(std::string(buff), "\r\n"); //so each line in here represents a command that we can then parse. Each line finishes with a CRLF, hence why this specific delimiter
 
 	for (std::vector<std::string>::iterator it = block.begin(); it != block.end(); it++) { //iterate through the current block

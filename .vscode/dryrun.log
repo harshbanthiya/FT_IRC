@@ -1,0 +1,21 @@
+make --dry-run --keep-going --print-directory
+make: Entering directory `/Users/hbanthiy/FT_IRC'
+mkdir -p object_files
+c++ -std=c++98 -g -o object_files/client.o -c client.cpp
+ 
+mkdir -p object_files
+c++ -std=c++98 -g -o object_files/Command.o -c Command.cpp
+mkdir -p object_files
+c++ -std=c++98 -g -o object_files/main_test.o -c main_test.cpp
+mkdir -p object_files
+c++ -std=c++98 -g -o object_files/server.o -c server.cpp
+mkdir -p object_files
+c++ -std=c++98 -g -o object_files/replies.o -c replies.cpp
+mkdir -p object_files
+c++ -std=c++98 -g -o object_files/command_user.o -c command_user.cpp
+mkdir -p object_files
+c++ -std=c++98 -g -o object_files/Utils.o -c Utils.cpp
+c++ -std=c++98 -g object_files/client.o object_files/Command.o object_files/main_test.o object_files/server.o object_files/replies.o object_files/command_user.o object_files/Utils.o -o irc
+echo "Usage: ./irc  port password - To begin running the server"
+make: Leaving directory `/Users/hbanthiy/FT_IRC'
+ 

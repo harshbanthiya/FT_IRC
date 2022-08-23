@@ -6,13 +6,13 @@
 /*   By: olabrecq <olabrecq@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/08/15 19:08:30 by hbanthiy          #+#    #+#             */
-/*   Updated: 2022/08/18 15:12:03 by olabrecq         ###   ########.fr       */
+/*   Updated: 2022/08/23 10:16:09 by olabrecq         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "Client.hpp"
-#include <ctime>
 #include <fcntl.h>
+#include "Utils.hpp"
 
 #define MAX_SIZE 4096
 #define END_DELIM "\r\n"
@@ -33,7 +33,7 @@ void NICK(irc::Command *command);
 // void OPER(irc::Command *command);
 // void PART(irc::Command *command);
 void PASS(irc::Command *command);
-// void PING(irc::Command *command);
+void PING(irc::Command *command);
 // void PRIVMSG(irc::Command *command);
 void QUIT(irc::Command *command);
 // void TIME(irc::Command *command);
@@ -41,6 +41,7 @@ void QUIT(irc::Command *command);
 void USER(irc::Command *command);
 // void VERSION(irc::Command *command);
 // void WHO(irc::Command *command);
+void PRINT_WELCOME(irc::Command *command);
 
 void post_registration(irc::Command *command) 
 {
@@ -48,7 +49,7 @@ void post_registration(irc::Command *command)
 	command->reply(2, command->getClient().get_hostname());
 	command->reply(3, command->getServer().getUpTime());
 	command->reply(4, std::string("HLOIRC"), std::string("1.01"), std::string("aiwro"), std::string("Oov") + std::string("imnpt") + std::string("kl"));
-
+	PRINT_WELCOME(command);
 }
 void irc::Client::dispatch()
 {
@@ -144,15 +145,13 @@ irc::Client::Client(int _fd, sockaddr_in addr_) : command_function(),
 	// command_function["OPER"] = OPER;
 	// command_function["PART"] = PART;
 	command_function["PASS"] = PASS;
-	// command_function["PING"] = PING;
+	command_function["PING"] = PING;
 	// command_function["PRIVMSG"] = PRIVMSG;
 	command_function["QUIT"] = QUIT;
 	// command_function["TIME"] = TIME;
 	// command_function["TOPIC"] = TOPIC;
 	command_function["USER"] = USER;
-	// command_function["VERSION"] = VERSION;
-	// command_function["WHO"] = WHO;
-	
+	command_function["PRINT_WELCOME"] = PRINT_WELCOME;
 
 	client_ip_addr = "";
 	nickname_set = false;
@@ -247,6 +246,7 @@ void irc::Client::receive_from(Server *server)
 		ssize_t size;
 
 		size = recv(fd, &buffer, MAX_SIZE, 0);
+		printf("%s\n", buffer);
 		if (size == -1)
 			return ;
 		if (size == 0)
