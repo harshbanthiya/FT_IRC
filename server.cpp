@@ -7,12 +7,6 @@
 irc::Server::Server(int _port, std::string passwd) : port(_port), last_ping(std::time(0)),  upTime(currentTime()), passwrd(passwd)
 {}
 
-irc::Server::Server( const Server & src )
-{
-	(void)src;
-}
-
-
 irc::Server::~Server()
 {
 	std::vector<Client *> clients = get_all_clients();

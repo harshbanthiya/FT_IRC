@@ -6,7 +6,7 @@
 /*   By: hbanthiy <hbanthiy@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/08/15 19:55:13 by hbanthiy          #+#    #+#             */
-/*   Updated: 2022/08/19 14:43:26 by hbanthiy         ###   ########.fr       */
+/*   Updated: 2022/08/23 16:54:35 by hbanthiy         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -43,11 +43,7 @@ namespace irc
 		public:
 
 			Server(int port, std::string paswd);
-			Server( Server const & src );
 			~Server();
-
-			Server &		operator=( Server const & rhs );
-
 			void 			init();
 			void 			execute();
 
@@ -57,7 +53,7 @@ namespace irc
 			void 						disconnect_client(Client &client);
 			std::string 				getUpTime();
 			void 						sendPing();
-			std::string getPasswrd();
+			std::string 				getPasswrd();
 
 
 		// Setters 
