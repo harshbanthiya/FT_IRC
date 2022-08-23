@@ -6,7 +6,7 @@
 /*   By: hbanthiy <hbanthiy@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/08/15 19:08:30 by hbanthiy          #+#    #+#             */
-/*   Updated: 2022/08/19 13:56:18 by hbanthiy         ###   ########.fr       */
+/*   Updated: 2022/08/19 15:30:47 by hbanthiy         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,6 +21,7 @@ void NICK(irc::Command *command);
 void USER(irc::Command *command);
 void PASS(irc::Command *command);
 void PING(irc::Command *command);
+void PRINT_WELCOME(irc::Command *command);
 
 void post_registration(irc::Command *command)
 {
@@ -28,7 +29,7 @@ void post_registration(irc::Command *command)
 	command->reply(2, command->getClient().get_hostname());
 	command->reply(3, command->getServer().getUpTime());
 	command->reply(4, std::string("HLOIRC"), std::string("1.01"), std::string("aiwro"), std::string("Oov") + std::string("imnpt") + std::string("kl"));
-
+	PRINT_WELCOME(command);
 }
 void irc::Client::dispatch()
 {
@@ -113,6 +114,7 @@ irc::Client::Client(int _fd, sockaddr_in addr_) : command_function(),
 	command_function["NICK"] = NICK;
 	command_function["USER"] = USER;
 	command_function["PING"] = PING;
+	command_function["PRINT_WELCOME"] = PRINT_WELCOME;
 
 	client_ip_addr = "";
 	nickname_set = false;
