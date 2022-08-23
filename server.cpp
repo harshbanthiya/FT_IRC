@@ -89,10 +89,9 @@ void irc::Server::execute()
 		return ;
 	if (std::time(0) - last_ping >= 60)
 	{
-		printf("Ping\n");
 		sendPing();
 		last_ping = std::time(0);
-	}
+	}  
 	else 
 	{
 		if (pfds[0].revents == POLLIN)
