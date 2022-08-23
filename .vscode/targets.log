@@ -8,10 +8,11 @@ make all --print-data-base --no-builtin-variables --no-builtin-rules --question
 # This program built for i386-apple-darwin11.3.0
  
 
-# Make data base, printed on Fri Aug 19 14:41:37 2022
+# Make data base, printed on Tue Aug 23 13:43:29 2022
 
 # Variables
 
+ 
 # automatic
 <D = $(patsubst %/,%,$(dir $<))
 # automatic
@@ -43,7 +44,7 @@ VSCODE_VERBOSE_LOGGING = true
 # makefile (from `Makefile', line 19)
 OBJS := object_files/client.o object_files/Command.o object_files/main_test.o object_files/server.o object_files/replies.o object_files/command_user.o object_files/Utils.o
 # environment
-VSCODE_IPC_HOOK_EXTHOST = /var/folders/zz/zyxvpxvq6csfxvn_n000c_nh0032nc/T/vscode-ipc-04d53526-6aba-4e56-ad29-474e1842d2ee.sock
+VSCODE_IPC_HOOK_EXTHOST = /var/folders/zz/zyxvpxvq6csfxvn_n000c_nh0032nc/T/vscode-ipc-c5c51eea-6250-4798-aa3f-dc4e830c4075.sock
 # environment
 VSCODE_CWD = /
 # environment
@@ -51,13 +52,15 @@ PATH = /usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin:/usr/local/munki:/Library/Ap
 # environment
 LSCOLORS = Gxfxcxdxbxegedabagacad
 # environment
+LaunchInstanceID = DC977408-73DE-4823-82E9-8E915B756FDA
+# environment
 VSCODE_LOG_STACK = false
 # environment
 ELECTRON_RUN_AS_NODE = 1
 # default
 .FEATURES := target-specific order-only second-expansion else-if archives jobserver check-symlink
 # environment
-SSH_AUTH_SOCK = /private/tmp/com.apple.launchd.Nj3Nb6pFU3/Listeners
+SSH_AUTH_SOCK = /private/tmp/com.apple.launchd.mSfOzmHCT8/Listeners
 # automatic
 %F = $(notdir $%)
 # environment
@@ -125,7 +128,7 @@ MFLAGS = -Rrqp
 # automatic
 *D = $(patsubst %/,%,$(dir $*))
 # environment
-XPC_SERVICE_NAME = com.microsoft.VSCode.2152
+XPC_SERVICE_NAME = com.apple.xpc.launchd.oneshot.0x10000003.Electron
 # makefile (from `Makefile', line 18)
 OBJS_DIR := object_files
 # automatic
@@ -133,7 +136,9 @@ OBJS_DIR := object_files
 # automatic
 +F = $(notdir $+)
 # environment
-__CF_USER_TEXT_ENCODING = 0x18AAC:0x0:0x52
+__CF_USER_TEXT_ENCODING = 0x18AAC:0x0:0x0
+# environment
+COMMAND_MODE = unix2003
 # default
 MAKEFILES := 
 # automatic
@@ -142,6 +147,8 @@ MAKEFILES :=
 PAGER = less
 # environment
 LC_ALL = C
+# environment
+SECURITYSESSIONID = 186a7
 # automatic
 ^F = $(notdir $^)
 # default
@@ -153,9 +160,9 @@ MAKELEVEL := 0
 # environment
 LANG = C
 # environment
-VSCODE_PID = 97067
+VSCODE_PID = 840
 # variable set hash-table stats:
-# Load=71/1024=7%, Rehash=0, Collisions=4/106=4%
+# Load=74/1024=7%, Rehash=0, Collisions=4/109=4%
 
 # Pattern-specific Variable Values
 
@@ -163,9 +170,9 @@ VSCODE_PID = 97067
 
 # Directories
 
-# . (device 16777225, inode 906884): 18 files, no impossibilities.
+# . (device 16777225, inode 906884): 20 files, no impossibilities.
 
-# 18 files, no impossibilities in 1 directories.
+# 20 files, no impossibilities in 1 directories.
 
 # Implicit Rules
 
@@ -178,6 +185,15 @@ object_files/%.o: %.cpp
 # 1 implicit rules, 0 (0.0%) terminal.
 
 # Files
+
+# Not a target:
+main_test.cpp:
+#  Implicit rule search has been done.
+#  Last modified 2022-08-17 18:47:24
+#  File has been updated.
+#  Successfully updated.
+# variable set hash-table stats:
+# Load=0/32=0%, Rehash=0, Collisions=0/0=0%
 
 all: irc
 #  Phony target (prerequisite of .PHONY).
@@ -197,11 +213,18 @@ all: irc
 #  Modification time never checked.
 #  File has not been updated.
 
-# Not a target:
-object_files/replies.o:
-#  Implicit rule search has not been done.
-#  Modification time never checked.
-#  File has not been updated.
+object_files/replies.o: replies.cpp
+#  Implicit rule search has been done.
+#  Implicit/static pattern stem: `replies'
+#  Last modified 2022-08-23 12:54:48
+#  File has been updated.
+#  Successfully updated.
+# variable set hash-table stats:
+# Load=0/32=0%, Rehash=0, Collisions=0/0=0%
+#  commands to execute (from `Makefile', line 25):
+	@mkdir -p $(OBJS_DIR)
+	@$(CC) $(CPPFLAGS) -o $@ -c $^
+	
 
 # Not a target:
 .SUFFIXES:
@@ -236,10 +259,42 @@ irc: object_files/client.o object_files/Command.o object_files/main_test.o objec
 	
 
 # Not a target:
-object_files/command_user.o:
-#  Implicit rule search has not been done.
-#  Modification time never checked.
-#  File has not been updated.
+replies.cpp:
+#  Implicit rule search has been done.
+#  Last modified 2022-08-19 15:28:39
+#  File has been updated.
+#  Successfully updated.
+# variable set hash-table stats:
+# Load=0/32=0%, Rehash=0, Collisions=0/0=0%
+
+object_files/command_user.o: command_user.cpp
+#  Implicit rule search has been done.
+#  Implicit/static pattern stem: `command_user'
+#  File does not exist.
+#  File has been updated.
+#  Needs to be updated (-q is set).
+# automatic
+# @ := object_files/command_user.o
+# automatic
+# % := 
+# automatic
+# * := command_user
+# automatic
+# + := command_user.cpp
+# automatic
+# | := 
+# automatic
+# < := command_user.cpp
+# automatic
+# ^ := command_user.cpp
+# automatic
+# ? := command_user.cpp
+# variable set hash-table stats:
+# Load=8/32=25%, Rehash=0, Collisions=1/15=7%
+#  commands to execute (from `Makefile', line 25):
+	@mkdir -p $(OBJS_DIR)
+	@$(CC) $(CPPFLAGS) -o $@ -c $^
+	
 
 fclean: clean
 #  Phony target (prerequisite of .PHONY).
@@ -251,10 +306,27 @@ fclean: clean
 	
 
 # Not a target:
-object_files/Command.o:
-#  Implicit rule search has not been done.
-#  Modification time never checked.
-#  File has not been updated.
+command_user.cpp:
+#  Implicit rule search has been done.
+#  Last modified 2022-08-19 15:29:26
+#  File has been updated.
+#  Successfully updated.
+# variable set hash-table stats:
+# Load=0/32=0%, Rehash=0, Collisions=0/0=0%
+
+object_files/Command.o: Command.cpp
+#  Implicit rule search has been done.
+#  Implicit/static pattern stem: `Command'
+#  Last modified 2022-08-23 12:54:47
+#  File has been updated.
+#  Successfully updated.
+# variable set hash-table stats:
+# Load=0/32=0%, Rehash=0, Collisions=0/0=0%
+ 
+#  commands to execute (from `Makefile', line 25):
+	@mkdir -p $(OBJS_DIR)
+	@$(CC) $(CPPFLAGS) -o $@ -c $^
+	
 
 # Not a target:
 .DEFAULT:
@@ -262,30 +334,23 @@ object_files/Command.o:
 #  Modification time never checked.
 #  File has not been updated.
 
+# Not a target:
+Command.cpp:
+#  Implicit rule search has been done.
+#  Last modified 2022-08-19 14:39:36
+#  File has been updated.
+#  Successfully updated.
+# variable set hash-table stats:
+# Load=0/32=0%, Rehash=0, Collisions=0/0=0%
+
 object_files/client.o: client.cpp
 #  Implicit rule search has been done.
 #  Implicit/static pattern stem: `client'
-#  File does not exist.
+#  Last modified 2022-08-23 12:54:46
 #  File has been updated.
-#  Needs to be updated (-q is set).
-# automatic
-# @ := object_files/client.o
-# automatic
-# % := 
-# automatic
-# * := client
-# automatic
-# + := client.cpp
-# automatic
-# | := 
-# automatic
-# < := client.cpp
-# automatic
-# ^ := client.cpp
-# automatic
-# ? := client.cpp
+#  Successfully updated.
 # variable set hash-table stats:
-# Load=8/32=25%, Rehash=0, Collisions=1/15=7%
+# Load=0/32=0%, Rehash=0, Collisions=0/0=0%
 #  commands to execute (from `Makefile', line 25):
 	@mkdir -p $(OBJS_DIR)
 	@$(CC) $(CPPFLAGS) -o $@ -c $^
@@ -308,7 +373,7 @@ run: all
 # Not a target:
 client.cpp:
 #  Implicit rule search has been done.
-#  Last modified 2022-08-19 13:56:19
+#  Last modified 2022-08-19 15:30:47
 #  File has been updated.
 #  Successfully updated.
 # variable set hash-table stats:
@@ -323,18 +388,40 @@ clean:
 	rm -rf $(OBJS_DIR) $(OBJS)
 	
 
-# Not a target:
-object_files/main_test.o:
-#  Implicit rule search has not been done.
-#  Modification time never checked.
-#  File has not been updated.
+object_files/main_test.o: main_test.cpp
+#  Implicit rule search has been done.
+#  Implicit/static pattern stem: `main_test'
+#  Last modified 2022-08-23 12:54:47
+#  File has been updated.
+#  Successfully updated.
+# variable set hash-table stats:
+# Load=0/32=0%, Rehash=0, Collisions=0/0=0%
+#  commands to execute (from `Makefile', line 25):
+	@mkdir -p $(OBJS_DIR)
+	@$(CC) $(CPPFLAGS) -o $@ -c $^
+	
 
- 
+object_files/server.o: server.cpp
+#  Implicit rule search has been done.
+#  Implicit/static pattern stem: `server'
+#  Last modified 2022-08-23 12:54:48
+#  File has been updated.
+#  Successfully updated.
+# variable set hash-table stats:
+# Load=0/32=0%, Rehash=0, Collisions=0/0=0%
+#  commands to execute (from `Makefile', line 25):
+	@mkdir -p $(OBJS_DIR)
+	@$(CC) $(CPPFLAGS) -o $@ -c $^
+	
+
 # Not a target:
-object_files/server.o:
-#  Implicit rule search has not been done.
-#  Modification time never checked.
-#  File has not been updated.
+server.cpp:
+#  Implicit rule search has been done.
+#  Last modified 2022-08-19 14:43:50
+#  File has been updated.
+#  Successfully updated.
+# variable set hash-table stats:
+# Load=0/32=0%, Rehash=0, Collisions=0/0=0%
 
 debugflags:
 #  Phony target (prerequisite of .PHONY).
@@ -352,7 +439,7 @@ object_files/Utils.o:
 #  File has not been updated.
 
 # files hash-table stats:
-# Load=20/1024=2%, Rehash=0, Collisions=0/56=0%
+# Load=25/1024=2%, Rehash=0, Collisions=0/76=0%
 # VPATH Search Paths
 
 # No `vpath' search paths.
@@ -364,6 +451,6 @@ object_files/Utils.o:
 # strcache size: total = 4096 / max = 4096 / min = 4096 / avg = 4096
 # strcache free: total = 4087 / max = 4087 / min = 4087 / avg = 4087
 
-# Finished Make data base on Fri Aug 19 14:41:37 2022
+# Finished Make data base on Tue Aug 23 13:43:29 2022
 
  
