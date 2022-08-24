@@ -8,7 +8,7 @@ make all --print-data-base --no-builtin-variables --no-builtin-rules --question
 # This program built for i386-apple-darwin11.3.0
  
 
-# Make data base, printed on Wed Aug 24 13:21:42 2022
+# Make data base, printed on Wed Aug 24 13:40:39 2022
 
 # Variables
 
@@ -163,9 +163,9 @@ VSCODE_PID = 72530
 
 # Directories
 
-# . (device 16777225, inode 906884): 15 files, no impossibilities.
+# . (device 16777225, inode 906884): 14 files, no impossibilities.
 
-# 15 files, no impossibilities in 1 directories.
+# 14 files, no impossibilities in 1 directories.
 
 # Implicit Rules
 
@@ -212,13 +212,13 @@ all: irc
 # Not a target:
 Makefile:
 #  Implicit rule search has been done.
-#  Last modified 2022-08-24 13:21:39
+#  Last modified 2022-08-24 13:40:38
 #  File has been updated.
 #  Successfully updated.
 # variable set hash-table stats:
 # Load=0/32=0%, Rehash=0, Collisions=0/0=0%
 
-debug: debugflags run
+debug:
 #  Phony target (prerequisite of .PHONY).
 #  Implicit rule search has not been done.
 #  File does not exist.
@@ -240,7 +240,7 @@ fclean: clean
 #  Implicit rule search has not been done.
 #  File does not exist.
 #  File has not been updated.
-#  commands to execute (from `Makefile', line 42):
+#  commands to execute (from `Makefile', line 37):
 	rm -rf $(NAME)
 	
 
@@ -253,11 +253,27 @@ fclean: clean
 object_files/client.o: client.cpp
 #  Implicit rule search has been done.
 #  Implicit/static pattern stem: `client'
-#  Last modified 2022-08-24 13:00:31
+#  File does not exist.
 #  File has been updated.
-#  Successfully updated.
+#  Needs to be updated (-q is set).
+# automatic
+# @ := object_files/client.o
+# automatic
+# % := 
+# automatic
+# * := client
+# automatic
+# + := client.cpp
+# automatic
+# | := 
+# automatic
+# < := client.cpp
+# automatic
+# ^ := client.cpp
+# automatic
+# ? := client.cpp
 # variable set hash-table stats:
-# Load=0/32=0%, Rehash=0, Collisions=0/0=0%
+# Load=8/32=25%, Rehash=0, Collisions=1/15=7%
 #  commands to execute (from `Makefile', line 25):
 	@mkdir -p $(OBJS_DIR)
 	@$(CC) $(CPPFLAGS) -o $@ -c $^
@@ -280,7 +296,7 @@ run: all
 # Not a target:
 client.cpp:
 #  Implicit rule search has been done.
-#  Last modified 2022-08-24 12:50:42
+#  Last modified 2022-08-24 13:31:03
 #  File has been updated.
 #  Successfully updated.
 # variable set hash-table stats:
@@ -291,7 +307,7 @@ clean:
 #  Implicit rule search has not been done.
 #  File does not exist.
 #  File has not been updated.
-#  commands to execute (from `Makefile', line 39):
+#  commands to execute (from `Makefile', line 34):
 	rm -rf $(OBJS_DIR) $(OBJS)
 	
 
@@ -306,62 +322,27 @@ debugflags:
 #  Implicit rule search has not been done.
 #  File does not exist.
 #  File has not been updated.
-#  commands to execute (from `Makefile', line 34):
-	$(eval CPPFLAGS=-D DEBUG)
-	
-
-object_files/Command_Handler.o: Command_Handler.cpp
-#  Implicit rule search has been done.
-#  Implicit/static pattern stem: `Command_Handler'
-#  Last modified 2022-08-24 13:00:32
-#  File has been updated.
-#  Needs to be updated (-q is set).
-# automatic
-# @ := object_files/Command_Handler.o
-# automatic
-# % := 
-# automatic
-# * := Command_Handler
-# automatic
-# + := Command_Handler.cpp
-# automatic
-# | := 
-# automatic
-# < := Command_Handler.cpp
-# automatic
- 
-# ^ := Command_Handler.cpp
-# automatic
-# ? := Command_Handler.cpp
-# variable set hash-table stats:
-# Load=8/32=25%, Rehash=0, Collisions=1/15=7%
-#  commands to execute (from `Makefile', line 25):
-	@mkdir -p $(OBJS_DIR)
-	@$(CC) $(CPPFLAGS) -o $@ -c $^
-	
 
 # Not a target:
-Command_Handler.cpp:
-#  Implicit rule search has been done.
-#  Last modified 2022-08-24 13:11:17
-#  File has been updated.
-#  Successfully updated.
-# variable set hash-table stats:
-# Load=0/32=0%, Rehash=0, Collisions=0/0=0%
+object_files/Command_Handler.o:
+#  Implicit rule search has not been done.
+#  Modification time never checked.
+#  File has not been updated.
 
 # files hash-table stats:
-# Load=18/1024=2%, Rehash=0, Collisions=0/54=0%
+# Load=17/1024=2%, Rehash=0, Collisions=0/48=0%
 # VPATH Search Paths
 
 # No `vpath' search paths.
 
 # No general (`VPATH' variable) search path.
 
+ 
 # # of strings in strcache: 1
 # # of strcache buffers: 1
 # strcache size: total = 4096 / max = 4096 / min = 4096 / avg = 4096
 # strcache free: total = 4087 / max = 4087 / min = 4087 / avg = 4087
 
-# Finished Make data base on Wed Aug 24 13:21:42 2022
+# Finished Make data base on Wed Aug 24 13:40:39 2022
 
  

@@ -6,7 +6,7 @@
 #    By: hbanthiy <hbanthiy@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2022/08/16 12:14:47 by hbanthiy          #+#    #+#              #
-#    Updated: 2022/08/24 13:21:39 by hbanthiy         ###   ########.fr        #
+#    Updated: 2022/08/24 13:40:38 by hbanthiy         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -29,11 +29,6 @@ $(NAME): $(OBJS)
 		@$(CC) $(CPPFLAGS) $(OBJS) -o $(NAME)
 run: all 
 	./$(NAME) $(ARGUMENTS)
-
-debugflags: 
-	$(eval CPPFLAGS=-D DEBUG)
-
-debug: debugflags run
 
 clean:
 		rm -rf $(OBJS_DIR) $(OBJS)

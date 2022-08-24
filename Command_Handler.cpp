@@ -6,19 +6,20 @@
 /*   By: hbanthiy <hbanthiy@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/08/17 13:37:38 by hbanthiy          #+#    #+#             */
-/*   Updated: 2022/08/24 13:29:33 by hbanthiy         ###   ########.fr       */
+/*   Updated: 2022/08/24 14:31:52 by hbanthiy         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "Command_Handler.hpp"
 #include "Server.hpp"
+#include <fstream>
+std::ifstream infile("welcome_screen.txt");
 
-// This function needs love 
 CommandHandler::CommandHandler(Server &_server): serv(_server)
 {
-	//this->handlers["PASS"] = &CommandHandler::handle_pass;
-	//this->handlers["NICK"] = &CommandHandler::handle_nick;
-	//this->handlers["PING"] = &CommandHandler::handle_ping;
+	this->handlers["PASS"] = &CommandHandler::handle_pass;
+	this->handlers["NICK"] = &CommandHandler::handle_nick;
+	this->handlers["PING"] = &CommandHandler::handle_ping;
 	this->handlers["USER"] = &CommandHandler::handle_user;
 }
 
@@ -70,49 +71,64 @@ void CommandHandler::handle(std::string cmd_line, Client &owner)
 void 	CommandHandler::handle_user(Client &owner)
 {
 	if (parameters.size() < 4)
-		return get_replies(461, owner, command); //ERR_NEEDMOREPARAMS
+		return get_replies(ERR_NEEDMOREPARAMS, owner, command); //ERR_NEEDMOREPARAMS
 	if(owner.is_registered())
-		return get_replies(462, owner, command); //ERR_ALREADYREGISTRED
+		return get_replies(ERR_ALREADYREGISTERED, owner, command); //ERR_ALREADYREGISTRED
 	std::string username = parameters.front();
 	if (username.empty())
-		return get_replies(461, owner, command);
+		return get_replies(ERR_NEEDMOREPARAMS, owner, command);
 	std::string realname = parameters.back();
 	//mode is missing
 	owner.set_username(username);
 	owner.set_realname(realname);
-	//owner.set_registered(true);
-	//if (!owner.get_nickname().empty())
-		//print_welcome(owner);
-}
-/*
-void PASS(irc::Command *command)
-{
-	irc::Server &server = command->getServer();
-	irc::Client &client = command->getClient();
-	if (command->getParameters().size() < 1)
-		return command->reply(461); //ERR_NEEDMOREPARAMS
-	if(client.get_registered() == true)
-	{
-		return command->reply(462); //ERR_ALREADYREGISTRED
-	}
-	if (server.getPasswrd() != command->getParameters()[0])
-	{
-		//command->getClient().set_status(irc::DELETE);
-		return command->reply(464); //ERR_PASSWDMISMATCH
-
-	}
-	if (server.getPasswrd() == command->getParameters()[0])
-		command->getClient().set_status(irc::REGISTER);
-	//password is correct, send nothing
+	if (!owner.get_nickname().empty())
+		print_welcome(owner);
 }
 
-void PING(class irc::Command *command)
+void	CommandHandler::handle_pass(Client &owner)
 {
-	if (command->getParameters().size() == 0)
-		return command->reply(409);
-	command->getClient().sendTo(command->getClient(), "PONG :" + command->getParameters()[0]);
+
+	if (!parameters.size() || parameters.front() == "")
+		return get_replies(ERR_NEEDMOREPARAMS, owner, command); //ERR_NEEDMOREPARAMS
+	if(owner.is_registered())
+		return get_replies(ERR_ALREADYREGISTERED, owner); //ERR_ALREADYREGISTRED
+	if (serv.checkPass(this->parameters.front()))
+		owner.set_passed();
+	else 
+		get_replies(ERR_PASSWDMISMATCH, owner);
 }
-*/
+
+void 	CommandHandler::handle_ping(Client &owner)
+{
+	if (!parameters.size() || parameters.front() == "")
+		return get_replies(ERR_NEEDMOREPARAMS, owner, command);
+	std::string msg = ":" + std::string("MyIRC") + " PONG " + ":" + parameters.front() + END_DELIM;
+	this->serv.send_msg(msg, owner);
+}
+
+void	CommandHandler::handle_nick(Client &owner)
+{
+	if (!parameters.size() || parameters.front() == "")
+		return get_replies(ERR_NONICKNAMEGIVEN, owner, command);
+	
+	std::string& nick = this->parameters.front();
+	std::vector<Client *> const &clients = this->serv.get_all_clients();
+	for(u_int i = 0; i < clients.size(); i++)
+	{
+		if (*clients[i] == nick)
+			return get_replies(ERR_NICKNAMEINUSE, owner, nick);
+	}
+	std::string old_nick = owner.get_nickname();
+	owner.set_nickname(nick);
+	if (old_nick != "")
+	{
+		std::string msg = ":" + old_nick + "!" + owner.get_username() + "@" + owner.get_hostname() + " NICK: " + owner.get_nickname() + END_DELIM;
+		this->serv.send_msg(msg, owner);
+	}
+	if (!owner.is_registered() && !owner.get_username().empty())
+		print_welcome(owner);
+	
+}
 
 
 void 	CommandHandler::get_replies(int code, Client const &owner, std::string extra) const
@@ -139,7 +155,38 @@ void 	CommandHandler::get_replies(int code, Client const &owner, std::string ext
 		case RPL_CREATED: 
 			msg += ":This server was created " + extra;
 			break;
+		case PRINT_SCREEN:
+			msg += "-: " + extra;
+			break;
+		case ERR_PASSWDMISMATCH:
+			msg += ":Password incorrect";
+			break;
+		case ERR_NONICKNAMEGIVEN:
+			msg += ":No nickname given";
+			break;
+		case ERR_NICKNAMEINUSE:
+			msg += extra + " :Nickname is already in use"; 
+			break;
     }
 	msg += END_DELIM;
 	serv.send_msg(msg, owner);
+}
+
+void CommandHandler::welcomescreen(Client &target)
+{
+	std::string line;
+	while (std::getline(infile, line))
+	{
+		get_replies(PRINT_SCREEN, target, line);
+	}
+	infile.close();
+}
+
+void 	CommandHandler::print_welcome(Client &target)
+{
+	target.set_registered();
+	get_replies(RPL_WELCOME, target);
+	get_replies(RPL_YOURHOST, target);
+	get_replies(RPL_CREATED, target, this->serv.getcreatedTime());
+	welcomescreen(target);
 }

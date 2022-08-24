@@ -6,17 +6,27 @@
 /*   By: hbanthiy <hbanthiy@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/08/24 13:21:32 by hbanthiy          #+#    #+#             */
-/*   Updated: 2022/08/24 13:22:00 by hbanthiy         ###   ########.fr       */
+/*   Updated: 2022/08/24 14:29:17 by hbanthiy         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #ifndef REPLIES_H
 #define REPLIES_H
 
-#define RPL_WELCOME     1
-#define RPL_YOURHOST    2
-#define RPL_CREATED     3
-#define RPL_MYINFO      4
+#define RPL_WELCOME             1
+#define RPL_YOURHOST            2
+#define RPL_CREATED             3
+#define RPL_MYINFO              4
+
+
+#define PRINT_SCREEN            372
+
+#define ERR_NONICKNAMEGIVEN     431
+#define ERR_NICKNAMEINUSE       433
+#define ERR_NEEDMOREPARAMS      461
+#define ERR_ALREADYREGISTERED   462
+#define ERR_PASSWDMISMATCH      464
+
 #define END_DELIM       "\r\n"
 /*
 std::string ERR_NOORIGIN() { return ":No origin specified"; }

@@ -188,6 +188,8 @@ bool Server::user_exists(std::string name)
 	return false;
 }
 
+bool Server::checkPass(std::string &pass){return (pass == this->passwrd);}
+
 void 	Server::send_msg(std::string &msg, Client const &target) const
 {
 	if (send(target.getSocket(), msg.c_str(), msg.length(), 0) < 0)

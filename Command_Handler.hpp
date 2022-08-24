@@ -6,7 +6,7 @@
 /*   By: hbanthiy <hbanthiy@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/08/16 23:58:30 by sheeed            #+#    #+#             */
-/*   Updated: 2022/08/24 13:28:49 by hbanthiy         ###   ########.fr       */
+/*   Updated: 2022/08/24 14:28:40 by hbanthiy         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,11 +39,12 @@
 			std::map<std::string, void(CommandHandler::*)(Client&)> handlers;	
 
 			void 	parse_cmd(std::string cmd_line);
-			//void 	handle_pass(Client &owner);
+			void 	handle_pass(Client &owner);
 			void 	handle_user(Client &owner);
-			//void 	handle_nick(Client &owner);
-			//void 	handle_ping(Client &owner);
-
+			void 	handle_nick(Client &owner);
+			void 	handle_ping(Client &owner);
+			void 	print_welcome(Client &owner);
+			void 	welcomescreen(Client &owner);
 	};
 
 #endif
