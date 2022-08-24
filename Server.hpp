@@ -6,7 +6,7 @@
 /*   By: hbanthiy <hbanthiy@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/08/15 19:55:13 by hbanthiy          #+#    #+#             */
-/*   Updated: 2022/08/23 16:54:35 by hbanthiy         ###   ########.fr       */
+/*   Updated: 2022/08/23 18:41:19 by hbanthiy         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,41 +42,40 @@ namespace irc
 
 		public:
 
-			Server(int port, std::string paswd);
+			Server(std::string port, std::string paswd);
 			~Server();
 			void 			init();
 			void 			execute();
 
 		// Getters 
 			std::vector<Client *> 		get_all_clients();
-			Client* 			  		get_client(std::string &nickname);
-			void 						disconnect_client(Client &client);
-			std::string 				getUpTime();
+			Client& 			  		get_client(std::string nickname);
+			void 						disconnect_client(std::string nick);
+			void 						disconnect_client(int index);
+			std::string 				getcreatedTime();
 			void 						sendPing();
 			std::string 				getPasswrd();
-
+			void						send_msg(std::string& msg, Client &target);
+			bool 						user_exists(std::string name);
 
 		// Setters 
 
 		private:
 		
-		int						port; 
-		unsigned int 			total_client_count;
-		int 					fd;
-		time_t					last_ping;
-		std::string 			upTime;
-		std::vector<pollfd> 	pfds;
-		struct sockaddr_in 		addr_info;
-		std::string 			passwrd;
-		std::string 			server_ip_addr;
-		std::map<int, Client*> 	list_of_all_clients;
-		void 					acceptClient();
+		std::string					port; 
+		int 						sock_fd;
+		time_t						last_ping;
+		std::string 				createdTime;
+		std::vector<struct pollfd> 	pfds;
+		std::string 				passwrd;
+		std::vector<Client *> 		list_of_all_clients;
+		void 						acceptClient();
+		CommandHandler 				handler; 
+		void 						add_fd(int new_fd);
+		void 						add_client();
+		void						exec_command(Client &executor);
 		
-		// channel list 
-		// Operator list
-		// command map 
-		// reply map 
-
+		
 		// Exceptions 
 		class SocketFailException : public std::exception
 		{
