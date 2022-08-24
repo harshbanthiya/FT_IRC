@@ -1,29 +1,28 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   Command.cpp                                        :+:      :+:    :+:   */
+/*   Command_Handler.cpp                                :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: hbanthiy <hbanthiy@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/08/17 13:37:38 by hbanthiy          #+#    #+#             */
-/*   Updated: 2022/08/23 19:52:47 by hbanthiy         ###   ########.fr       */
+/*   Updated: 2022/08/24 13:29:33 by hbanthiy         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "Command.hpp"
+#include "Command_Handler.hpp"
 #include "Server.hpp"
 
-
-
 // This function needs love 
-irc::CommandHandler::CommandHandler(Server &_server) : serv(_server)
+CommandHandler::CommandHandler(Server &_server): serv(_server)
 {
-	this->handlers["PASS"] = &CommandHandler::handle_pass;
-	this->handlers["NICK"] = &CommandHandler::handle_nick;
-	this->handlers["PING"] = &CommandHandler::handle_ping;
+	//this->handlers["PASS"] = &CommandHandler::handle_pass;
+	//this->handlers["NICK"] = &CommandHandler::handle_nick;
+	//this->handlers["PING"] = &CommandHandler::handle_ping;
+	this->handlers["USER"] = &CommandHandler::handle_user;
 }
 
-void 	irc::CommandHandler::parse_cmd(std::string cmd_line)
+void 	CommandHandler::parse_cmd(std::string cmd_line)
 {
 	if (cmd_line.empty())
 		return ;
@@ -33,7 +32,7 @@ void 	irc::CommandHandler::parse_cmd(std::string cmd_line)
 	parameters.clear();
 	while (!cmd_line.empty())
 	{
-		if (cmd_line[0] == ":")
+		if (cmd_line[0] == ':')
 		{
 			cmd_line.erase(0, 1);
 			if (cmd_line.empty())
@@ -53,7 +52,7 @@ void 	irc::CommandHandler::parse_cmd(std::string cmd_line)
 	}
 }
 
-void irc::CommandHandler::handle(std::string cmd_line, Client &owner)
+void CommandHandler::handle(std::string cmd_line, Client &owner)
 {
 	parse_cmd(cmd_line);
 	if (command.empty())
@@ -68,20 +67,7 @@ void irc::CommandHandler::handle(std::string cmd_line, Client &owner)
 		(*this.*(this->handlers[this->command]))(owner);
 } 
 
-/*
-void irc::Command::reply(Client &client, unsigned short code, std::string arg1, std::string arg2, std::string arg3, std::string arg4, std::string arg5, std::string arg6, std::string arg7)
-{
-	std::stringstream sscode;
-	sscode << code;
-	std::string scode = sscode.str();
-	while (scode.length() < 3)
-		scode = "00" + scode;
-
-	client.sendTo(client, scode + " " + getReplies(code, arg1, arg2, arg3, arg4, arg5, arg6, arg7));
-}
-void irc::Command::reply(unsigned short code, std::string arg1, std::string arg2, std::string arg3, std::string arg4, std::string arg5, std::string arg6, std::string arg7) { reply(*client, code, arg1, arg2, arg3, arg4, arg5, arg6, arg7); }
-*/
-void 	irc::CommandHandler::handle_user(Client &owner)
+void 	CommandHandler::handle_user(Client &owner)
 {
 	if (parameters.size() < 4)
 		return get_replies(461, owner, command); //ERR_NEEDMOREPARAMS
@@ -95,10 +81,10 @@ void 	irc::CommandHandler::handle_user(Client &owner)
 	owner.set_username(username);
 	owner.set_realname(realname);
 	//owner.set_registered(true);
-	if (!owner.get_nickname().empty())
-		print_welcome(owner);
+	//if (!owner.get_nickname().empty())
+		//print_welcome(owner);
 }
-
+/*
 void PASS(irc::Command *command)
 {
 	irc::Server &server = command->getServer();
@@ -125,4 +111,35 @@ void PING(class irc::Command *command)
 	if (command->getParameters().size() == 0)
 		return command->reply(409);
 	command->getClient().sendTo(command->getClient(), "PONG :" + command->getParameters()[0]);
+}
+*/
+
+
+void 	CommandHandler::get_replies(int code, Client const &owner, std::string extra) const
+{
+	std::string msg = ":" + std::string("MyIRC") + " ";
+	if (code < 10)
+	{
+		msg += "00";
+		msg += code + '0';
+	}
+	else 
+		msg += std::to_string(code);
+	
+	msg += " " + owner.get_nickname() + " ";
+
+	switch (code)
+	{
+		case RPL_WELCOME:
+		 	msg += ":Welcome to the Internet Relay Network " ;
+			msg += owner.get_nickname() + "!" + owner.get_username() + "@" + owner.get_hostname();
+		case RPL_YOURHOST: 
+			msg += ":Your host is " + std::string("MyIRC") + ", running version IRC1.0";
+			break;
+		case RPL_CREATED: 
+			msg += ":This server was created " + extra;
+			break;
+    }
+	msg += END_DELIM;
+	serv.send_msg(msg, owner);
 }

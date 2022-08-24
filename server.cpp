@@ -1,23 +1,24 @@
 #include "Server.hpp"
-#include "Utils.hpp"
+
+
 #define MAX_CLIENTS 20
 #define MAX_BUFF_SIZE 4096
 #define END_DELIM "\r\n"
 
-irc::Server::Server(std::string _port, std::string passwd) : port(_port), last_ping(std::time(0)), passwrd(passwd)
+Server::Server(std::string _port, std::string passwd) : port(_port), passwrd(passwd), _handler(*this)
 {
 	std::time_t result = std::time(nullptr);
 	createdTime = std::asctime(std::localtime(&result));
 }
 
-irc::Server::~Server()
+Server::~Server()
 {
 	close(sock_fd);
 	for(u_int i = 0; i < list_of_all_clients.size(); i++)
 		disconnect_client(i);
 }
 
-void 	irc::Server::acceptClient()
+void 	Server::acceptClient()
 {
 
 	struct sockaddr_storage clientaddr;
@@ -31,38 +32,17 @@ void 	irc::Server::acceptClient()
 	char remoteIP[INET6_ADDRSTRLEN];
 	struct sockaddr *casted_addr = (struct sockaddr *)&clientaddr;
 	if (casted_addr->sa_family == AF_INET)
-	{
-		if (DEBUG)
-			std::cout << "new user" << inet_ntop(AF_INET, &(((struct sockaddr_in *)casted_addr)->sin_addr), remoteIP, INET_ADDRSTRLEN) << ":" << "fd " << sock_fd << '\n';
+		
 		inet_ntop(AF_INET, &(((struct sockaddr_in *)casted_addr)->sin_addr), remoteIP, INET_ADDRSTRLEN);
-	}
 	else 
-	{
-		if (DEBUG)
-			std::cout << "new user" << inet_ntop(AF_INET6, &(((struct sockaddr_in6 *)casted_addr)->sin6_addr), remoteIP, INET6_ADDRSTRLEN) << ":" << "fd" << sock_fd << '\n';
 		inet_ntop(AF_INET6, &(((struct sockaddr_in6 *)casted_addr)->sin6_addr), remoteIP, INET6_ADDRSTRLEN);
-	}
 	list_of_all_clients.push_back(new Client(newfd, remoteIP));
  }
 
-/*
-void irc::Server::sendPing()
-{
-	time_t 	current =std::time(0);
-	//int timeout = 3000;
 
-	for (std::vector<irc::Client*>::iterator it = list_of_all_clients.begin(); it != list_of_all_clients.end(); ++it)
-		if (current - (*it).second->getLastPing() >= 300)
-		{
-			(*it).second->set_status(DELETE);
-		}
-		else if ((*it).second->get_status() == ONLINE)
-			(*it).second->write("PING" + (*it).second->get_nickname());
-}
-*/
 
 // Init and Execute 
-void 	irc::Server::init()
+void 	Server::init()
 {
 	int 	yes = 1;
 	int 	ret;
@@ -90,7 +70,7 @@ void 	irc::Server::init()
 	freeaddrinfo(ai);
 }
 
-void irc::Server::execute()
+void Server::execute()
 {
 	if ((listen(sock_fd, 10)) < 0)
 		throw Server::ListenFailException();
@@ -123,8 +103,8 @@ void irc::Server::execute()
 					else 
 					{
 						Client &curr = *list_of_all_clients[i - 1];
-						curr.buffer += buf;
-						if (curr.buffer.find(END_DELIM) != std::string::npos)
+						curr.buffer() += buf;
+						if (curr.buffer().find(END_DELIM) != std::string::npos)
 							exec_command(curr);
 					}
 				}
@@ -133,37 +113,41 @@ void irc::Server::execute()
 	}
 }
 
-std::vector<irc::Client *> irc::Server::get_all_clients()
+std::vector<Client *> const &Server::get_all_clients()
 {
 	return (this->list_of_all_clients);
 }
-irc::Client&			  irc::Server::get_client(std::string nickname)
+Client const		&Server::get_client(std::string nickname) const
 {
 	size_t 	i = 0;
 	for (; i < list_of_all_clients.size(); i++)
 	{
-		if (list_of_all_clients[i] == nickname)
+		if (*list_of_all_clients[i] == nickname)
 			return (*list_of_all_clients[i]);
 	}
 	return (*list_of_all_clients[i]);
 }
-std::string irc::Server::getPasswrd() {
+std::string Server::getPasswrd() {
 	return passwrd;
 }
 
-std::string irc::Server::getcreatedTime() { return createdTime; }
+std::string Server::getcreatedTime() { return createdTime; }
 
-void 		irc::Server::disconnect_client(std::string nick)
+void 		Server::disconnect_client(std::string nick)
 {
 	for (u_int i = 0; i < list_of_all_clients.size(); i++)
 	{
-		if (list_of_all_clients[i] == nick)
+		if (*this->list_of_all_clients[i] == nick)
 			return (disconnect_client(i + 1));
 	}
 }
 
+CommandHandler Server::getHandler() const
+{
+	return (_handler);
+}
 
-void 		irc::Server::disconnect_client(int index)
+void 		Server::disconnect_client(int index)
 {
 	close(pfds[index].fd);
 	pfds.erase(pfds.begin() + index);
@@ -171,68 +155,84 @@ void 		irc::Server::disconnect_client(int index)
 	list_of_all_clients.erase(list_of_all_clients.begin() + index - 1);
 }
 
-void irc::Server::add_fd(int new_fd)
+void Server::add_fd(int new_fd)
 {
 	struct pollfd tmp;
 
 	fcntl(new_fd, F_SETFL, O_NONBLOCK);
 	tmp.fd = new_fd;
-	tmp.events - POLLIN;
+	tmp.events = POLLIN;
 	pfds.push_back(tmp);
 }
 
-void irc::Server::exec_command(Client &exec)
+void Server::exec_command(Client &exec)
 {
-	std::string &buffer = exec.buffer;
+	std::string &buffer = exec.buffer();
 	int pos = buffer.find(END_DELIM);
 	do
 	{
-		handler.handle(buffer.substr(0, pos), exec);
+		_handler.handle(buffer.substr(0, pos), exec);
 		buffer.erase(0, pos + 2);
 		pos = buffer.find(END_DELIM);
-	}while (pos != -1)
-	
-
+	}while (pos != -1);
 }
 
-bool irc::Server::user_exists(std::string name)
+bool Server::user_exists(std::string name)
 {
 	size_t 	i = 0;
 	for (; i < list_of_all_clients.size(); i++)
 	{
-		if (list_of_all_clients[i] == name)
+		if (*list_of_all_clients[i] == name)
 			return true;
 	}
 	return false;
 }
 
-int 	irc::Server::send_msg(std::string &msg, Client &target)
+void 	Server::send_msg(std::string &msg, Client const &target) const
 {
 	if (send(target.getSocket(), msg.c_str(), msg.length(), 0) < 0)
 	 	perror("send()");
 }
+/*
+int 	Server::send_msg(std::string &msg, std::string target) const
+{
+	u_int 	i = 0;
 
+	while (i < list_of_all_clients.size())
+	{
+		if (*list_of_all_clients[i] == target)
+		{
+				send_msg(msg, *list_of_all_clients[i]);
+				break ;
+		}
+		i++;
+	}
+	if (i == list_of_all_clients.size())
+		return (401);
+	return (0);
+}
+*/
 // Exceptions 
-const char*	irc::Server::SocketFailException::what() const throw()
+const char*	Server::SocketFailException::what() const throw()
 {
 	return "Error:  Socket Failed\n";
 }
 
-const char*	irc::Server::SetsockoptFailException::what() const throw()
+const char*	Server::SetsockoptFailException::what() const throw()
 {
 	return "Error: Setsockopt() Failed\n";
 }
 
-const char*	irc::Server::BindFailException::what() const throw()
+const char*	Server::BindFailException::what() const throw()
 {
 	return "Error: Bind() Failed\n";
 }
 
-const char*	irc::Server::ListenFailException::what() const throw()
+const char*	Server::ListenFailException::what() const throw()
 {
 	return "Error: listen() Failed\n";
 }
-const char*	irc::Server::FcntlFailException::what() const throw()
+const char*	Server::FcntlFailException::what() const throw()
 {
 	return "Error: Fcntl() Failed\n";
 }

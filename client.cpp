@@ -6,30 +6,26 @@
 /*   By: hbanthiy <hbanthiy@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/08/15 19:08:30 by hbanthiy          #+#    #+#             */
-/*   Updated: 2022/08/23 19:08:28 by hbanthiy         ###   ########.fr       */
+/*   Updated: 2022/08/24 13:27:43 by hbanthiy         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "Client.hpp"
-#include <fcntl.h>
-#include "Utils.hpp"
-
-#define MAX_SIZE 4096
-#define END_DELIM "\r\n"
 
 
-irc::Client::Client(int _fd, std::string host) : socket_fd(_fd), hostname(host), pass_set(false), registered(false), 
+
+Client::Client(int _fd, std::string host) : socket_fd(_fd), hostname(host), pass_set(false), registered(false)
 {}
 
-irc::Client::~Client(){}
+Client::~Client(){}
 
-std::string& irc::Client::buffer() {return (this->buffer);}
+std::string& Client::buffer() {return (this->_buffer);}
 
-bool 		irc::Client::is_passed() const {return (this->pass_set);}
-bool 		irc::Client::is_registered() const {return(this->registered);}
+bool 		Client::is_passed() const {return (this->pass_set);}
+bool 		Client::is_registered() const {return(this->registered);}
 
-void 		irc::Client::set_passed() {this->pass_set = true;}
-void 		irc::Client::set_registered(){this->registered = true;}
+void 		Client::set_passed() {this->pass_set = true;}
+void 		Client::set_registered(){this->registered = true;}
 
 std::string	toUpper(std::string const & str)
 {
@@ -39,27 +35,27 @@ std::string	toUpper(std::string const & str)
 	return (result);
 }
 
-bool				irc::Client::operator==(std::string const & nick) const
+bool				Client::operator==(std::string const & nick) const
 { return (toUpper(this->nickname) == toUpper(nick)); }
 
-bool				irc::Client::operator==(Client const & other) const
+bool				Client::operator==(Client const & other) const
 { return (*this == other.nickname); }
 
 // Getters
-std::string	 		irc::Client::get_nickname(void) const {return nickname;}
-std::string	 		irc::Client::get_username(void) const {return username;}
-std::string	 		irc::Client::get_realname(void) const {return realname;}
-std::string	 		irc::Client::get_hostname(void) const {return hostname;}
+std::string	 		Client::get_nickname(void) const {return nickname;}
+std::string	 		Client::get_username(void) const {return username;}
+std::string	 		Client::get_realname(void) const {return realname;}
+std::string	 		Client::get_hostname(void) const {return hostname;}
+int					Client::getSocket(void) const{ return (this->socket_fd); };
 
 
 
-
-time_t 				irc::Client::getLastPing() { return last_ping; }
+time_t 				Client::getLastPing() { return last_ping; }
 
 
 // Setters 
-void 				irc::Client::set_nickname(std::string nick_n){nickname = nick_n;}
-void 				irc::Client::set_username(std::string user_n){username = user_n;}
-void 				irc::Client::set_realname(std::string real_n){realname = real_n;}
-void 				irc::Client::set_hostname(std::string host_n){hostname = host_n;}
+void 				Client::set_nickname(std::string nick_n){nickname = nick_n;}
+void 				Client::set_username(std::string user_n){username = user_n;}
+void 				Client::set_realname(std::string real_n){realname = real_n;}
+void 				Client::set_hostname(std::string host_n){hostname = host_n;}
 

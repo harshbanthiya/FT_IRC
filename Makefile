@@ -6,15 +6,15 @@
 #    By: hbanthiy <hbanthiy@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2022/08/16 12:14:47 by hbanthiy          #+#    #+#              #
-#    Updated: 2022/08/19 14:39:46 by hbanthiy         ###   ########.fr        #
+#    Updated: 2022/08/24 13:21:39 by hbanthiy         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
 CC := c++
-CPPFLAGS := -std=c++98 -g
+CPPFLAGS := -Wall -Wextra -Werror -std=c++98
 ARGUMENTS = 6667 password
 NAME :=	irc
-SRCS :=	client.cpp Command.cpp main_test.cpp server.cpp replies.cpp command_user.cpp Utils.cpp
+SRCS :=	client.cpp Command_Handler.cpp main.cpp server.cpp
 OBJS_DIR := object_files
 OBJS := $(addprefix $(OBJS_DIR)/,$(SRCS:.cpp=.o))
 
