@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Command.hpp                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: hbanthiy <hbanthiy@student.42.fr>          +#+  +:+       +#+        */
+/*   By: olabrecq <olabrecq@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/08/16 23:58:30 by sheeed            #+#    #+#             */
-/*   Updated: 2022/08/17 18:08:04 by hbanthiy         ###   ########.fr       */
+/*   Updated: 2022/08/23 14:38:03 by olabrecq         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,6 +15,7 @@
 
 # include <iostream>
 # include <string>
+# include <ctime>
 # define MAX_PARAMS 15
 # include "Server.hpp"
 # include "Client.hpp"

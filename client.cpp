@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   client.cpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: hbanthiy <hbanthiy@student.42.fr>          +#+  +:+       +#+        */
+/*   By: olabrecq <olabrecq@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/08/15 19:08:30 by hbanthiy          #+#    #+#             */
-/*   Updated: 2022/08/19 15:30:47 by hbanthiy         ###   ########.fr       */
+/*   Updated: 2022/08/23 14:46:34 by olabrecq         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,6 +21,9 @@ void NICK(irc::Command *command);
 void USER(irc::Command *command);
 void PASS(irc::Command *command);
 void PING(irc::Command *command);
+void ADMIN(irc::Command *comand);
+void TIME(irc::Command *command);
+void DIE(irc::Command *command);
 void PRINT_WELCOME(irc::Command *command);
 
 void post_registration(irc::Command *command)
@@ -115,6 +118,9 @@ irc::Client::Client(int _fd, sockaddr_in addr_) : command_function(),
 	command_function["USER"] = USER;
 	command_function["PING"] = PING;
 	command_function["PRINT_WELCOME"] = PRINT_WELCOME;
+	command_function["ADMIN"] = ADMIN;
+	command_function["TIME"] = TIME;
+	command_function["DIE"] = DIE;
 
 	client_ip_addr = "";
 	nickname_set = false;

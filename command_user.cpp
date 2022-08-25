@@ -114,3 +114,27 @@ void PRINT_WELCOME(irc::Command *command)
 	}
 	infile.close();
 }
+
+void ADMIN(irc::Command *command) 
+{
+    if (command->getParameters().size() == 0) 
+	{
+        command->reply(256); //     RPL_ADMINME
+        command->reply(257); //     RPL_ADMINLOC1
+        command->reply(258); //     RPL_ADMINLOC2
+        command->reply(259);//      RPL_ADMINEMAIL
+        return;
+    }
+}
+
+void TIME(irc::Command *command)
+{
+	if (command->getParameters().size() == 0)
+		command->reply(391);
+}
+
+void DIE(irc::Command *command)
+{
+	if (command->getParameters().size() == 0)
+		command->reply(391);
+}

@@ -116,7 +116,7 @@ std::string _ignored[] = {
 };
 
 std::string _available[] = {
-		"ADMIN", //return information about server admins of the current server
+		"ADMIN", //DONE //return information about server admins of the current server
 		"AWAY", //set current status to away(afk). without a parameter, the status is removed or inactive
 		"DIE", //shutdown server
 		"INVITE", //invite somebody to channel. channel doesnt need to exist, but if it does, only its members should be able to invite
@@ -130,14 +130,14 @@ std::string _available[] = {
 		"NICK", //set account nickname on server
 		"NOTICE",
 		"OPER", //allows to login as Operator (channel ?? server ??)
-		"PART",
+		"PART", // DONE
 		"PASS", //password login
 		"PING", //ping server for timestamp
 		"PRIVMSG", //send private message to user
 		"QUIT", //end connection ?
-		"TIME", //display time
+		"TIME", //display time //DONE
 		"TOPIC", //display channel topic
-		"USER", //userrname login
+		"USER", //userrname login //DONE
 		"VERSION", //display server version
 		"WHO" //display list of users on a channel. @ users are channel ops, * users are irc ops
 };
