@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Server.hpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: hbanthiy <hbanthiy@student.42.fr>          +#+  +:+       +#+        */
+/*   By: sheeed <sheeed@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/08/15 19:55:13 by hbanthiy          #+#    #+#             */
-/*   Updated: 2022/08/24 14:06:54 by hbanthiy         ###   ########.fr       */
+/*   Updated: 2022/08/25 19:02:59 by sheeed           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -59,7 +59,7 @@ class Server
 			CommandHandler				getHandler() const;
 
 			void						send_msg(std::string& msg, Client const &target) const;
-			//int							send_msg(std::string& msg, std::string target) const;
+			int							send_msg(std::string& msg, std::string target) const;
 			
 
 		// Setters 

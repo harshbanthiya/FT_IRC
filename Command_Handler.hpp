@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Command_Handler.hpp                                :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: hbanthiy <hbanthiy@student.42.fr>          +#+  +:+       +#+        */
+/*   By: sheeed <sheeed@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/08/16 23:58:30 by sheeed            #+#    #+#             */
-/*   Updated: 2022/08/24 14:28:40 by hbanthiy         ###   ########.fr       */
+/*   Updated: 2022/08/25 18:47:54 by sheeed           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,7 +34,7 @@
 
 		private:
 			std::string    			command;
-			std::vector<std::string> parameters;
+			std::list<std::string> 	parameters;
 			Server 					 &serv;
 			std::map<std::string, void(CommandHandler::*)(Client&)> handlers;	
 
@@ -43,6 +43,7 @@
 			void 	handle_user(Client &owner);
 			void 	handle_nick(Client &owner);
 			void 	handle_ping(Client &owner);
+			void 	handle_privmsg(Client &owner);
 			void 	print_welcome(Client &owner);
 			void 	welcomescreen(Client &owner);
 	};
