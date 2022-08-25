@@ -1,170 +1,240 @@
 #include "Server.hpp"
-#include "Utils.hpp"
+
+
 #define MAX_CLIENTS 20
 #define MAX_BUFF_SIZE 4096
 #define END_DELIM "\r\n"
 
-irc::Server::Server(int _port, std::string passwd) : port(_port), last_ping(std::time(0)),  upTime(currentTime()), passwrd(passwd)
-{}
-
-irc::Server::Server( const Server & src )
+Server::Server(std::string _port, std::string passwd) : port(_port), passwrd(passwd), _handler(*this)
 {
-	(void)src;
+	std::time_t result = std::time(nullptr);
+	createdTime = std::asctime(std::localtime(&result));
 }
 
-
-irc::Server::~Server()
+Server::~Server()
 {
-	std::vector<Client *> clients = get_all_clients();
-	for (std::vector<Client *>::iterator it = clients.begin(); it != clients.end(); ++it)
-		disconnect_client(*(*it));
+	close(sock_fd);
+	for(u_int i = 0; i < list_of_all_clients.size(); i++)
+		disconnect_client(i);
 }
 
-void 	irc::Server::acceptClient()
+void 	Server::acceptClient()
 {
-	if (list_of_all_clients.size() == MAX_CLIENTS)
-	{
-		close(fd);
-		return ;
-	}
-	struct 	sockaddr_in 	address;
-	socklen_t 	csin_len 	= sizeof(address);
-	int 	fd = accept(this->fd, (struct sockaddr *)&address, &csin_len);
-	if (fd == -1)
-		return ;
-	list_of_all_clients[fd] = new Client(fd, address);
-	pfds.push_back(pollfd());
-	pfds.back().fd = fd;
-	pfds.back().events = POLLIN;
 
-	if (DEBUG)
-		std::cout << "new user " << inet_ntoa(address.sin_addr) << ":" << ntohs(address.sin_port) << " (" << fd << ")" << std::endl; 
+	struct sockaddr_storage clientaddr;
+	socklen_t addrlen = sizeof(clientaddr);
+	int 	newfd;
+
+	newfd = accept(this->sock_fd, (struct sockaddr *)&clientaddr, &addrlen);
+	if (newfd < 0)
+		return(perror("accept()"));
+	add_fd(newfd);
+	char remoteIP[INET6_ADDRSTRLEN];
+	struct sockaddr *casted_addr = (struct sockaddr *)&clientaddr;
+	if (casted_addr->sa_family == AF_INET)
+		
+		inet_ntop(AF_INET, &(((struct sockaddr_in *)casted_addr)->sin_addr), remoteIP, INET_ADDRSTRLEN);
+	else 
+		inet_ntop(AF_INET6, &(((struct sockaddr_in6 *)casted_addr)->sin6_addr), remoteIP, INET6_ADDRSTRLEN);
+	list_of_all_clients.push_back(new Client(newfd, remoteIP));
  }
 
-void irc::Server::sendPing()
-{
-	time_t 	current =std::time(0);
-	//int timeout = 3000;
 
-	for (std::map<int, irc::Client*>::iterator it = list_of_all_clients.begin(); it != list_of_all_clients.end(); ++it)
-		if (current - (*it).second->getLastPing() >= 300)
-		{
-			(*it).second->set_status(DELETE);
-		}
-		else if ((*it).second->get_status() == ONLINE)
-			(*it).second->write("PING" + (*it).second->get_nickname());
-}
 
 // Init and Execute 
-void 	irc::Server::init()
+void 	Server::init()
 {
 	int 	yes = 1;
+	int 	ret;
 
-	if ((fd = socket(AF_INET, SOCK_STREAM, 0)) == -1)
+	struct addrinfo hints, *ai;
+
+	memset(&hints, 0, sizeof(hints));
+	hints.ai_family = AF_UNSPEC;
+	hints.ai_socktype = SOCK_STREAM;
+	hints.ai_flags = AI_PASSIVE;
+
+	if ((ret = getaddrinfo(nullptr, port.c_str(), &hints, &ai)))
+		throw std::runtime_error(gai_strerror(ret));
+	if ((sock_fd = socket(ai->ai_family, ai->ai_socktype, ai->ai_protocol)) < 0)
 		throw Server::SocketFailException();
-	if (setsockopt(fd, SOL_SOCKET, SO_REUSEADDR, &yes, sizeof(yes)) == -1)
+	if (setsockopt(sock_fd, SOL_SOCKET, SO_REUSEADDR, &yes, sizeof(yes)) == -1)
 		throw Server::SetsockoptFailException();
-	if (fcntl(fd, F_SETFL, O_NONBLOCK) < 0)
-		throw Server::FcntlFailException();
-
-	addr_info.sin_family = AF_INET;
-	addr_info.sin_addr.s_addr = INADDR_ANY;
-	addr_info.sin_port = htons(port);
 	
-	if ((bind(fd, (struct sockaddr*)&this->addr_info, sizeof(this->addr_info)) == -1))
+	if ((bind(sock_fd, ai->ai_addr, ai->ai_addrlen) < 0))
+	{
+		close(sock_fd);
+		freeaddrinfo(ai);
 		throw Server::BindFailException();
-	if (listen(fd, addr_info.sin_port) == -1)
+	}
+	freeaddrinfo(ai);
+}
+
+void Server::execute()
+{
+	if ((listen(sock_fd, 10)) < 0)
 		throw Server::ListenFailException();
 
-	pfds.push_back(pollfd());
-	pfds.back().fd = fd;
-	pfds.back().events = POLLIN;
-}
-
-void irc::Server::execute()
-{
-	std::vector<Client *> clients = get_all_clients();
-	if (poll(&pfds[0], pfds.size(), (60 * 1000) / 10) == -1)
-		return ;
-	if (std::time(0) - last_ping >= 60)
-	{
-		sendPing();
-		last_ping = std::time(0);
-	}
-	else 
-	{
-		if (pfds[0].revents == POLLIN)
-			acceptClient();
-		else 
-			for (std::vector<pollfd>::iterator it = pfds.begin(); it != pfds.end(); ++it)
-				if ((*it).revents == POLLIN)
-					this->list_of_all_clients[(*it).fd]->receive_from(this);
-	}
-	for (std::vector<irc::Client *>::iterator it = clients.begin(); it != clients.end(); ++it)
-		if ((*it)->get_status() == DELETE)
-			disconnect_client(*(*it));
-	clients = get_all_clients();
-	for (std::vector<irc::Client *>::iterator it = clients.begin(); it != clients.end(); ++it)
-		(*it)->push();
+	add_fd(sock_fd);
 	
-}
-
-std::vector<irc::Client *> irc::Server::get_all_clients()
-{
-	std::vector<irc::Client *> clients = std::vector<irc::Client *>();
-
-	for (std::map<int, irc::Client *>::iterator it = this->list_of_all_clients.begin(); it != this->list_of_all_clients.end(); ++it)
-			clients.push_back(it->second);
-	return clients;
-}
-irc::Client *			  irc::Server::get_client(std::string &nickname)
-{
-	for (std::map<int, irc::Client *>::iterator it = this->list_of_all_clients.begin(); it != this->list_of_all_clients.end(); ++it)
+	while (1)
 	{
-		if ((*it).second->get_nickname() == nickname)
-			return ((*it).second);
+		if (poll(pfds.data(), pfds.size(), -1) < 0)
+			throw std::runtime_error(strerror(errno));
+		for (u_int i = 0; i < pfds.size(); i++)
+		{
+			if (pfds[i].revents & POLLIN)
+			{
+				if (pfds[i].fd == sock_fd)
+					acceptClient();
+				else 
+				{
+					char buf[512];
+					memset(buf, 0, sizeof(buf));
+					int nbytes = recv(pfds[i].fd, buf, sizeof(buf), 0);
+					if (nbytes <= 0)
+					{
+						if (nbytes)
+							perror("recv()");
+						else 
+							disconnect_client(i);
+
+					}
+					else 
+					{
+						Client &curr = *list_of_all_clients[i - 1];
+						curr.buffer() += buf;
+						if (curr.buffer().find(END_DELIM) != std::string::npos)
+							exec_command(curr);
+					}
+				}
+			}
+		}
 	}
-	return (NULL);
 }
-std::string irc::Server::getPasswrd() {
+
+std::vector<Client *> const &Server::get_all_clients()
+{
+	return (this->list_of_all_clients);
+}
+Client const		&Server::get_client(std::string nickname) const
+{
+	size_t 	i = 0;
+	for (; i < list_of_all_clients.size(); i++)
+	{
+		if (*list_of_all_clients[i] == nickname)
+			return (*list_of_all_clients[i]);
+	}
+	return (*list_of_all_clients[i]);
+}
+std::string Server::getPasswrd() {
 	return passwrd;
 }
 
-std::string irc::Server::getUpTime() { return upTime; }
-void 		irc::Server::disconnect_client(irc::Client &client)
+std::string Server::getcreatedTime() { return createdTime; }
+
+void 		Server::disconnect_client(std::string nick)
 {
-	// Make logic here to go through each channel the user is a part of and remove it 
-	for(std::vector<pollfd>::iterator it_p = pfds.begin(); it_p != pfds.end(); ++it_p)
-		if((*it_p).fd == client.get_fd())
-		{
-			pfds.erase(it_p);
-			break ;
-		}
-	list_of_all_clients.erase(client.get_fd());
-	delete &client;
+	for (u_int i = 0; i < list_of_all_clients.size(); i++)
+	{
+		if (*this->list_of_all_clients[i] == nick)
+			return (disconnect_client(i + 1));
+	}
 }
 
+CommandHandler Server::getHandler() const
+{
+	return (_handler);
+}
+
+void 		Server::disconnect_client(int index)
+{
+	close(pfds[index].fd);
+	pfds.erase(pfds.begin() + index);
+	delete(list_of_all_clients[index - 1]);
+	list_of_all_clients.erase(list_of_all_clients.begin() + index - 1);
+}
+
+void Server::add_fd(int new_fd)
+{
+	struct pollfd tmp;
+
+	fcntl(new_fd, F_SETFL, O_NONBLOCK);
+	tmp.fd = new_fd;
+	tmp.events = POLLIN;
+	pfds.push_back(tmp);
+}
+
+void Server::exec_command(Client &exec)
+{
+	std::string &buffer = exec.buffer();
+	int pos = buffer.find(END_DELIM);
+	do
+	{
+		_handler.handle(buffer.substr(0, pos), exec);
+		buffer.erase(0, pos + 2);
+		pos = buffer.find(END_DELIM);
+	}while (pos != -1);
+}
+
+bool Server::user_exists(std::string name)
+{
+	size_t 	i = 0;
+	for (; i < list_of_all_clients.size(); i++)
+	{
+		if (*list_of_all_clients[i] == name)
+			return true;
+	}
+	return false;
+}
+
+bool Server::checkPass(std::string &pass){return (pass == this->passwrd);}
+
+void 	Server::send_msg(std::string &msg, Client const &target) const
+{
+	if (send(target.getSocket(), msg.c_str(), msg.length(), 0) < 0)
+	 	perror("send()");
+}
+/*
+int 	Server::send_msg(std::string &msg, std::string target) const
+{
+	u_int 	i = 0;
+
+	while (i < list_of_all_clients.size())
+	{
+		if (*list_of_all_clients[i] == target)
+		{
+				send_msg(msg, *list_of_all_clients[i]);
+				break ;
+		}
+		i++;
+	}
+	if (i == list_of_all_clients.size())
+		return (401);
+	return (0);
+}
+*/
 // Exceptions 
-const char*	irc::Server::SocketFailException::what() const throw()
+const char*	Server::SocketFailException::what() const throw()
 {
 	return "Error:  Socket Failed\n";
 }
 
-const char*	irc::Server::SetsockoptFailException::what() const throw()
+const char*	Server::SetsockoptFailException::what() const throw()
 {
 	return "Error: Setsockopt() Failed\n";
 }
 
-const char*	irc::Server::BindFailException::what() const throw()
+const char*	Server::BindFailException::what() const throw()
 {
 	return "Error: Bind() Failed\n";
 }
 
-const char*	irc::Server::ListenFailException::what() const throw()
+const char*	Server::ListenFailException::what() const throw()
 {
 	return "Error: listen() Failed\n";
 }
-const char*	irc::Server::FcntlFailException::what() const throw()
+const char*	Server::FcntlFailException::what() const throw()
 {
 	return "Error: Fcntl() Failed\n";
 }
