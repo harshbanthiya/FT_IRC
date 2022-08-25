@@ -6,7 +6,7 @@
 /*   By: hbanthiy <hbanthiy@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/08/17 13:37:38 by hbanthiy          #+#    #+#             */
-/*   Updated: 2022/08/24 14:31:52 by hbanthiy         ###   ########.fr       */
+/*   Updated: 2022/08/24 14:41:28 by hbanthiy         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,6 +21,21 @@ CommandHandler::CommandHandler(Server &_server): serv(_server)
 	this->handlers["NICK"] = &CommandHandler::handle_nick;
 	this->handlers["PING"] = &CommandHandler::handle_ping;
 	this->handlers["USER"] = &CommandHandler::handle_user;
+	/*
+		LUSERS 
+		JOIN
+		PART
+		PRIVMSG
+		AWAY
+		QUIT
+		WHO
+		KICK
+		MODE
+		NAMES
+		INVITE
+		LIST
+		TOPIC
+	*/
 }
 
 void 	CommandHandler::parse_cmd(std::string cmd_line)
