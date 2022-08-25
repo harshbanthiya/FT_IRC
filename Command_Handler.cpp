@@ -21,10 +21,12 @@ CommandHandler::CommandHandler(Server &_server): serv(_server)
 	this->handlers["NICK"] = &CommandHandler::handle_nick;
 	this->handlers["PING"] = &CommandHandler::handle_ping;
 	this->handlers["USER"] = &CommandHandler::handle_user;
+	this->handlers["PRIVMSG"] = &CommandHandler::handle_privmsg;
 }
 
 void 	CommandHandler::parse_cmd(std::string cmd_line)
 {
+	std::cout << cmd_line << std::endl;
 	if (cmd_line.empty())
 		return ;
 	int pos = cmd_line.find(" ");
@@ -130,6 +132,30 @@ void	CommandHandler::handle_nick(Client &owner)
 	
 }
 
+void 	CommandHandler::handle_privmsg(Client &owner)
+{
+	//when a privmsg command is received, target should be checked.
+	if (!parameters.size())
+		return get_replies(404, owner, "dummy error for privmsg params");
+	parameters[1].insert(parameters[1].begin(), ':');
+	if (parameters[1].at(0) != ':') //so currently we remove this during parsing, but PRIVMSG sends an error code to the sender if its not present...
+	{
+		this->get_replies(411, owner, " "); //no message to send
+	}
+	std::string target = parameters[0]; //should be username or channel
+	if (target.at(0) == '#') //channel ?
+	{
+
+	}
+	else //user
+	{
+		std::cout << "hell yea user" << std::endl;
+		Client client = this->serv.get_client(target);
+		std::string message = ":" + owner.get_nickname() + "!" + owner.get_username() + "@127.0.0.1" + " " + this->command + " " + this->parameters[0] + " " + this->parameters[1];
+		std::cout << message << std::endl;
+		this->serv.send_msg(message, client);
+	}
+}
 
 void 	CommandHandler::get_replies(int code, Client const &owner, std::string extra) const
 {

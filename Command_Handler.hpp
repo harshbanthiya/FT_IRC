@@ -43,6 +43,7 @@
 			void 	handle_user(Client &owner);
 			void 	handle_nick(Client &owner);
 			void 	handle_ping(Client &owner);
+			void 	handle_privmsg(Client &owner);
 			void 	print_welcome(Client &owner);
 			void 	welcomescreen(Client &owner);
 	};
