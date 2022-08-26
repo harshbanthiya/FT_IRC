@@ -5,24 +5,49 @@
 /*                                                    +:+ +:+         +:+     */
 /*   By: olabrecq <olabrecq@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2022/08/26 10:23:18 by olabrecq          #+#    #+#             */
-/*   Updated: 2022/08/26 11:15:04 by olabrecq         ###   ########.fr       */
+/*   Created: 2022/08/26 08:47:31 by sheeed            #+#    #+#             */
+/*   Updated: 2022/08/26 13:28:39 by olabrecq         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#pragma once
+#ifndef CHANNEL_HPP
+# define CHANNEL_HPP
 
-#include "Server.hpp"
+#include <string>
+#include <stdexcept>
+#include <vector>
+#include <list>
+#include <set>
+#include <iostream>
+
+
+#include "Client.hpp"
+
+class Server;
 
 class Channel
 {
-	private:
-		std::string _ch_name;
-		std::vector<Client *> 		clients_in_channel;
-	public:
-		Channel(std::string channel_name);
-		~Channel( void );
+    public:
+    Channel();
+    Channel(std::string name, Server &serv);
+    Channel(std::string name, std::string key, Server &serv);
+    ~Channel();
 
-		std::string get_ch_name( void );
-		void set_ch_name( std::string new_ch_name );
+
+
+    private: 
+    std::string                             name;
+    std::string                             key;
+    std::string                             topic;
+    std::time_t                             topic_time;
+    std::time_t                             creation_time;
+    Server                                  *serv;
+    std::string                             modes;
+    std::vector<std::pair<char, Client*> >  clients;
 };
+
+
+
+
+
+#endif

@@ -6,7 +6,7 @@
 /*   By: olabrecq <olabrecq@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/08/15 19:55:13 by hbanthiy          #+#    #+#             */
-/*   Updated: 2022/08/26 12:48:45 by olabrecq         ###   ########.fr       */
+/*   Updated: 2022/08/26 13:29:12 by olabrecq         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -74,12 +74,13 @@ class Server
 		std::vector<struct pollfd> 	pfds;
 		std::string 				passwrd;
 		std::vector<Client *> 		list_of_all_clients;
-		std::map<std::string, Channel *> list_of_all_channel;
 		void 						acceptClient();
 		CommandHandler 				_handler; 
 		void 						add_fd(int new_fd);
 		void 						add_client();
 		void						exec_command(Client &executor);
+
+		std::map<std::string, Channel *> list_of_all_channel;
 		
 		
 		// Exceptions 

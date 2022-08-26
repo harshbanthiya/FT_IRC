@@ -6,7 +6,7 @@
 /*   By: olabrecq <olabrecq@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/08/17 13:37:38 by hbanthiy          #+#    #+#             */
-/*   Updated: 2022/08/26 10:11:33 by olabrecq         ###   ########.fr       */
+/*   Updated: 2022/08/26 13:45:23 by olabrecq         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,6 +24,7 @@ CommandHandler::CommandHandler(Server &_server): serv(_server)
 	this->handlers["ADMIN"] = &CommandHandler::handle_admin;
 	this->handlers["TIME"] = &CommandHandler::handle_time;
 	this->handlers["PRIVMSG"] = &CommandHandler::handle_privmsg;
+	this->handlers["JOIN"] = &CommandHandler::handle_join;
 	// this->handlers["DIE"] = &CommandHandler::handle_user;
 	/*
 		LUSERS 
@@ -284,3 +285,9 @@ void CommandHandler::handle_admin(Client &target)
 	get_replies(RPL_ADMINEMAIL,target, "E-Mail   - routing@");
 }
 
+void CommandHandler::handle_join(Client &target)
+{
+	if (!this->parameters.size())
+		get_replies(ERR_NEEDMOREPARAMS, target);
+	
+}
