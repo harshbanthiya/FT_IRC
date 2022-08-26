@@ -3,17 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Command_Handler.cpp                                :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-<<<<<<< HEAD
 /*   By: olabrecq <olabrecq@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/08/17 13:37:38 by hbanthiy          #+#    #+#             */
-/*   Updated: 2022/08/26 09:55:58 by olabrecq         ###   ########.fr       */
-=======
-/*   By: sheeed <sheeed@student.42.fr>              +#+  +:+       +#+        */
-/*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2022/08/17 13:37:38 by hbanthiy          #+#    #+#             */
-/*   Updated: 2022/08/25 19:00:40 by sheeed           ###   ########.fr       */
->>>>>>> 5d4d020272bc135f36315ad1f5b4101af84ef408
+/*   Updated: 2022/08/26 10:11:33 by olabrecq         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,13 +21,10 @@ CommandHandler::CommandHandler(Server &_server): serv(_server)
 	this->handlers["NICK"] = &CommandHandler::handle_nick;
 	this->handlers["PING"] = &CommandHandler::handle_ping;
 	this->handlers["USER"] = &CommandHandler::handle_user;
-<<<<<<< HEAD
 	this->handlers["ADMIN"] = &CommandHandler::handle_admin;
 	this->handlers["TIME"] = &CommandHandler::handle_time;
 	this->handlers["PRIVMSG"] = &CommandHandler::handle_privmsg;
 	// this->handlers["DIE"] = &CommandHandler::handle_user;
-=======
-	this->handlers["PRIVMSG"] = &CommandHandler::handle_privmsg;
 	/*
 		LUSERS 
 		JOIN
@@ -50,7 +40,6 @@ CommandHandler::CommandHandler(Server &_server): serv(_server)
 		LIST
 		TOPIC
 	*/
->>>>>>> 5d4d020272bc135f36315ad1f5b4101af84ef408
 }
 
 void 	CommandHandler::parse_cmd(std::string cmd_line)
