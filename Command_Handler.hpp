@@ -6,7 +6,7 @@
 /*   By: olabrecq <olabrecq@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/08/16 23:58:30 by sheeed            #+#    #+#             */
-/*   Updated: 2022/08/25 15:20:56 by olabrecq         ###   ########.fr       */
+/*   Updated: 2022/08/26 10:05:11 by olabrecq         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,7 +34,7 @@
 
 		private:
 			std::string    			command;
-			std::vector<std::string> parameters;
+			std::list<std::string> 	parameters;
 			Server 					 &serv;
 			std::map<std::string, void(CommandHandler::*)(Client&)> handlers;	
 
@@ -43,6 +43,7 @@
 			void 	handle_user(Client &owner);
 			void 	handle_nick(Client &owner);
 			void 	handle_ping(Client &owner);
+			void 	handle_privmsg(Client &owner);
 			void 	print_welcome(Client &owner);
 			void 	welcomescreen(Client &owner);
 			void 	handle_time(Client &owner);
