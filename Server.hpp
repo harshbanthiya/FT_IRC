@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Server.hpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: sheeed <sheeed@student.42.fr>              +#+  +:+       +#+        */
+/*   By: olabrecq <olabrecq@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/08/15 19:55:13 by hbanthiy          #+#    #+#             */
-/*   Updated: 2022/08/25 19:02:59 by sheeed           ###   ########.fr       */
+/*   Updated: 2022/08/26 12:48:45 by olabrecq         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,6 +31,7 @@
 #include <map>
 
 #include "Client.hpp"
+#include "Channel.hpp"
 #include "Command_Handler.hpp"
 #include "replies.h"
 #include <ctime>
@@ -73,6 +74,7 @@ class Server
 		std::vector<struct pollfd> 	pfds;
 		std::string 				passwrd;
 		std::vector<Client *> 		list_of_all_clients;
+		std::map<std::string, Channel *> list_of_all_channel;
 		void 						acceptClient();
 		CommandHandler 				_handler; 
 		void 						add_fd(int new_fd);

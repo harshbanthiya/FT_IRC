@@ -6,7 +6,7 @@
 /*   By: olabrecq <olabrecq@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/08/16 23:58:30 by sheeed            #+#    #+#             */
-/*   Updated: 2022/08/26 10:11:52 by olabrecq         ###   ########.fr       */
+/*   Updated: 2022/08/26 13:19:19 by olabrecq         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -48,6 +48,7 @@
 			void 	handle_time(Client &owner);
 			void 	handle_admin(Client &owner);
 			void 	handle_privmsg(Client &owner);
+			void 	handle_join(Client &owner);
 	};
 
 #endif
