@@ -6,7 +6,7 @@
 /*   By: olabrecq <olabrecq@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/08/17 13:37:38 by hbanthiy          #+#    #+#             */
-/*   Updated: 2022/08/25 13:34:11 by olabrecq         ###   ########.fr       */
+/*   Updated: 2022/08/26 09:55:58 by olabrecq         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,6 +23,7 @@ CommandHandler::CommandHandler(Server &_server): serv(_server)
 	this->handlers["USER"] = &CommandHandler::handle_user;
 	this->handlers["ADMIN"] = &CommandHandler::handle_admin;
 	this->handlers["TIME"] = &CommandHandler::handle_time;
+	this->handlers["PRIVMSG"] = &CommandHandler::handle_privmsg;
 	// this->handlers["DIE"] = &CommandHandler::handle_user;
 }
 
@@ -185,6 +186,9 @@ void 	CommandHandler::get_replies(int code, Client const &owner, std::string ext
 		case RPL_ADMINEMAIL:
 			msg += extra;
 			break;
+		case RPL_AWAY:
+			msg += extra;
+			break;
 			
     }
 	msg += END_DELIM;
@@ -221,9 +225,9 @@ void CommandHandler::handle_time(Client &target)
 
 void CommandHandler::handle_admin(Client &target)
 {
-	std::string msg = " :Administrative info";
-	get_replies(RPL_ADMINME, target, msg);
+	get_replies(RPL_ADMINME, target, " :Administrative info");
 	get_replies(RPL_ADMINLOC1, target, "Name     - The Routing Team");
 	get_replies(RPL_ADMINLOC2, target, "Nickname - #Routing");
 	get_replies(RPL_ADMINEMAIL,target, "E-Mail   - routing@");
 }
+
