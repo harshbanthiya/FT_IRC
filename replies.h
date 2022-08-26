@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   replies.h                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: sheeed <sheeed@student.42.fr>              +#+  +:+       +#+        */
+/*   By: olabrecq <olabrecq@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/08/24 13:21:32 by hbanthiy          #+#    #+#             */
-/*   Updated: 2022/08/25 18:57:26 by sheeed           ###   ########.fr       */
+/*   Updated: 2022/08/26 10:11:17 by olabrecq         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,6 +18,14 @@
 #define RPL_CREATED             3
 #define RPL_MYINFO              4
 
+#define RPL_ADMINME 256
+#define RPL_ADMINLOC1 257
+#define RPL_ADMINLOC2 258
+#define RPL_ADMINEMAIL 259
+
+#define RPL_AWAY	301    
+            //   "<nick> :<away message>" 
+#define RPL_TIME 391
 
 #define PRINT_SCREEN            372
 
@@ -40,3 +48,27 @@ std::string ERR_NICKNAMEINUSE(std::string nick) { return nick + " :Nickname is a
 std::string RPL_PRINTWELCOME(std::string text) { return "- " + text; }
 */
 #endif 
+
+// void ADMIN(irc::Command *command) 
+// {
+//     if (command->getParameters().size() == 0) 
+// 	{
+//         command->reply(256); //     RPL_ADMINME
+//         command->reply(257); //     RPL_ADMINLOC1
+//         command->reply(258); //     RPL_ADMINLOC2
+//         command->reply(259);//      RPL_ADMINEMAIL
+//         return;
+//     }
+// }
+
+// void TIME(irc::Command *command)
+// {
+// 	if (command->getParameters().size() == 0)
+// 		command->reply(391);
+// }
+
+// void DIE(irc::Command *command)
+// {
+// 	if (command->getParameters().size() == 0)
+// 		command->reply(391);
+// }

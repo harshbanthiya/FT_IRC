@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Server.hpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: sheeed <sheeed@student.42.fr>              +#+  +:+       +#+        */
+/*   By: olabrecq <olabrecq@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/08/15 19:55:13 by hbanthiy          #+#    #+#             */
-/*   Updated: 2022/08/25 19:02:59 by sheeed           ###   ########.fr       */
+/*   Updated: 2022/08/26 13:29:12 by olabrecq         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,6 +31,7 @@
 #include <map>
 
 #include "Client.hpp"
+#include "Channel.hpp"
 #include "Command_Handler.hpp"
 #include "replies.h"
 #include <ctime>
@@ -78,6 +79,8 @@ class Server
 		void 						add_fd(int new_fd);
 		void 						add_client();
 		void						exec_command(Client &executor);
+
+		std::map<std::string, Channel *> list_of_all_channel;
 		
 		
 		// Exceptions 

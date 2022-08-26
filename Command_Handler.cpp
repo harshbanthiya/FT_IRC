@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Command_Handler.cpp                                :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: sheeed <sheeed@student.42.fr>              +#+  +:+       +#+        */
+/*   By: olabrecq <olabrecq@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/08/17 13:37:38 by hbanthiy          #+#    #+#             */
-/*   Updated: 2022/08/25 19:00:40 by sheeed           ###   ########.fr       */
+/*   Updated: 2022/08/26 13:45:23 by olabrecq         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,7 +21,11 @@ CommandHandler::CommandHandler(Server &_server): serv(_server)
 	this->handlers["NICK"] = &CommandHandler::handle_nick;
 	this->handlers["PING"] = &CommandHandler::handle_ping;
 	this->handlers["USER"] = &CommandHandler::handle_user;
+	this->handlers["ADMIN"] = &CommandHandler::handle_admin;
+	this->handlers["TIME"] = &CommandHandler::handle_time;
 	this->handlers["PRIVMSG"] = &CommandHandler::handle_privmsg;
+	this->handlers["JOIN"] = &CommandHandler::handle_join;
+	// this->handlers["DIE"] = &CommandHandler::handle_user;
 	/*
 		LUSERS
 		JOIN
@@ -213,6 +217,25 @@ void 	CommandHandler::get_replies(int code, Client const &owner, std::string ext
 		case ERR_NICKNAMEINUSE:
 			msg += extra + " :Nickname is already in use"; 
 			break;
+		case RPL_TIME:
+			msg += extra;
+			break;
+		case RPL_ADMINME:
+			msg += extra;
+			break;
+		case RPL_ADMINLOC1:
+			msg += extra;
+			break;
+		case RPL_ADMINLOC2:
+			msg += extra;
+			break;
+		case RPL_ADMINEMAIL:
+			msg += extra;
+			break;
+		case RPL_AWAY:
+			msg += extra;
+			break;
+			
 		case ERR_NORECIPIENT:
 			msg += ":No recepient given ( " + extra + ")";
 			break;
@@ -244,4 +267,28 @@ void 	CommandHandler::print_welcome(Client &target)
 	get_replies(RPL_YOURHOST, target);
 	get_replies(RPL_CREATED, target, this->serv.getcreatedTime());
 	welcomescreen(target);
+}
+
+void CommandHandler::handle_time(Client &target)
+{
+	std::time_t result = std::time(nullptr);
+    
+	std::string msg = std::string(std::asctime(std::localtime(&result)));
+	
+	get_replies(RPL_TIME, target, msg);
+}
+
+void CommandHandler::handle_admin(Client &target)
+{
+	get_replies(RPL_ADMINME, target, " :Administrative info");
+	get_replies(RPL_ADMINLOC1, target, "Name     - The Routing Team");
+	get_replies(RPL_ADMINLOC2, target, "Nickname - #Routing");
+	get_replies(RPL_ADMINEMAIL,target, "E-Mail   - routing@");
+}
+
+void CommandHandler::handle_join(Client &target)
+{
+	if (!this->parameters.size())
+		get_replies(ERR_NEEDMOREPARAMS, target);
+	
 }
