@@ -6,7 +6,7 @@
 /*   By: olabrecq <olabrecq@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/08/26 08:47:31 by sheeed            #+#    #+#             */
-/*   Updated: 2022/08/26 13:28:39 by olabrecq         ###   ########.fr       */
+/*   Updated: 2022/08/28 19:25:29 by olabrecq         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,23 +27,35 @@ class Server;
 
 class Channel
 {
-    public:
-    Channel();
-    Channel(std::string name, Server &serv);
-    Channel(std::string name, std::string key, Server &serv);
-    ~Channel();
+	public:
+	
+		Channel();
+		Channel(std::string name, Server &_erv);
+		Channel(std::string name, std::string key, Server &serv);
+		~Channel();
+		
+		std::string  	get_name(void) { return _name; }	
+		std::string  	get_key(void) { return _key; }
+		std::string  	get_topic(void) { return _topic; }
+		std::string		get_mode(void) { return _modes; }
+		Server* 		get_server(void) { return _serv; }
 
+		void	set_name( std::string name ) { _name = name; }
+		void	set_key( std::string key ) { _key = key; }
+		void	set_topic( std::string topic ) { _topic = topic; }
+		void	set_modes( std::string modes ) { _modes = modes; }
 
-
-    private: 
-    std::string                             name;
-    std::string                             key;
-    std::string                             topic;
-    std::time_t                             topic_time;
-    std::time_t                             creation_time;
-    Server                                  *serv;
-    std::string                             modes;
-    std::vector<std::pair<char, Client*> >  clients;
+		void 	add_client( Client *new_client );
+		
+	private: 
+		std::string                             _name;
+		std::string                             _key;
+		std::string                             _topic;
+		std::time_t                             _topic_time;
+		std::time_t                             _creation_time;
+		Server                                  *_serv;
+		std::string                             _modes;
+		std::vector<std::pair<char, Client*> >  _clients;
 };
 
 

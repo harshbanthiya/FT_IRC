@@ -6,7 +6,7 @@
 /*   By: olabrecq <olabrecq@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/08/24 13:21:32 by hbanthiy          #+#    #+#             */
-/*   Updated: 2022/08/26 10:11:17 by olabrecq         ###   ########.fr       */
+/*   Updated: 2022/08/28 19:50:12 by olabrecq         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,6 +31,7 @@
 
 
 #define ERR_NOSUCHNICK          401
+#define ERR_NOSUCHCHANNEL		403
 #define ERR_NORECIPIENT         411
 #define ERR_NOTEXTTOSEND        412
 #define ERR_NONICKNAMEGIVEN     431
@@ -49,26 +50,3 @@ std::string RPL_PRINTWELCOME(std::string text) { return "- " + text; }
 */
 #endif 
 
-// void ADMIN(irc::Command *command) 
-// {
-//     if (command->getParameters().size() == 0) 
-// 	{
-//         command->reply(256); //     RPL_ADMINME
-//         command->reply(257); //     RPL_ADMINLOC1
-//         command->reply(258); //     RPL_ADMINLOC2
-//         command->reply(259);//      RPL_ADMINEMAIL
-//         return;
-//     }
-// }
-
-// void TIME(irc::Command *command)
-// {
-// 	if (command->getParameters().size() == 0)
-// 		command->reply(391);
-// }
-
-// void DIE(irc::Command *command)
-// {
-// 	if (command->getParameters().size() == 0)
-// 		command->reply(391);
-// }

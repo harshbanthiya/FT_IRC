@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   main.cpp                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: hbanthiy <hbanthiy@student.42.fr>          +#+  +:+       +#+        */
+/*   By: olabrecq <olabrecq@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/08/16 12:18:18 by hbanthiy          #+#    #+#             */
-/*   Updated: 2022/08/24 13:40:57 by hbanthiy         ###   ########.fr       */
+/*   Updated: 2022/08/28 19:23:38 by olabrecq         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,8 +19,8 @@ void handler(int) { stop = true;}
 
 int main(int argc, char **argv)
 {
-    if (argc != 3)
-    {
+    if (argc != 3) 
+	{
         std::cout << "Usage: ./irc <port> <password> \n";
         return (1);
     }

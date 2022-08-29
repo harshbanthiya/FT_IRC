@@ -6,7 +6,7 @@
 /*   By: olabrecq <olabrecq@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/08/17 13:37:38 by hbanthiy          #+#    #+#             */
-/*   Updated: 2022/08/26 13:45:23 by olabrecq         ###   ########.fr       */
+/*   Updated: 2022/08/28 19:58:17 by olabrecq         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -244,6 +244,10 @@ void 	CommandHandler::get_replies(int code, Client const &owner, std::string ext
 		case ERR_NOSUCHNICK:
 			msg += extra + " :No such nick";
 			break;
+		case ERR_NOSUCHCHANNEL:
+			msg += extra + " :No such channel";
+			break;
+		
     }
 	msg += END_DELIM;
 	serv.send_msg(msg, owner);
@@ -272,8 +276,7 @@ void CommandHandler::handle_time(Client &target)
 {
 	std::time_t result = std::time(nullptr);
     
-	std::string msg = std::string(std::asctime(std::localtime(&result)));
-	
+	std::string msg = std::string(std::asctime(std::localtime(&result))); 
 	get_replies(RPL_TIME, target, msg);
 }
 
@@ -287,7 +290,14 @@ void CommandHandler::handle_admin(Client &target)
 
 void CommandHandler::handle_join(Client &target)
 {
+	// ERR_NEEDMOREPARAMS              ERR_BANNEDFROMCHAN
+    //        ERR_INVITEONLYCHAN              ERR_BADCHANNELKEY
+    //        ERR_CHANNELISFULL               ERR_BADCHANMASK
+    //        ERR_NOSUCHCHANNEL               ERR_TOOMANYCHANNELS
+    //        ERR_TOOMANYTARGETS              ERR_UNAVAILRESOURCE
+    //        RPL_TOPIC
 	if (!this->parameters.size())
 		get_replies(ERR_NEEDMOREPARAMS, target);
-	
+	if (!serv.checkChannel(parameters.front()))
+		get_replies(ERR_NOSUCHCHANNEL, target); //403
 }
