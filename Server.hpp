@@ -6,7 +6,7 @@
 /*   By: olabrecq <olabrecq@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/08/15 19:55:13 by hbanthiy          #+#    #+#             */
-/*   Updated: 2022/08/26 13:29:12 by olabrecq         ###   ########.fr       */
+/*   Updated: 2022/08/28 19:24:47 by olabrecq         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -61,26 +61,27 @@ class Server
 
 			void						send_msg(std::string& msg, Client const &target) const;
 			int							send_msg(std::string& msg, std::string target) const;
+			bool						checkChannel(std::string target) const;
 			
 
 		// Setters 
 
 		private:
 		
-		std::string					port; 
-		int 						sock_fd;
-		time_t						last_ping;
-		std::string 				createdTime;
-		std::vector<struct pollfd> 	pfds;
-		std::string 				passwrd;
-		std::vector<Client *> 		list_of_all_clients;
-		void 						acceptClient();
-		CommandHandler 				_handler; 
-		void 						add_fd(int new_fd);
-		void 						add_client();
-		void						exec_command(Client &executor);
+			std::string					port; 
+			int 						sock_fd;
+			time_t						last_ping;
+			std::string 				createdTime;
+			std::vector<struct pollfd> 	pfds;
+			std::string 				passwrd;
+			std::vector<Client *> 		list_of_all_clients;
+			void 						acceptClient();
+			CommandHandler 				_handler; 
+			void 						add_fd(int new_fd);
+			void 						add_client();
+			void						exec_command(Client &executor);
 
-		std::map<std::string, Channel *> list_of_all_channel;
+			std::map<std::string, Channel *> list_of_all_channel;
 		
 		
 		// Exceptions 

@@ -6,7 +6,7 @@
 /*   By: olabrecq <olabrecq@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/08/16 23:58:30 by sheeed            #+#    #+#             */
-/*   Updated: 2022/08/26 13:19:19 by olabrecq         ###   ########.fr       */
+/*   Updated: 2022/08/28 19:25:21 by olabrecq         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,8 +25,6 @@
 
 	class CommandHandler
 	{
-
-
 		public:
 			CommandHandler(Server &server);
 			void handle(std::string cmd_line, Client& owner);
