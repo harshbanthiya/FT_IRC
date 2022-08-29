@@ -6,7 +6,7 @@
 /*   By: olabrecq <olabrecq@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/08/17 13:37:38 by hbanthiy          #+#    #+#             */
-/*   Updated: 2022/08/28 19:58:17 by olabrecq         ###   ########.fr       */
+/*   Updated: 2022/08/28 22:29:46 by olabrecq         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -290,14 +290,25 @@ void CommandHandler::handle_admin(Client &target)
 
 void CommandHandler::handle_join(Client &target)
 {
-	// ERR_NEEDMOREPARAMS              ERR_BANNEDFROMCHAN
-    //        ERR_INVITEONLYCHAN              ERR_BADCHANNELKEY
-    //        ERR_CHANNELISFULL               ERR_BADCHANMASK
-    //        ERR_NOSUCHCHANNEL               ERR_TOOMANYCHANNELS
-    //        ERR_TOOMANYTARGETS              ERR_UNAVAILRESOURCE
+	//// ERR_NEEDMOREPARAMS
+    ////        ERR_NOSUCHCHANNEL
+	
+	// ERR_BANNEDFROMCHAN
+    //        ERR_INVITEONLYCHAN
+	        // ERR_BADCHANNELKEY
+    //        ERR_CHANNELISFULL
+	        // ERR_BADCHANMASK
+	        // ERR_TOOMANYCHANNELS
+    //     ERR_TOOMANYTARGETS
+	        // ERR_UNAVAILRESOURCE
     //        RPL_TOPIC
 	if (!this->parameters.size())
-		get_replies(ERR_NEEDMOREPARAMS, target);
+		return get_replies(ERR_NEEDMOREPARAMS, target);
 	if (!serv.checkChannel(parameters.front()))
-		get_replies(ERR_NOSUCHCHANNEL, target); //403
+		return get_replies(ERR_NOSUCHCHANNEL, target); //403
+	if (this->parameters.size() == 2)
+	{
+		Channel new_channel(parameters.front(), parameters.end(), serv);
+	}
+		
 }

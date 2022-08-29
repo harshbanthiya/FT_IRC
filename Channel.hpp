@@ -6,7 +6,7 @@
 /*   By: olabrecq <olabrecq@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/08/26 08:47:31 by sheeed            #+#    #+#             */
-/*   Updated: 2022/08/28 19:25:29 by olabrecq         ###   ########.fr       */
+/*   Updated: 2022/08/28 22:25:33 by olabrecq         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,7 +30,7 @@ class Channel
 	public:
 	
 		Channel();
-		Channel(std::string name, Server &_erv);
+		Channel(std::string name, Server &_serv);
 		Channel(std::string name, std::string key, Server &serv);
 		~Channel();
 		
