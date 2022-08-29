@@ -1,10 +1,10 @@
-make --dry-run --keep-going --print-directory
+make --dry-run --always-make --keep-going --print-directory
 make: Entering directory `/Users/hbanthiy/FT_IRC'
 mkdir -p object_files
- 
 c++ -Wall -Wextra -Werror -std=c++98 -o object_files/client.o -c client.cpp
 mkdir -p object_files
 c++ -Wall -Wextra -Werror -std=c++98 -o object_files/Command_Handler.o -c Command_Handler.cpp
+ 
 mkdir -p object_files
 c++ -Wall -Wextra -Werror -std=c++98 -o object_files/main.o -c main.cpp
 mkdir -p object_files
