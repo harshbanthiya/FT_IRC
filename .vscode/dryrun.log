@@ -1,7 +1,13 @@
+<<<<<<< HEAD
 make --dry-run --always-make --keep-going --print-directory
 make: Entering directory `/Users/hbanthiy/FT_IRC'
+=======
+make --dry-run --keep-going --print-directory
+make: Entering directory `/Users/sheeed/new_irc'
+>>>>>>> c71beeda7d9f19c47061db493a1ba85c24359ab9
 mkdir -p object_files
 c++ -Wall -Wextra -Werror -std=c++98 -o object_files/client.o -c client.cpp
+ 
 mkdir -p object_files
 c++ -Wall -Wextra -Werror -std=c++98 -o object_files/Command_Handler.o -c Command_Handler.cpp
  
@@ -11,5 +17,5 @@ mkdir -p object_files
 c++ -Wall -Wextra -Werror -std=c++98 -o object_files/server.o -c server.cpp
 c++ -Wall -Wextra -Werror -std=c++98 object_files/client.o object_files/Command_Handler.o object_files/main.o object_files/server.o -o irc
 echo "Usage: ./irc  port password - To begin running the server"
-make: Leaving directory `/Users/hbanthiy/FT_IRC'
+make: Leaving directory `/Users/sheeed/new_irc'
  

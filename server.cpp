@@ -195,7 +195,7 @@ void 	Server::send_msg(std::string &msg, Client const &target) const
 	if (send(target.getSocket(), msg.c_str(), msg.length(), 0) < 0)
 	 	perror("send()");
 }
-/*
+
 int 	Server::send_msg(std::string &msg, std::string target) const
 {
 	u_int 	i = 0;
@@ -210,10 +210,10 @@ int 	Server::send_msg(std::string &msg, std::string target) const
 		i++;
 	}
 	if (i == list_of_all_clients.size())
-		return (401);
+		return (ERR_NOSUCHNICK);
 	return (0);
 }
-*/
+
 // Exceptions 
 const char*	Server::SocketFailException::what() const throw()
 {

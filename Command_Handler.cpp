@@ -6,7 +6,7 @@
 /*   By: hbanthiy <hbanthiy@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/08/17 13:37:38 by hbanthiy          #+#    #+#             */
-/*   Updated: 2022/08/24 14:41:28 by hbanthiy         ###   ########.fr       */
+/*   Updated: 2022/08/29 10:24:22 by hbanthiy         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,6 +21,7 @@ CommandHandler::CommandHandler(Server &_server): serv(_server)
 	this->handlers["NICK"] = &CommandHandler::handle_nick;
 	this->handlers["PING"] = &CommandHandler::handle_ping;
 	this->handlers["USER"] = &CommandHandler::handle_user;
+	this->handlers["PRIVMSG"] = &CommandHandler::handle_privmsg;
 	/*
 		LUSERS 
 		JOIN
@@ -145,6 +146,35 @@ void	CommandHandler::handle_nick(Client &owner)
 	
 }
 
+void 	CommandHandler::handle_privmsg(Client &owner)
+{
+
+	if (!this->parameters.size() || this->parameters.front() == "")
+		return get_replies(ERR_NORECIPIENT, owner, this->command);
+	if (this->parameters.size() == 1)
+		return get_replies(ERR_NOTEXTTOSEND, owner);
+
+	std::string targets = parameters.front(); //should be username or channel
+	std::list<std::string>::iterator it = ++this->parameters.begin();
+	std::string text = " :" + *it;
+	for (++it; it != parameters.cend(); ++it)
+		text += " " + *it;
+	std::string head = ":" + owner.get_nickname() + "!" + owner.get_username() + "@" + owner.get_hostname() + " PRIVMSG" ;
+	while (!targets.empty())
+	{
+		int pos = targets.find(",");
+		std::string curr_target = targets.substr(0, pos);
+		std::string msg = head + curr_target + text + END_DELIM;
+		int rv;
+		//if (curr_target[0] == '#')
+		//	rv = this->serv.send_msg(msg, curr_target, owner);
+	
+		rv = this->serv.send_msg(msg, curr_target);
+		if (rv == ERR_NOSUCHNICK)
+			get_replies(rv, owner, curr_target);
+		targets.erase(0, (pos != -1) ? pos + 1 : pos);
+	}
+}
 
 void 	CommandHandler::get_replies(int code, Client const &owner, std::string extra) const
 {
@@ -181,6 +211,15 @@ void 	CommandHandler::get_replies(int code, Client const &owner, std::string ext
 			break;
 		case ERR_NICKNAMEINUSE:
 			msg += extra + " :Nickname is already in use"; 
+			break;
+		case ERR_NORECIPIENT:
+			msg += ":No recepient given ( " + extra + ")"; 
+			break;
+		case ERR_NOTEXTTOSEND:
+			msg += ":No text to send"; 
+			break;
+		case ERR_NOSUCHNICK:
+			msg += extra + " :No such nick";
 			break;
     }
 	msg += END_DELIM;

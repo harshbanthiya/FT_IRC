@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   replies.h                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: hbanthiy <hbanthiy@student.42.fr>          +#+  +:+       +#+        */
+/*   By: sheeed <sheeed@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/08/24 13:21:32 by hbanthiy          #+#    #+#             */
-/*   Updated: 2022/08/24 14:29:17 by hbanthiy         ###   ########.fr       */
+/*   Updated: 2022/08/25 18:57:26 by sheeed           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,6 +21,10 @@
 
 #define PRINT_SCREEN            372
 
+
+#define ERR_NOSUCHNICK          401
+#define ERR_NORECIPIENT         411
+#define ERR_NOTEXTTOSEND        412
 #define ERR_NONICKNAMEGIVEN     431
 #define ERR_NICKNAMEINUSE       433
 #define ERR_NEEDMOREPARAMS      461
