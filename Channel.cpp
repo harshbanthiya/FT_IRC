@@ -25,3 +25,21 @@ Channel::Channel(std::string _name, Server &_serv) :
     topic_time    = std::time(nullptr);
     
 }
+
+bool Channel::is_user_in_channel(std::string nickname)
+{
+	std::vector<std::pair<char, Client *> > clients = this->getClients();
+	for(std::vector<std::pair<char, Client *> >::iterator it = clients.begin(); it != clients.end(); it++)
+	{
+		std::pair<char, Client *> current = *it;
+		if (current.second->get_nickname() == nickname)
+		{
+			return true;
+		}
+	}
+	return false;
+}
+
+const std::vector<std::pair<char, Client *> > &Channel::getClients() const {
+	return clients;
+}

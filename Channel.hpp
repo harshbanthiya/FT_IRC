@@ -32,6 +32,7 @@ class Channel
     Channel(std::string name, Server &serv);
     Channel(std::string name, std::string key, Server &serv);
     ~Channel();
+	bool is_user_in_channel(std::string nickname);
 
 
 
@@ -44,6 +45,8 @@ class Channel
     Server                                  *serv;
     std::string                             modes;
     std::vector<std::pair<char, Client*> >  clients;
+public:
+	const std::vector<std::pair<char, Client *> > &getClients() const;
 };
 
 
