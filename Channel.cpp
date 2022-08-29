@@ -41,7 +41,7 @@ bool Channel::is_user_in_channel(std::string nickname)
 }
 
 const std::vector<std::pair<char, Client *> > &Channel::getClients() const {
-	return clients;
+	return _clients;
 }
 
 

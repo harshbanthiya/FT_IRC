@@ -171,9 +171,15 @@ void 	CommandHandler::handle_privmsg(Client &owner)
 		std::string curr_target = targets.substr(0, pos);
 		std::string msg = head + curr_target + text + END_DELIM;
 		int rv;
-		//if (curr_target[0] == '#')
-		//	rv = this->serv.send_msg(msg, curr_target, owner);
+		if (curr_target[0] == '#')
+		{
+			//	rv = this->serv.send_msg(msg, curr_target, owner);
+			curr_target = curr_target.erase(0); //remove hashtag
+			if (this->serv.checkChannel(curr_target) == 1)
+			{
 
+			}
+		}
 		rv = this->serv.send_msg(msg, curr_target);
 		if (rv == ERR_NOSUCHNICK)
 			get_replies(rv, owner, curr_target);
