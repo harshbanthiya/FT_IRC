@@ -224,6 +224,8 @@ bool 	Server::checkChannel(std::string target) const
 	return (list_of_all_channel.find(target) != list_of_all_channel.end()); // return 1 if he founf it
 }
 
+
+
 // Exceptions 
 const char*	Server::SocketFailException::what() const throw()
 {

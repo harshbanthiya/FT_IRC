@@ -6,7 +6,7 @@
 /*   By: olabrecq <olabrecq@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/08/15 19:55:13 by hbanthiy          #+#    #+#             */
-/*   Updated: 2022/08/28 19:24:47 by olabrecq         ###   ########.fr       */
+/*   Updated: 2022/08/29 16:35:56 by olabrecq         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,6 +29,7 @@
 #include <fstream>
 #include <netinet/in.h>
 #include <map>
+#include <list>
 #include <unordered_map>
 
 #include "Client.hpp"
@@ -64,7 +65,7 @@ class Server
 			int							send_msg(std::string& msg, std::string target) const;
 			bool						checkChannel(std::string target) const;
 			Channel						getChannel(std::string channelName);
-			
+			void						createChannel(std::list<std::string> param);
 
 		// Setters 
 

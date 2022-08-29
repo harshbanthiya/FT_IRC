@@ -6,7 +6,7 @@
 /*   By: olabrecq <olabrecq@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/08/24 13:21:32 by hbanthiy          #+#    #+#             */
-/*   Updated: 2022/08/29 14:53:53 by olabrecq         ###   ########.fr       */
+/*   Updated: 2022/08/29 16:34:34 by olabrecq         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,7 +24,7 @@
 #define RPL_ADMINEMAIL 259
 
 #define RPL_AWAY	301    
-#define RPL_TIME 391
+#define RPL_TIME 	391
 
 #define PRINT_SCREEN            372
 

@@ -6,7 +6,7 @@
 /*   By: olabrecq <olabrecq@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/08/17 13:37:38 by hbanthiy          #+#    #+#             */
-/*   Updated: 2022/08/29 14:54:54 by olabrecq         ###   ########.fr       */
+/*   Updated: 2022/08/29 16:19:07 by olabrecq         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -312,7 +312,8 @@ void CommandHandler::handle_join(Client &target)
 	if (!this->parameters.size())
 		return get_replies(ERR_NEEDMOREPARAMS, target);
 	if (!serv.checkChannel(parameters.front()))
-		Channel new_channel(parameters.front(), parameters.back(), serv);
+		serv.createChannel(parameters);
+		
 		
 
 		
