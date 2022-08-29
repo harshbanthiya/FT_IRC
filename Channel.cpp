@@ -25,7 +25,3 @@ Channel::Channel(std::string _name, Server &_serv) :
     topic_time    = std::time(nullptr);
     
 }
-
-Channel::~Channel()
-{
-}
