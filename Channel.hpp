@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Channel.hpp                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: olabrecq <olabrecq@student.42.fr>          +#+  +:+       +#+        */
+/*   By: hbanthiy <hbanthiy@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/08/26 08:47:31 by sheeed            #+#    #+#             */
-/*   Updated: 2022/08/26 13:28:39 by olabrecq         ###   ########.fr       */
+/*   Updated: 2022/08/29 16:19:56 by hbanthiy         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,6 +30,7 @@ class Channel
 {
 	public:
 
+		// Will need a user_list , a ban_list and an invite list 
 		Channel();
 		Channel(std::string name, Server &_erv);
 		Channel(std::string name, std::string key, Server &serv);
@@ -43,6 +44,9 @@ class Channel
 		bool is_user_in_channel(std::string nickname);
 		const std::vector<std::pair<char, Client *> > &getClients() const;
 		//void 	message_all_users();
+
+		void	send_to_all(std::string msg, std::string sender = "") const; // Needs to be added 
+		bool 	canSendMsg(Client const &owner) const; // Also needs to be added 
 		void 	add_client( Client *new_client );
 
 

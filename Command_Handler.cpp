@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Command_Handler.cpp                                :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: olabrecq <olabrecq@student.42.fr>          +#+  +:+       +#+        */
+/*   By: hbanthiy <hbanthiy@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/08/17 13:37:38 by hbanthiy          #+#    #+#             */
-/*   Updated: 2022/08/28 19:58:17 by olabrecq         ###   ########.fr       */
+/*   Updated: 2022/08/29 16:22:41 by hbanthiy         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -172,15 +172,9 @@ void 	CommandHandler::handle_privmsg(Client &owner)
 		std::string msg = head + curr_target + text + END_DELIM;
 		int rv;
 		if (curr_target[0] == '#')
-		{
-			//	rv = this->serv.send_msg(msg, curr_target, owner);
-			curr_target = curr_target.erase(0); //remove hashtag
-			if (this->serv.checkChannel(curr_target) == 1)
-			{
-				//get channel, send message
-			}
-		}
-		rv = this->serv.send_msg(msg, curr_target);
+			rv = this->serv.send_msg(msg, curr_target, owner); // put all the logic in the overloaded function 
+		else 
+			rv = this->serv.send_msg(msg, curr_target);
 		if (rv == ERR_NOSUCHNICK)
 			get_replies(rv, owner, curr_target);
 		targets.erase(0, (pos != -1) ? pos + 1 : pos);
@@ -305,6 +299,6 @@ void CommandHandler::handle_join(Client &target)
     //        RPL_TOPIC
 	if (!this->parameters.size())
 		get_replies(ERR_NEEDMOREPARAMS, target);
-	if (!serv.checkChannel(parameters.front()))
+	if (!serv.check_channel(parameters.front()))
 		get_replies(ERR_NOSUCHCHANNEL, target); //403
 }

@@ -215,13 +215,31 @@ int 	Server::send_msg(std::string &msg, std::string target) const
 	return (0);
 }
 
-Channel	 Server::getChannel(std::string channelName)
+int		Server::send_msg(std::string &msg, std::string target, Client const &owner)
 {
-	std::unordered_map<std::string, Channel *> *it = this->list_of_all_channel.find(channelName); //this shit doesnt work for whatever reason
+	if (check_channel(target))
+	{
+		Channel& tmp_chan = get_channel(target);  // needs to implemented
+		if (tmp_chan.canSendMsg(owner)) // needs to be implemented based on user rights 
+			tmp_chan.send_to_all(msg, owner.get_nickname()); // Also needs to be added
+		else 
+			return (0);
+	}
+	else 
+		return (ERR_NOSUCHNICK);
+	return (0);
 }
-bool 	Server::checkChannel(std::string target) const
+
+Channel	 &Server::get_channel(std::string channelName)
 {
-	return (list_of_all_channel.find(target) != list_of_all_channel.end()); // return 1 if he founf it
+	return (list_of_all_channels[channelName]);
+}
+bool 	Server::check_channel(std::string target) const 
+{
+	if (list_of_all_channels.find(target) != list_of_all_channels.end())
+		return (true);
+	else 
+		return false;
 }
 
 // Exceptions 
