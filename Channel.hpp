@@ -22,6 +22,7 @@
 
 
 #include "Client.hpp"
+#include "Command_Handler.hpp"
 
 class Server;
 
@@ -41,6 +42,7 @@ class Channel
 		Server* 		get_server(void) { return _serv; }
 		bool is_user_in_channel(std::string nickname);
 		const std::vector<std::pair<char, Client *> > &getClients() const;
+		//void 	message_all_users();
 		void 	add_client( Client *new_client );
 
 

@@ -177,7 +177,7 @@ void 	CommandHandler::handle_privmsg(Client &owner)
 			curr_target = curr_target.erase(0); //remove hashtag
 			if (this->serv.checkChannel(curr_target) == 1)
 			{
-
+				//get channel, send message
 			}
 		}
 		rv = this->serv.send_msg(msg, curr_target);
