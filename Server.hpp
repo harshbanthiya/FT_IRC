@@ -29,6 +29,7 @@
 #include <fstream>
 #include <netinet/in.h>
 #include <map>
+#include <unordered_map>
 
 #include "Client.hpp"
 #include "Channel.hpp"
@@ -62,6 +63,7 @@ class Server
 			void						send_msg(std::string& msg, Client const &target) const;
 			int							send_msg(std::string& msg, std::string target) const;
 			bool						checkChannel(std::string target) const;
+			Channel						getChannel(std::string channelName);
 			
 
 		// Setters 
@@ -81,7 +83,7 @@ class Server
 			void 						add_client();
 			void						exec_command(Client &executor);
 
-			std::map<std::string, Channel *> list_of_all_channel;
+			std::unordered_map<std::string, Channel *> list_of_all_channel;
 		
 		
 		// Exceptions 
