@@ -6,7 +6,7 @@
 /*   By: olabrecq <olabrecq@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/08/17 13:37:38 by hbanthiy          #+#    #+#             */
-/*   Updated: 2022/08/28 22:29:46 by olabrecq         ###   ########.fr       */
+/*   Updated: 2022/08/29 14:54:54 by olabrecq         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,7 +27,7 @@ CommandHandler::CommandHandler(Server &_server): serv(_server)
 	this->handlers["JOIN"] = &CommandHandler::handle_join;
 	// this->handlers["DIE"] = &CommandHandler::handle_user;
 	/*
-		LUSERS 
+		LUSERS
 		JOIN
 		PART
 		PRIVMSG
@@ -45,6 +45,7 @@ CommandHandler::CommandHandler(Server &_server): serv(_server)
 
 void 	CommandHandler::parse_cmd(std::string cmd_line)
 {
+	std::cout << cmd_line << std::endl;
 	if (cmd_line.empty())
 		return ;
 	int pos = cmd_line.find(" ");
@@ -163,16 +164,22 @@ void 	CommandHandler::handle_privmsg(Client &owner)
 	std::string text = " :" + *it;
 	for (++it; it != parameters.cend(); ++it)
 		text += " " + *it;
-	std::string head = ":" + owner.get_nickname() + "!" + owner.get_username() + "@" + owner.get_hostname() + " PRIVMSG" ;
+	std::string head = ":" + owner.get_nickname() + "!" + owner.get_username() + "@" + owner.get_hostname() + " PRIVMSG " ;
 	while (!targets.empty())
 	{
 		int pos = targets.find(",");
 		std::string curr_target = targets.substr(0, pos);
 		std::string msg = head + curr_target + text + END_DELIM;
 		int rv;
-		//if (curr_target[0] == '#')
-		//	rv = this->serv.send_msg(msg, curr_target, owner);
-	
+		if (curr_target[0] == '#')
+		{
+			//	rv = this->serv.send_msg(msg, curr_target, owner);
+			curr_target = curr_target.erase(0); //remove hashtag
+			if (this->serv.checkChannel(curr_target) == 1)
+			{
+
+			}
+		}
 		rv = this->serv.send_msg(msg, curr_target);
 		if (rv == ERR_NOSUCHNICK)
 			get_replies(rv, owner, curr_target);
@@ -236,10 +243,10 @@ void 	CommandHandler::get_replies(int code, Client const &owner, std::string ext
 			break;
 			
 		case ERR_NORECIPIENT:
-			msg += ":No recepient given ( " + extra + ")"; 
+			msg += ":No recepient given ( " + extra + ")";
 			break;
 		case ERR_NOTEXTTOSEND:
-			msg += ":No text to send"; 
+			msg += ":No text to send";
 			break;
 		case ERR_NOSUCHNICK:
 			msg += extra + " :No such nick";
@@ -305,10 +312,8 @@ void CommandHandler::handle_join(Client &target)
 	if (!this->parameters.size())
 		return get_replies(ERR_NEEDMOREPARAMS, target);
 	if (!serv.checkChannel(parameters.front()))
-		return get_replies(ERR_NOSUCHCHANNEL, target); //403
-	if (this->parameters.size() == 2)
-	{
-		Channel new_channel(parameters.front(), parameters.end(), serv);
-	}
+		Channel new_channel(parameters.front(), parameters.back(), serv);
+		
+
 		
 }

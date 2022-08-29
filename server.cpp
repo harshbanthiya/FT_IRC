@@ -54,13 +54,14 @@ void 	Server::init()
 	hints.ai_socktype = SOCK_STREAM;
 	hints.ai_flags = AI_PASSIVE;
 
+
+
 	if ((ret = getaddrinfo(nullptr, port.c_str(), &hints, &ai)))
 		throw std::runtime_error(gai_strerror(ret));
 	if ((sock_fd = socket(ai->ai_family, ai->ai_socktype, ai->ai_protocol)) < 0)
 		throw Server::SocketFailException();
 	if (setsockopt(sock_fd, SOL_SOCKET, SO_REUSEADDR, &yes, sizeof(yes)) == -1)
 		throw Server::SetsockoptFailException();
-	
 	if ((bind(sock_fd, ai->ai_addr, ai->ai_addrlen) < 0))
 	{
 		close(sock_fd);
