@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Command_Handler.cpp                                :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: olabrecq <olabrecq@student.42.fr>          +#+  +:+       +#+        */
+/*   By: hbanthiy <hbanthiy@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/08/17 13:37:38 by hbanthiy          #+#    #+#             */
-/*   Updated: 2022/08/30 14:42:58 by olabrecq         ###   ########.fr       */
+/*   Updated: 2022/08/30 17:36:55 by hbanthiy         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -242,6 +242,12 @@ void 	CommandHandler::get_replies(int code, Client const &owner, std::string ext
 		case RPL_ENDOFWHO:
 			msg += extra + " :End of WHO list";
 			break;
+		case RPL_CHANNELMODEIS: 
+			msg += extra;
+			break;
+		case RPL_CREATIONTIME:
+			msg += extra;
+			break;
 		case RPL_ENDOFBANLIST:
 			msg += extra + " :End of channel ban list";
 			break;
@@ -306,34 +312,36 @@ void CommandHandler::handle_admin(Client &target)
 
 void CommandHandler::handle_join(Client &target)
 {
-	//// ERR_NEEDMOREPARAMS
-    //// ERR_NOSUCHCHANNEL
-	
-	// ERR_BANNEDFROMCHAN
-    //        ERR_INVITEONLYCHAN
-	        // ERR_BADCHANNELKEY
-    //        ERR_CHANNELISFULL
-	        // ERR_BADCHANMASK
-	        // ERR_TOOMANYCHANNELS
-    //     ERR_TOOMANYTARGETS
-	        // ERR_UNAVAILRESOURCE
-    //        RPL_TOPIC
+
 	if (!this->parameters.size())
 		return get_replies(ERR_NEEDMOREPARAMS, target);
-	
-	std::list<std::string>::iterator it;
-	for(it = parameters.begin(); it != parameters.end(); it++)
+	int 	pos;
+	std::list<std::string> names;
+
+	while (parameters.front() != "")
 	{
-		if (!serv.check_channel(*it)) 
+		pos = parameters.front().find(",");
+		names.push_back(parameters.front().substr(0, pos));
+		parameters.front().erase(0, (pos != -1) ? pos + 1 : pos);
+	}
+	parameters.pop_front();
+	if (names.front()[0] != '#')
+		return get_replies(ERR_NOSUCHCHANNEL, owner, names.front());
+	while (!names.empty())
+	{
+		if (!serv.check_channel(names.front())) 
 		{
 			printf("yeeehhaaa\n");
-			Channel new_chan(*it, serv);
-			get_replies(353, target);
-			get_replies(366, target);
+			Channel new_chan(names.front(), serv);
+			serv.add_channel(ch);
+			
 		}
+
 	}
-	
+
 }
+	
+
 
 // fucking basic just to make JOIN work
 void CommandHandler::handle_who(Client &target)
@@ -345,5 +353,29 @@ void CommandHandler::handle_who(Client &target)
 //  fucking basic just to make JOIN work
 void CommandHandler::handle_mode(Client &target)
 {
-	get_replies(368, target);
+	if (!this->parameters.size() || this->parameters.front() == "")
+		return (get_replies(ERR_NEEDMOREPARAMS, owner, this->command));
+	std::string target = this->parameters.front();
+	if (target[0] == '#') // Channel Modes 
+	{
+		if (!serv.check_channel(target))
+			return (get_replies(ERR_NOSUCHCHANNEL, owner, target));
+		Channel &ch = server.get_channel(target);
+		if (this->parameters.size() == 1)
+		{
+			get_replies(RPL_CHANNELMODEIS, owner, target, "+" + serv.get_channel(target).get_modes());
+			get_replies(RPL_CREATIONTIME, owner, target, " " + serv.get_channel(target).get_creation_time());
+			return ;
+		}
+		parameters.pop_front();
+		std::string mode = parameters.front();
+		parameters.pop_front();
+		char type = (mode[0] == '-' || mode[0] == '+') ? mode[0] : 0;
+		for(size_t i = (type != 0); i < mode.size(); i++)
+		{
+			if (ch.addMode(owner, mode[i], type, parameters.front()))
+				parameters.pop_front();
+		}
+	}
+
 }
