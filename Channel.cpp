@@ -6,7 +6,7 @@
 /*   By: olabrecq <olabrecq@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/08/26 08:56:40 by hbanthiy          #+#    #+#             */
-/*   Updated: 2022/08/29 14:34:02 by olabrecq         ###   ########.fr       */
+/*   Updated: 2022/08/30 09:19:18 by olabrecq         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,6 +24,8 @@ Channel::Channel(std::string name, Server &serv) :
     _creation_time = std::time(nullptr);
     _topic_time    = std::time(nullptr);
 }
+
+Channel::~Channel() {}
 
 bool Channel::is_user_in_channel(std::string nickname)
 {

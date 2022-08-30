@@ -6,7 +6,7 @@
 /*   By: olabrecq <olabrecq@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/08/26 08:47:31 by sheeed            #+#    #+#             */
-/*   Updated: 2022/08/29 11:22:18 by olabrecq         ###   ########.fr       */
+/*   Updated: 2022/08/30 09:20:31 by olabrecq         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,6 +30,7 @@ class Channel
 {
 	public:
 
+		// Will need a user_list , a ban_list and an invite list 
 		Channel();
 		Channel(std::string name, Server &_serv);
 		Channel(std::string name, std::string key, Server &serv);
@@ -42,8 +43,11 @@ class Channel
 		Server* 		get_server(void) const { return _serv; }
 		bool is_user_in_channel(std::string nickname);
 		const std::vector<std::pair<char, Client *> > &getClients() const;
-		//void 	message_all_users();
-		void 	add_client( Client *new_client );
+		// //void 	message_all_users();
+
+		// void	send_to_all(std::string msg, std::string sender = "") const; // Needs to be added 
+		// bool 	canSendMsg(Client const &owner) const; // Also needs to be added 
+		// void 	add_client( Client *new_client );
 
 
 		void	set_name( std::string name ) { _name = name; }
