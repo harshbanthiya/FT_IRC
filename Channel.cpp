@@ -26,7 +26,7 @@ Channel::Channel(std::string name, Server &serv) :
     
 }
 
-bool Channel::is_user_in_channel(std::string nickname)
+bool Channel::is_user_in_channel(std::string nickname) const
 {
 	std::vector<std::pair<char, Client *> > clients = this->getClients();
 	for(std::vector<std::pair<char, Client *> >::iterator it = clients.begin(); it != clients.end(); it++)
@@ -44,4 +44,38 @@ const std::vector<std::pair<char, Client *> > &Channel::getClients() const {
 	return _clients;
 }
 
+void Channel::send_to_all(std::string msg) const {
+	for (size_t i = 0; i < this->getClients().size(); i++)
+	{
+		_serv->send_msg(msg, *this->getClients()[i].second);
+	}
+}
+
+bool 	Channel::canSendMsg(Client const &owner) const{
+	if (this->is_user_in_channel(owner.get_nickname()) == true)
+	{
+		//permissions
+		return true;
+	}
+	return false;
+}
+
+void 	Channel::add_client( Client *new_client )
+{
+	if (this->is_user_in_channel(new_client->get_nickname())) {
+		return; //already in channel, dont send anything back
+	}
+	if (!this->getClients().size()) //empty
+	{
+		this->_clients.push_back(std::make_pair('O', new_client)); //assume oper here
+	}
+	else
+	{
+		this->_clients.push_back(std::make_pair('w', new_client));
+	}
+}
+
+Channel::~Channel() {
+
+}
 

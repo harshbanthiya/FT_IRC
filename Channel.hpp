@@ -41,11 +41,11 @@ class Channel
 		std::string  	get_topic(void) { return _topic; }
 		std::string		get_mode(void) { return _modes; }
 		Server* 		get_server(void) { return _serv; }
-		bool is_user_in_channel(std::string nickname);
+		bool is_user_in_channel(std::string nickname) const;
 		const std::vector<std::pair<char, Client *> > &getClients() const;
 		//void 	message_all_users();
 
-		void	send_to_all(std::string msg, std::string sender = "") const; // Needs to be added 
+		void	send_to_all(std::string msg) const; // Needs to be added
 		bool 	canSendMsg(Client const &owner) const; // Also needs to be added 
 		void 	add_client( Client *new_client );
 

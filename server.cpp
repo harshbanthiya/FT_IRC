@@ -221,7 +221,7 @@ int		Server::send_msg(std::string &msg, std::string target, Client const &owner)
 	{
 		Channel& tmp_chan = get_channel(target);  // needs to implemented
 		if (tmp_chan.canSendMsg(owner)) // needs to be implemented based on user rights 
-			tmp_chan.send_to_all(msg, owner.get_nickname()); // Also needs to be added
+			tmp_chan.send_to_all(msg); // Also needs to be added
 		else 
 			return (0);
 	}
@@ -232,8 +232,10 @@ int		Server::send_msg(std::string &msg, std::string target, Client const &owner)
 
 Channel	 &Server::get_channel(std::string channelName)
 {
+
 	return (list_of_all_channels[channelName]);
 }
+
 bool 	Server::check_channel(std::string target) const 
 {
 	if (list_of_all_channels.find(target) != list_of_all_channels.end())
