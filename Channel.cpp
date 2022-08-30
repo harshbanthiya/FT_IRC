@@ -6,7 +6,7 @@
 /*   By: olabrecq <olabrecq@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/08/26 08:56:40 by hbanthiy          #+#    #+#             */
-/*   Updated: 2022/08/30 09:19:18 by olabrecq         ###   ########.fr       */
+/*   Updated: 2022/08/30 16:41:54 by olabrecq         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -52,8 +52,9 @@ void Channel::send_to_all(std::string msg) const {
 	}
 }
 
-bool 	Channel::canSendMsg(Client const &owner) const{
-	if (this->is_user_in_channel(owner.get_nickname()) == true)
+bool 	Channel::canSendMsg(Client const &owner) const 
+{
+	if (is_user_in_channel(owner.get_nickname()) == true)
 	{
 		//permissions
 		return true;
@@ -74,9 +75,5 @@ void 	Channel::add_client( Client *new_client )
 	{
 		this->_clients.push_back(std::make_pair('w', new_client));
 	}
-}
-
-Channel::~Channel() {
-
 }
 

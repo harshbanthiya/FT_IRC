@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Channel.hpp                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: hbanthiy <hbanthiy@student.42.fr>          +#+  +:+       +#+        */
+/*   By: olabrecq <olabrecq@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/08/26 08:47:31 by sheeed            #+#    #+#             */
-/*   Updated: 2022/08/30 09:20:31 by olabrecq         ###   ########.fr       */
+/*   Updated: 2022/08/30 16:41:25 by olabrecq         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,7 +41,7 @@ class Channel
 		std::string  	get_topic(void) const { return _topic; }
 		std::string		get_mode(void) const { return _modes; }
 		Server* 		get_server(void) const { return _serv; }
-		bool is_user_in_channel(std::string nickname);
+		bool 			is_user_in_channel(std::string nickname) const;
 		const std::vector<std::pair<char, Client *> > &getClients() const;
 		//void 	message_all_users();
 

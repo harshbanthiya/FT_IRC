@@ -6,7 +6,7 @@
 /*   By: olabrecq <olabrecq@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/08/15 19:55:13 by hbanthiy          #+#    #+#             */
-/*   Updated: 2022/08/30 13:29:30 by olabrecq         ###   ########.fr       */
+/*   Updated: 2022/08/30 16:35:45 by olabrecq         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -63,7 +63,7 @@ class Server
 
 			void						send_msg(std::string& msg, Client const &target) const;
 			int							send_msg(std::string& msg, std::string target) const;
-			// int 						send_msg(std::string& msg, std::string target, Client const &owner); // Added for channel priv
+			int 						send_msg(std::string& msg, std::string target, Client const &owner); // Added for channel priv
 			bool						check_channel(std::string target) const;
 			Channel						&get_channel(std::string channelName);
 			const std::vector<std::string, Channel> &get_channel_list() const ;
