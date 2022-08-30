@@ -213,27 +213,27 @@ int 	Server::send_msg(std::string &msg, std::string target) const
 	return (0);
 }
 
-// int		Server::send_msg(std::string &msg, std::string target, Client const &owner)
-// {
-// 	if (check_channel(target))
-// 	{
-// 		Channel& tmp_chan = get_channel(target);  // needs to implemented
-// 		if (tmp_chan.canSendMsg(owner)) // needs to be implemented based on user rights 
-// 			tmp_chan.send_to_all(msg, owner.get_nickname()); // Also needs to be added
-// 		else 
-// 			return (0);
-// 	}
-// 	else 
-// 		return (ERR_NOSUCHNICK);
-// 	return (0);
-// }
+int		Server::send_msg(std::string &msg, std::string target, Client const &owner)
+{
+	if (check_channel(target))
+	{
+		Channel& tmp_chan = get_channel(target);  // needs to implemented
+		if (tmp_chan.canSendMsg(owner)) // needs to be implemented based on user rights 
+			tmp_chan.send_to_all(msg); // Also needs to be added
+		else 
+			return (0);
+	}
+	else 
+		return (ERR_NOSUCHNICK);
+	return (0);
+}
 
 Channel	 &Server::get_channel(std::string channelName)
 {
 	return (list_of_all_channels[channelName]);
 }
 
-bool 	Server::check_channel(std::string target) const 
+bool 	Server::check_channel(std::string target) const
 {
 	if (list_of_all_channels.find(target) != list_of_all_channels.end())
 		return true;
@@ -241,12 +241,12 @@ bool 	Server::check_channel(std::string target) const
 		return false;
 }
 
-void Server::create_channel(std::string ch_name) 
-{ 
+void Server::create_channel(std::string ch_name)
+{
 	list_of_all_channels[ch_name];
 }
 
-// Exceptions 
+// Exceptions
 const char*	Server::SocketFailException::what() const throw()
 {
 	return "Error:  Socket Failed\n";
