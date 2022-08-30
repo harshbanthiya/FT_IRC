@@ -6,7 +6,7 @@
 /*   By: olabrecq <olabrecq@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/08/17 13:37:38 by hbanthiy          #+#    #+#             */
-/*   Updated: 2022/08/30 14:42:58 by olabrecq         ###   ########.fr       */
+/*   Updated: 2022/08/30 16:16:50 by olabrecq         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -240,16 +240,16 @@ void 	CommandHandler::get_replies(int code, Client const &owner, std::string ext
 			msg += extra + " :<hopcount> <real name>";
 			break;
 		case RPL_ENDOFWHO:
-			msg += extra + " :End of WHO list";
+			msg += extra + " :End of /WHO list";
 			break;
 		case RPL_ENDOFBANLIST:
 			msg += extra + " :End of channel ban list";
 			break;
 		case RPL_NAMREPLY:
-			msg += extra + " :Channel Create";
+			msg += extra;
 			break;
 		case RPL_ENDOFNAMES:
-			msg += extra + " :End of NAMES list";
+			msg += extra + " :End of /NAMES list";
 			break;
 		case ERR_NORECIPIENT:
 			msg += ":No recepient given ( " + extra + ")";
@@ -326,10 +326,14 @@ void CommandHandler::handle_join(Client &target)
 	{
 		if (!serv.check_channel(*it)) 
 		{
-			printf("yeeehhaaa\n");
+			// printf("yeeehhaaa\n");
 			Channel new_chan(*it, serv);
-			get_replies(353, target);
-			get_replies(366, target);
+			std::string msg = target.get_nickname() + " JOIN " + *it + " * " + target.get_realname() + "\n";
+			serv.send_msg(msg, target);
+			msg = target.get_nickname() + " = " + *it + " " + "@" + target.get_nickname() + "!" + target.get_username() + target.get_hostname();
+			get_replies(353, target, msg);
+			msg = target.get_nickname() + " " + *it + " ";
+			get_replies(366, target, msg);
 		}
 	}
 	
@@ -338,8 +342,13 @@ void CommandHandler::handle_join(Client &target)
 // fucking basic just to make JOIN work
 void CommandHandler::handle_who(Client &target)
 {
-	get_replies(352, target);
-	get_replies(315, target);
+//  352 olabrecq #jani ~olabrecq freenode-g2q.k15.7sskld.IP *.freenode.net olabrecq H@ 0 Olivier Labrecque-lacasse
+//  315 olabrecq #jani End of /WHO list.
+	std::string msg = parameters.front() + " ~" + target.get_nickname() + " " + target.get_hostname() + "*MyIRC " + target.get_nickname() + " H@ 0 " + target.get_realname();
+	get_replies(352, target, msg);
+	msg = parameters.front();
+	get_replies(315, target, msg);
+	// this->serv.send_msg(msg, target);
 }
 
 //  fucking basic just to make JOIN work
