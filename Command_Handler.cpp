@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Command_Handler.cpp                                :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: hbanthiy <hbanthiy@student.42.fr>          +#+  +:+       +#+        */
+/*   By: olabrecq <olabrecq@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/08/17 13:37:38 by hbanthiy          #+#    #+#             */
-/*   Updated: 2022/08/29 16:22:41 by hbanthiy         ###   ########.fr       */
+/*   Updated: 2022/08/30 14:42:58 by olabrecq         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,8 +23,10 @@ CommandHandler::CommandHandler(Server &_server): serv(_server)
 	this->handlers["USER"] = &CommandHandler::handle_user;
 	this->handlers["ADMIN"] = &CommandHandler::handle_admin;
 	this->handlers["TIME"] = &CommandHandler::handle_time;
-	this->handlers["PRIVMSG"] = &CommandHandler::handle_privmsg;
+	// this->handlers["PRIVMSG"] = &CommandHandler::handle_privmsg;
 	this->handlers["JOIN"] = &CommandHandler::handle_join;
+	this->handlers["WHO"] = &CommandHandler::handle_who;
+	this->handlers["MODE"] = &CommandHandler::handle_mode;
 	// this->handlers["DIE"] = &CommandHandler::handle_user;
 	/*
 		LUSERS
@@ -151,35 +153,35 @@ void	CommandHandler::handle_nick(Client &owner)
 	
 }
 
-void 	CommandHandler::handle_privmsg(Client &owner)
-{
+// void 	CommandHandler::handle_privmsg(Client &owner)
+// {
 
-	if (!this->parameters.size() || this->parameters.front() == "")
-		return get_replies(ERR_NORECIPIENT, owner, this->command);
-	if (this->parameters.size() == 1)
-		return get_replies(ERR_NOTEXTTOSEND, owner);
+// 	if (!this->parameters.size() || this->parameters.front() == "")
+// 		return get_replies(ERR_NORECIPIENT, owner, this->command);
+// 	if (this->parameters.size() == 1)
+// 		return get_replies(ERR_NOTEXTTOSEND, owner);
 
-	std::string targets = parameters.front(); //should be username or channel
-	std::list<std::string>::iterator it = ++this->parameters.begin();
-	std::string text = " :" + *it;
-	for (++it; it != parameters.cend(); ++it)
-		text += " " + *it;
-	std::string head = ":" + owner.get_nickname() + "!" + owner.get_username() + "@" + owner.get_hostname() + " PRIVMSG " ;
-	while (!targets.empty())
-	{
-		int pos = targets.find(",");
-		std::string curr_target = targets.substr(0, pos);
-		std::string msg = head + curr_target + text + END_DELIM;
-		int rv;
-		if (curr_target[0] == '#')
-			rv = this->serv.send_msg(msg, curr_target, owner); // put all the logic in the overloaded function 
-		else 
-			rv = this->serv.send_msg(msg, curr_target);
-		if (rv == ERR_NOSUCHNICK)
-			get_replies(rv, owner, curr_target);
-		targets.erase(0, (pos != -1) ? pos + 1 : pos);
-	}
-}
+// 	std::string targets = parameters.front(); //should be username or channel
+// 	std::list<std::string>::iterator it = ++this->parameters.begin();
+// 	std::string text = " :" + *it;
+// 	for (++it; it != parameters.cend(); ++it)
+// 		text += " " + *it;
+// 	std::string head = ":" + owner.get_nickname() + "!" + owner.get_username() + "@" + owner.get_hostname() + " PRIVMSG " ;
+// 	while (!targets.empty())
+// 	{
+// 		int pos = targets.find(",");
+// 		std::string curr_target = targets.substr(0, pos);
+// 		std::string msg = head + curr_target + text + END_DELIM;
+// 		int rv;
+// 		if (curr_target[0] == '#')
+// 			rv = this->serv.send_msg(msg, curr_target, owner); // put all the logic in the overloaded function 
+// 		else 
+// 			rv = this->serv.send_msg(msg, curr_target);
+// 		if (rv == ERR_NOSUCHNICK)
+// 			get_replies(rv, owner, curr_target);
+// 		targets.erase(0, (pos != -1) ? pos + 1 : pos);
+// 	}
+// }
 
 void 	CommandHandler::get_replies(int code, Client const &owner, std::string extra) const
 {
@@ -234,8 +236,21 @@ void 	CommandHandler::get_replies(int code, Client const &owner, std::string ext
 			break;
 		case RPL_AWAY:
 			msg += extra;
+		case RPL_WHOREPLY:
+			msg += extra + " :<hopcount> <real name>";
 			break;
-			
+		case RPL_ENDOFWHO:
+			msg += extra + " :End of WHO list";
+			break;
+		case RPL_ENDOFBANLIST:
+			msg += extra + " :End of channel ban list";
+			break;
+		case RPL_NAMREPLY:
+			msg += extra + " :Channel Create";
+			break;
+		case RPL_ENDOFNAMES:
+			msg += extra + " :End of NAMES list";
+			break;
 		case ERR_NORECIPIENT:
 			msg += ":No recepient given ( " + extra + ")";
 			break;
@@ -291,14 +306,44 @@ void CommandHandler::handle_admin(Client &target)
 
 void CommandHandler::handle_join(Client &target)
 {
-	// ERR_NEEDMOREPARAMS              ERR_BANNEDFROMCHAN
-    //        ERR_INVITEONLYCHAN              ERR_BADCHANNELKEY
-    //        ERR_CHANNELISFULL               ERR_BADCHANMASK
-    //        ERR_NOSUCHCHANNEL               ERR_TOOMANYCHANNELS
-    //        ERR_TOOMANYTARGETS              ERR_UNAVAILRESOURCE
+	//// ERR_NEEDMOREPARAMS
+    //// ERR_NOSUCHCHANNEL
+	
+	// ERR_BANNEDFROMCHAN
+    //        ERR_INVITEONLYCHAN
+	        // ERR_BADCHANNELKEY
+    //        ERR_CHANNELISFULL
+	        // ERR_BADCHANMASK
+	        // ERR_TOOMANYCHANNELS
+    //     ERR_TOOMANYTARGETS
+	        // ERR_UNAVAILRESOURCE
     //        RPL_TOPIC
 	if (!this->parameters.size())
-		get_replies(ERR_NEEDMOREPARAMS, target);
-	if (!serv.check_channel(parameters.front()))
-		get_replies(ERR_NOSUCHCHANNEL, target); //403
+		return get_replies(ERR_NEEDMOREPARAMS, target);
+	
+	std::list<std::string>::iterator it;
+	for(it = parameters.begin(); it != parameters.end(); it++)
+	{
+		if (!serv.check_channel(*it)) 
+		{
+			printf("yeeehhaaa\n");
+			Channel new_chan(*it, serv);
+			get_replies(353, target);
+			get_replies(366, target);
+		}
+	}
+	
+}
+
+// fucking basic just to make JOIN work
+void CommandHandler::handle_who(Client &target)
+{
+	get_replies(352, target);
+	get_replies(315, target);
+}
+
+//  fucking basic just to make JOIN work
+void CommandHandler::handle_mode(Client &target)
+{
+	get_replies(368, target);
 }

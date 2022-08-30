@@ -118,6 +118,7 @@ std::vector<Client *> const &Server::get_all_clients()
 {
 	return (this->list_of_all_clients);
 }
+
 Client const		&Server::get_client(std::string nickname) const
 {
 	size_t 	i = 0;
@@ -143,10 +144,7 @@ void 		Server::disconnect_client(std::string nick)
 	}
 }
 
-CommandHandler Server::getHandler() const
-{
-	return (_handler);
-}
+CommandHandler Server::getHandler() const { return (_handler); }
 
 void 		Server::disconnect_client(int index)
 {
@@ -232,19 +230,23 @@ int		Server::send_msg(std::string &msg, std::string target, Client const &owner)
 
 Channel	 &Server::get_channel(std::string channelName)
 {
-
 	return (list_of_all_channels[channelName]);
 }
 
-bool 	Server::check_channel(std::string target) const 
+bool 	Server::check_channel(std::string target) const
 {
 	if (list_of_all_channels.find(target) != list_of_all_channels.end())
-		return (true);
-	else 
+		return true;
+	else
 		return false;
 }
 
-// Exceptions 
+void Server::create_channel(std::string ch_name)
+{
+	list_of_all_channels[ch_name];
+}
+
+// Exceptions
 const char*	Server::SocketFailException::what() const throw()
 {
 	return "Error:  Socket Failed\n";

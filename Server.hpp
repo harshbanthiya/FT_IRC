@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Server.hpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: hbanthiy <hbanthiy@student.42.fr>          +#+  +:+       +#+        */
+/*   By: olabrecq <olabrecq@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/08/15 19:55:13 by hbanthiy          #+#    #+#             */
-/*   Updated: 2022/08/29 16:12:29 by hbanthiy         ###   ########.fr       */
+/*   Updated: 2022/08/30 13:29:30 by olabrecq         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,6 +29,7 @@
 #include <fstream>
 #include <netinet/in.h>
 #include <map>
+#include <list>
 #include <unordered_map>
 
 #include "Client.hpp"
@@ -62,25 +63,27 @@ class Server
 
 			void						send_msg(std::string& msg, Client const &target) const;
 			int							send_msg(std::string& msg, std::string target) const;
-			int 						send_msg(std::string& msg, std::string target, Client const &owner); // Added for channel priv
+			// int 						send_msg(std::string& msg, std::string target, Client const &owner); // Added for channel priv
 			bool						check_channel(std::string target) const;
 			Channel						&get_channel(std::string channelName);
-			const std::map<std::string, Channel> &get_channel_list()const;
-			
+			const std::vector<std::string, Channel> &get_channel_list() const ;
 
+			void						create_channel(std::string ch_name);
 		// Setters 
-			bool 						add_channel(Channel ch); // Implement later once channel class has all the getters and setters
+			// bool 						add_channel(Channel ch); // Implement later once channel class has all the getters and setters
 
 		private:
 		
-			std::string					port; 
+			std::string					port;
 			int 						sock_fd;
 			time_t						last_ping;
 			std::string 				createdTime;
 			std::vector<struct pollfd> 	pfds;
 			std::string 				passwrd;
 			std::vector<Client *> 		list_of_all_clients;
+			
 			std::map<std::string, Channel>	list_of_all_channels;
+			
 			void 						acceptClient();
 			CommandHandler 				_handler; 
 			void 						add_fd(int new_fd);

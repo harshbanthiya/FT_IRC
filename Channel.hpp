@@ -6,7 +6,7 @@
 /*   By: hbanthiy <hbanthiy@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/08/26 08:47:31 by sheeed            #+#    #+#             */
-/*   Updated: 2022/08/29 16:19:56 by hbanthiy         ###   ########.fr       */
+/*   Updated: 2022/08/30 09:20:31 by olabrecq         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,16 +32,16 @@ class Channel
 
 		// Will need a user_list , a ban_list and an invite list 
 		Channel();
-		Channel(std::string name, Server &_erv);
+		Channel(std::string name, Server &_serv);
 		Channel(std::string name, std::string key, Server &serv);
 		~Channel();
 
-		std::string  	get_name(void) { return _name; }
-		std::string  	get_key(void) { return _key; }
-		std::string  	get_topic(void) { return _topic; }
-		std::string		get_mode(void) { return _modes; }
-		Server* 		get_server(void) { return _serv; }
-		bool is_user_in_channel(std::string nickname) const;
+		std::string  	get_name(void) const { return _name; }
+		std::string  	get_key(void) const { return _key; }
+		std::string  	get_topic(void) const { return _topic; }
+		std::string		get_mode(void) const { return _modes; }
+		Server* 		get_server(void) const { return _serv; }
+		bool is_user_in_channel(std::string nickname);
 		const std::vector<std::pair<char, Client *> > &getClients() const;
 		//void 	message_all_users();
 

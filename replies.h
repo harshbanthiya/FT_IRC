@@ -6,7 +6,7 @@
 /*   By: olabrecq <olabrecq@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/08/24 13:21:32 by hbanthiy          #+#    #+#             */
-/*   Updated: 2022/08/28 19:50:12 by olabrecq         ###   ########.fr       */
+/*   Updated: 2022/08/30 14:21:03 by olabrecq         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,14 +18,21 @@
 #define RPL_CREATED             3
 #define RPL_MYINFO              4
 
-#define RPL_ADMINME 256
-#define RPL_ADMINLOC1 257
-#define RPL_ADMINLOC2 258
-#define RPL_ADMINEMAIL 259
+#define RPL_ADMINME 			256
+#define RPL_ADMINLOC1 			257
+#define RPL_ADMINLOC2 			258
+#define RPL_ADMINEMAIL 			259
 
-#define RPL_AWAY	301    
-            //   "<nick> :<away message>" 
-#define RPL_TIME 391
+#define RPL_AWAY				301    
+#define RPL_TIME 				391
+
+#define RPL_WHOREPLY			352
+#define RPL_ENDOFWHO			315
+
+#define RPL_NAMREPLY 			353
+#define RPL_ENDOFNAMES			366
+
+#define RPL_ENDOFBANLIST		368
 
 #define PRINT_SCREEN            372
 
