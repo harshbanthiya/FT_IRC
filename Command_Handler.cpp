@@ -153,35 +153,35 @@ void	CommandHandler::handle_nick(Client &owner)
 	
 }
 
-// void 	CommandHandler::handle_privmsg(Client &owner)
-// {
+ void 	CommandHandler::handle_privmsg(Client &owner)
+ {
 
-// 	if (!this->parameters.size() || this->parameters.front() == "")
-// 		return get_replies(ERR_NORECIPIENT, owner, this->command);
-// 	if (this->parameters.size() == 1)
-// 		return get_replies(ERR_NOTEXTTOSEND, owner);
+ 	if (!this->parameters.size() || this->parameters.front() == "")
+ 		return get_replies(ERR_NORECIPIENT, owner, this->command);
+ 	if (this->parameters.size() == 1)
+ 		return get_replies(ERR_NOTEXTTOSEND, owner);
 
-// 	std::string targets = parameters.front(); //should be username or channel
-// 	std::list<std::string>::iterator it = ++this->parameters.begin();
-// 	std::string text = " :" + *it;
-// 	for (++it; it != parameters.cend(); ++it)
-// 		text += " " + *it;
-// 	std::string head = ":" + owner.get_nickname() + "!" + owner.get_username() + "@" + owner.get_hostname() + " PRIVMSG " ;
-// 	while (!targets.empty())
-// 	{
-// 		int pos = targets.find(",");
-// 		std::string curr_target = targets.substr(0, pos);
-// 		std::string msg = head + curr_target + text + END_DELIM;
-// 		int rv;
-// 		if (curr_target[0] == '#')
-// 			rv = this->serv.send_msg(msg, curr_target, owner); // put all the logic in the overloaded function 
-// 		else 
-// 			rv = this->serv.send_msg(msg, curr_target);
-// 		if (rv == ERR_NOSUCHNICK)
-// 			get_replies(rv, owner, curr_target);
-// 		targets.erase(0, (pos != -1) ? pos + 1 : pos);
-// 	}
-// }
+ 	std::string targets = parameters.front(); //should be username or channel
+ 	std::list<std::string>::iterator it = ++this->parameters.begin();
+ 	std::string text = " :" + *it;
+ 	for (++it; it != parameters.cend(); ++it)
+ 		text += " " + *it;
+ 	std::string head = ":" + owner.get_nickname() + "!" + owner.get_username() + "@" + owner.get_hostname() + " PRIVMSG " ;
+ 	while (!targets.empty())
+ 	{
+ 		int pos = targets.find(",");
+ 		std::string curr_target = targets.substr(0, pos);
+		std::string msg = head + curr_target + text + END_DELIM;
+ 		int rv;
+ 		if (curr_target[0] == '#')
+			rv = this->serv.send_msg(msg, curr_target, owner); // put all the logic in the overloaded function
+ 		else
+ 			rv = this->serv.send_msg(msg, curr_target);
+ 		if (rv == ERR_NOSUCHNICK)
+ 			get_replies(rv, owner, curr_target);
+ 		targets.erase(0, (pos != -1) ? pos + 1 : pos);
+ 	}
+ }
 
 void 	CommandHandler::get_replies(int code, Client const &owner, std::string extra) const
 {
