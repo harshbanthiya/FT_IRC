@@ -6,7 +6,7 @@
 /*   By: olabrecq <olabrecq@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/08/17 13:37:38 by hbanthiy          #+#    #+#             */
-/*   Updated: 2022/08/31 12:40:13 by olabrecq         ###   ########.fr       */
+/*   Updated: 2022/08/31 12:46:30 by olabrecq         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,7 +23,7 @@ CommandHandler::CommandHandler(Server &_server): serv(_server)
 	this->handlers["USER"] = &CommandHandler::handle_user;
 	this->handlers["ADMIN"] = &CommandHandler::handle_admin;
 	this->handlers["TIME"] = &CommandHandler::handle_time;
-	// this->handlers["PRIVMSG"] = &CommandHandler::handle_privmsg;
+	this->handlers["PRIVMSG"] = &CommandHandler::handle_privmsg;
 	this->handlers["JOIN"] = &CommandHandler::handle_join;
 	this->handlers["WHO"] = &CommandHandler::handle_who;
 	this->handlers["MODE"] = &CommandHandler::handle_mode;
@@ -170,9 +170,9 @@ void	CommandHandler::handle_nick(Client &owner)
  		std::string curr_target = targets.substr(0, pos);
 		std::string msg = head + curr_target + text + END_DELIM;
  		int rv;
- 		if (curr_target[0] == '#')
-			rv = this->serv.send_msg(msg, curr_target, owner); // put all the logic in the overloaded function
- 		else
+ 		// if (curr_target[0] == '#')
+			//rv = this->serv.send_msg(msg, curr_target, owner); // put all the logic in the overloaded function
+ 		// else
  			rv = this->serv.send_msg(msg, curr_target);
  		if (rv == ERR_NOSUCHNICK)
  			get_replies(rv, owner, curr_target);
@@ -266,6 +266,12 @@ void 	CommandHandler::get_replies(int code, Client const &owner, std::string ext
 		case ERR_NOSUCHCHANNEL:
 			msg += extra + " :No such channel";
 			break;
+		case ERR_UNKNOWNMODE:
+			msg += extra + " :is unknown mode char to me";
+			break;
+		case ERR_CHANOPRIVSNEEDED:
+			msg += extra + " :You're not channel operator";
+			break;
 		
     }
 	msg += END_DELIM;
@@ -307,11 +313,11 @@ void CommandHandler::handle_admin(Client &target)
 	get_replies(RPL_ADMINEMAIL,target, "E-Mail   - routing@");
 }
 
-void CommandHandler::handle_join(Client &target)
+void CommandHandler::handle_join(Client &owner)
 {
 
 	if (!this->parameters.size())
-		return get_replies(ERR_NEEDMOREPARAMS, target);
+		return get_replies(ERR_NEEDMOREPARAMS, owner);
 	int 	pos;
 	std::list<std::string> names;
 
@@ -323,14 +329,14 @@ void CommandHandler::handle_join(Client &target)
 	}
 	parameters.pop_front();
 	if (names.front()[0] != '#')
-		return get_replies(ERR_NOSUCHCHANNEL, target, names.front());
+		return get_replies(ERR_NOSUCHCHANNEL, owner, names.front());
 	while (!names.empty())
 	{
 		if (!serv.check_channel(names.front())) 
 		{
 			printf("yeeehhaaa\n");
 			Channel new_chan(names.front(), serv);
-			serv.create_channel(names.front());// serv.add_channel(ch) -> need implemente add channel
+			// if (serv.add_channel(new_chan)); implement
 			
 		}
 
@@ -368,8 +374,8 @@ void CommandHandler::handle_mode(Client &owner)
 		Channel &ch = serv.get_channel(target);
 		if (this->parameters.size() == 1)
 		{
-			get_replies(RPL_CHANNELMODEIS, owner, target + " + " + serv.get_channel(target).get_modes());
-			get_replies(RPL_CREATIONTIME, owner, target + " " + serv.get_channel(target).getcreationTime();
+			get_replies(RPL_CHANNELMODEIS, owner, target + "+" + serv.get_channel(target).get_modes());
+			get_replies(RPL_CREATIONTIME, owner, target +  " " + serv.get_channel(target).get_creation_time());
 			return ;
 		}
 		parameters.pop_front();
@@ -378,7 +384,7 @@ void CommandHandler::handle_mode(Client &owner)
 		char type = (mode[0] == '-' || mode[0] == '+') ? mode[0] : 0;
 		for(size_t i = (type != 0); i < mode.size(); i++)
 		{
-			if (ch.addMode(owner, mode[i], type, parameters.front()))
+			if (ch.add_mode(owner, mode[i], type, parameters.front()))
 				parameters.pop_front();
 		}
 	}

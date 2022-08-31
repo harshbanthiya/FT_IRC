@@ -6,7 +6,7 @@
 /*   By: olabrecq <olabrecq@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/08/24 13:21:32 by hbanthiy          #+#    #+#             */
-/*   Updated: 2022/08/31 11:57:49 by olabrecq         ###   ########.fr       */
+/*   Updated: 2022/08/31 12:46:10 by olabrecq         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,7 +35,6 @@
 #define RPL_TIME 				391
 
 
-
 #define ERR_NOSUCHNICK          401
 #define ERR_NOSUCHCHANNEL		403
 #define ERR_NORECIPIENT         411
@@ -45,6 +44,8 @@
 #define ERR_NEEDMOREPARAMS      461
 #define ERR_ALREADYREGISTERED   462
 #define ERR_PASSWDMISMATCH      464
+#define ERR_UNKNOWNMODE			472
+#define ERR_CHANOPRIVSNEEDED	482
 
 #define END_DELIM       "\r\n"
 /*

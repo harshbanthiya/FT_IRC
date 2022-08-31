@@ -6,7 +6,7 @@
 /*   By: olabrecq <olabrecq@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/08/15 19:08:30 by hbanthiy          #+#    #+#             */
-/*   Updated: 2022/08/31 11:51:11 by olabrecq         ###   ########.fr       */
+/*   Updated: 2022/08/31 12:40:56 by olabrecq         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -55,7 +55,7 @@ std::string	 		Client::get_nickname(void) const {return nickname;}
 std::string	 		Client::get_username(void) const {return username;}
 std::string	 		Client::get_realname(void) const {return realname;}
 std::string	 		Client::get_hostname(void) const {return hostname;}
-int					Client::get_socket(void) const{ return (this->socket_fd); }
+int					Client::get_socket(void) const{ return (this->socket_fd); };
 std::string const 	&Client::get_modes() const{ return (this->modes); }
 std::vector<std::string> const &Client::get_channels() const{return (channels);}
 
