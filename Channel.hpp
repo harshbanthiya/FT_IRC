@@ -6,7 +6,7 @@
 /*   By: hbanthiy <hbanthiy@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/08/26 08:47:31 by sheeed            #+#    #+#             */
-/*   Updated: 2022/08/30 17:41:39 by hbanthiy         ###   ########.fr       */
+/*   Updated: 2022/08/31 12:18:24 by hbanthiy         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,7 +41,7 @@ class Channel
 		std::string  	get_topic(void) const { return _topic; }
 		std::string		get_mode(void) const { return _modes; }
 		Server* 		get_server(void) const { return _serv; }
-		bool 			is_user_in_channel(std::string nickname);
+		bool 			is_user_in_channel(std::string nickname)const;
 		const std::vector<std::pair<char, Client *> > &getClients() const;
 		//void 	message_all_users();
 
@@ -49,6 +49,17 @@ class Channel
 		bool 	canSendMsg(Client const &owner) const; // Also needs to be added 
 		void 	add_client( Client *new_client );
 
+		// Mode stuff
+		std::string const	&get_modes()const;
+		std::string 		get_creation_time() const;
+		bool				add_mode(Client &owner, char m, char mode, std::string param = "");
+		void 				add_mode(char mode);
+		bool 				is_operator(Client const &owner) const;
+
+		// Actual Mode functions 
+		bool 				mode_invite(Client &owner, char mode);
+		bool 				mode_ban(Client &owner, char mode, std::string params);
+		bool 				mode_operator(Client &owner, char mode, std::string params);
 
 		void	set_name( std::string name ) { _name = name; }
 		void	set_key( std::string key ) { _key = key; }

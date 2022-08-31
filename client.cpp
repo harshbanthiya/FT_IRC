@@ -6,7 +6,7 @@
 /*   By: hbanthiy <hbanthiy@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/08/15 19:08:30 by hbanthiy          #+#    #+#             */
-/*   Updated: 2022/08/30 16:23:33 by hbanthiy         ###   ########.fr       */
+/*   Updated: 2022/08/31 12:26:37 by hbanthiy         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,7 +32,7 @@ void 		Client::add_channel(std::string name)
 
 void 		Client::remove_channel(std::string name)
 {
-	channels.erase(std::find(channels.begin(), channels_end(), name));
+	channels.erase(std::find(channels.begin(), channels.end(), name));
 }
 
 
@@ -56,7 +56,7 @@ std::string	 		Client::get_username(void) const {return username;}
 std::string	 		Client::get_realname(void) const {return realname;}
 std::string	 		Client::get_hostname(void) const {return hostname;}
 int					Client::get_socket(void) const{ return (this->socket_fd); };
-std::string const 	&Client::get_modes() const{ return (this->_modes); }
+std::string const 	&Client::get_modes() const{ return (this->modes); }
 std::vector<std::string> const &Client::get_channels() const{return (channels);}
 
 

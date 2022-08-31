@@ -6,7 +6,7 @@
 /*   By: hbanthiy <hbanthiy@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/08/26 08:56:40 by hbanthiy          #+#    #+#             */
-/*   Updated: 2022/08/30 17:03:29 by hbanthiy         ###   ########.fr       */
+/*   Updated: 2022/08/31 12:25:27 by hbanthiy         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -45,6 +45,10 @@ const std::vector<std::pair<char, Client *> > &Channel::getClients() const {
 	return _clients;
 }
 
+std::string const & Channel::get_modes() const { return (this->_modes); }
+
+std::string 	Channel::get_creation_time() const{ return(std::to_string(_creation_time));}
+
 void Channel::send_to_all(std::string msg) const {
 	for (size_t i = 0; i < this->getClients().size(); i++)
 	{
@@ -76,7 +80,82 @@ void 	Channel::add_client( Client *new_client )
 	}
 }
 
-Channel::~Channel() {
-
+bool 	Channel::add_mode(Client &owner, char m, char mode, std::string params)
+{
+	if (!mode)
+		mode = '+';
+	switch(m)
+	{
+		case 'b':
+			return (mode_ban(owner, mode, params));
+		case 'i':
+			return (mode_invite(owner, mode));
+		case 'o':
+			return (mode_operator(owner, mode, params));
+	}
+	_serv->getHandler().get_replies(ERR_UNKNOWNMODE, owner, std::string(1, m));
+	return (false);
 }
 
+
+// MODES 
+
+
+
+bool	Channel::mode_ban(Client &owner, char mode, std::string params)
+{
+	std::string 	msg;
+
+	if (params == "" && mode == '-')
+		return false;
+	else if (params == "")
+		return (false);
+	else if (mode == '+')
+	//	ban(owner, params);   Need to make a ban list to implement these 
+	// else 
+	//	unban(owner, params);
+	return (true);
+}
+
+
+
+bool				Channel::mode_operator(Client &owner, char mode, std::string params)
+{
+	std::string msg;
+	if (!this->is_operator(owner))
+		_serv->getHandler().get_replies(ERR_CHANOPRIVSNEEDED, owner, _name);
+	else if (params == "")
+		return false;
+	else 
+	{
+		size_t i = 0;
+		for (; i< _clients.size(); i++)
+			if (*_clients[i].second == params)
+				break;
+		if (i < _clients.size())
+		{
+			if (mode == '+')
+				_clients[i].first = '@';
+			else
+				_clients[i].first = '\0';
+			msg = ":" + owner.get_nickname() + "!" +  owner.get_username() + '@' + owner.get_hostname() + 
+						" MODE " + _name + " " + mode +"o " + params + END_DELIM;
+			this->send_to_all(msg);
+		}
+		else
+			_serv->getHandler().get_replies(ERR_NOSUCHNICK, owner, params);
+	}
+	return true;
+}
+
+
+bool		Channel::is_operator(Client const &user) const
+{
+	u_int		i = 0;
+	for (; i < _clients.size(); i++)
+	{
+		if (_clients[i].first == '@' && user == _clients[i].second->get_nickname())
+			return (true);
+		return (false);
+	}
+}

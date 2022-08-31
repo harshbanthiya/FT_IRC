@@ -191,7 +191,7 @@ bool Server::checkPass(std::string &pass){return (pass == this->passwrd);}
 
 void 	Server::send_msg(std::string &msg, Client const &target) const
 {
-	if (send(target.getSocket(), msg.c_str(), msg.length(), 0) < 0)
+	if (send(target.get_socket(), msg.c_str(), msg.length(), 0) < 0)
 	 	perror("send()");
 }
 
@@ -212,22 +212,22 @@ int 	Server::send_msg(std::string &msg, std::string target) const
 		return (ERR_NOSUCHNICK);
 	return (0);
 }
-
+/*
 int		Server::send_msg(std::string &msg, std::string target, Client const &owner)
 {
 	if (check_channel(target))
 	{
 		Channel& tmp_chan = get_channel(target);  // needs to implemented
-		if (tmp_chan.canSendMsg(owner)) // needs to be implemented based on user rights 
-			tmp_chan.send_to_all(msg); // Also needs to be added
-		else 
+	//	if (tmp_chan.canSendMsg(owner)) // needs to be implemented based on user rights 
+	//		tmp_chan.send_to_all(msg); // Also needs to be added
+		// else 
 			return (0);
 	}
 	else 
 		return (ERR_NOSUCHNICK);
 	return (0);
 }
-
+*/
 Channel	 &Server::get_channel(std::string channelName)
 {
 	return (list_of_all_channels[channelName]);

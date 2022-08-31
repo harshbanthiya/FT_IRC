@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Command_Handler.hpp                                :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: olabrecq <olabrecq@student.42.fr>          +#+  +:+       +#+        */
+/*   By: hbanthiy <hbanthiy@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/08/16 23:58:30 by sheeed            #+#    #+#             */
-/*   Updated: 2022/08/30 14:18:33 by olabrecq         ###   ########.fr       */
+/*   Updated: 2022/08/31 12:27:07 by hbanthiy         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -46,7 +46,7 @@
 			void 	welcomescreen(Client &owner);
 			void 	handle_time(Client &owner);
 			void 	handle_admin(Client &owner);
-			// void 	handle_privmsg(Client &owner);
+			void 	handle_privmsg(Client &owner);
 			void 	handle_join(Client &owner);
 			void 	handle_who(Client &owner);
 			void 	handle_mode(Client &owner);
