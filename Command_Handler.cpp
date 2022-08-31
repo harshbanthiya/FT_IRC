@@ -6,7 +6,7 @@
 /*   By: olabrecq <olabrecq@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/08/17 13:37:38 by hbanthiy          #+#    #+#             */
-/*   Updated: 2022/08/30 16:16:50 by olabrecq         ###   ########.fr       */
+/*   Updated: 2022/08/30 17:14:33 by olabrecq         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -237,7 +237,7 @@ void 	CommandHandler::get_replies(int code, Client const &owner, std::string ext
 		case RPL_AWAY:
 			msg += extra;
 		case RPL_WHOREPLY:
-			msg += extra + " :<hopcount> <real name>";
+			msg += extra;// + " :<hopcount> <real name>";
 			break;
 		case RPL_ENDOFWHO:
 			msg += extra + " :End of /WHO list";
@@ -328,7 +328,7 @@ void CommandHandler::handle_join(Client &target)
 		{
 			// printf("yeeehhaaa\n");
 			Channel new_chan(*it, serv);
-			std::string msg = target.get_nickname() + " JOIN " + *it + " * " + target.get_realname() + "\n";
+			std::string msg = *it + " " + target.get_nickname() + " JOIN " + *it + " * " + target.get_realname() + "\n";
 			serv.send_msg(msg, target);
 			msg = target.get_nickname() + " = " + *it + " " + "@" + target.get_nickname() + "!" + target.get_username() + target.get_hostname();
 			get_replies(353, target, msg);
@@ -344,6 +344,9 @@ void CommandHandler::handle_who(Client &target)
 {
 //  352 olabrecq #jani ~olabrecq freenode-g2q.k15.7sskld.IP *.freenode.net olabrecq H@ 0 Olivier Labrecque-lacasse
 //  315 olabrecq #jani End of /WHO list.
+	std::list<std::string>::iterator it;
+	for(it = parameters.begin(); it != parameters.end(); it++)
+		printf("param = %hhd\n", *it->c_str());
 	std::string msg = parameters.front() + " ~" + target.get_nickname() + " " + target.get_hostname() + "*MyIRC " + target.get_nickname() + " H@ 0 " + target.get_realname();
 	get_replies(352, target, msg);
 	msg = parameters.front();
