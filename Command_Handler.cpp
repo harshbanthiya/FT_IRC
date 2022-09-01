@@ -6,7 +6,7 @@
 /*   By: olabrecq <olabrecq@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/08/17 13:37:38 by hbanthiy          #+#    #+#             */
-/*   Updated: 2022/08/31 12:46:30 by olabrecq         ###   ########.fr       */
+/*   Updated: 2022/09/01 11:09:59 by olabrecq         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,11 +29,10 @@ CommandHandler::CommandHandler(Server &_server): serv(_server)
 	this->handlers["MODE"] = &CommandHandler::handle_mode;
 	// this->handlers["DIE"] = &CommandHandler::handle_user;
 	/*
-		LUSERS
+			LUSERS
 		PART
-		PRIVMSG
 		AWAY
-		QUIT
+			QUIT
 		KICK
 		NAMES
 		INVITE
@@ -320,6 +319,7 @@ void CommandHandler::handle_join(Client &owner)
 		return get_replies(ERR_NEEDMOREPARAMS, owner);
 	int 	pos;
 	std::list<std::string> names;
+	std::list<std::string>::iterator it;
 
 	while (parameters.front() != "")
 	{
@@ -330,14 +330,13 @@ void CommandHandler::handle_join(Client &owner)
 	parameters.pop_front();
 	if (names.front()[0] != '#')
 		return get_replies(ERR_NOSUCHCHANNEL, owner, names.front());
-	while (!names.empty())
+	for (it = names.begin(); it != names.end(); it++)//while (!names.empty()) -> infini loop bad idea
 	{
 		if (!serv.check_channel(names.front())) 
 		{
 			printf("yeeehhaaa\n");
 			Channel new_chan(names.front(), serv);
 			// if (serv.add_channel(new_chan)); implement
-			
 		}
 
 	}
@@ -345,7 +344,7 @@ void CommandHandler::handle_join(Client &owner)
 }
 	
 
-
+ 
 // fucking basic just to make JOIN work
 void CommandHandler::handle_who(Client &target)
 {
@@ -355,7 +354,7 @@ void CommandHandler::handle_who(Client &target)
 	for(it = parameters.begin(); it != parameters.end(); it++)
 		printf("param = %hhd\n", *it->c_str());
 	std::string msg = parameters.front() + " ~" + target.get_nickname() + " " + target.get_hostname() + "*MyIRC " + target.get_nickname() + " H@ 0 " + target.get_realname();
-	get_replies(RPL_WHOREPLY, target, msg);
+	get_replies(RPL_WHOREPLY, target, msg);//352
 	msg = parameters.front();
 	get_replies(RPL_ENDOFWHO, target, msg);
 	// this->serv.send_msg(msg, target);

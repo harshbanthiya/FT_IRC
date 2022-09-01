@@ -6,7 +6,7 @@
 /*   By: olabrecq <olabrecq@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/08/26 08:56:40 by hbanthiy          #+#    #+#             */
-/*   Updated: 2022/08/31 12:44:17 by olabrecq         ###   ########.fr       */
+/*   Updated: 2022/08/31 15:35:45 by olabrecq         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -89,8 +89,8 @@ bool 	Channel::add_mode(Client &owner, char m, char mode, std::string params)
 	{
 		case 'b':
 			return (mode_ban(owner, mode, params));
-		case 'i':
-			return (mode_invite(owner, mode));
+		// case 'i':
+			// return (mode_invite(owner, mode));
 		case 'o':
 			return (mode_operator(owner, mode, params));
 	}
@@ -106,16 +106,21 @@ bool 	Channel::add_mode(Client &owner, char m, char mode, std::string params)
 bool	Channel::mode_ban(Client &owner, char mode, std::string params)
 {
 	std::string 	msg;
-
-	if (params == "" && mode == '-')
+	(void)owner;
+	if (params == "" && mode == '-') {
+		
 		return false;
-	else if (params == "")
+	}
+	else if (params == "") {
 		return (false);
-	else if (mode == '+')
+	}
+	else if (mode == '+') {
+		return (true);
+	}
+	return true;
 	//	ban(owner, params);   Need to make a ban list to implement these 
 	// else 
 	//	unban(owner, params);
-	return (true);
 }
 
 
@@ -157,6 +162,6 @@ bool		Channel::is_operator(Client const &user) const
 	{
 		if (_clients[i].first == '@' && user == _clients[i].second->get_nickname())
 			return (true);
-		return (false);
 	}
+	return (false);
 }

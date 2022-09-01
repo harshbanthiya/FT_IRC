@@ -6,7 +6,7 @@
 /*   By: olabrecq <olabrecq@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/08/24 13:21:32 by hbanthiy          #+#    #+#             */
-/*   Updated: 2022/08/31 12:46:10 by olabrecq         ###   ########.fr       */
+/*   Updated: 2022/08/31 14:45:14 by olabrecq         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,20 +23,19 @@
 #define RPL_ADMINLOC2 			258
 #define RPL_ADMINEMAIL 			259
 
+#define RPL_ENDOFWHO			315//who
 #define RPL_AWAY				301
-#define RPL_ENDOFWHO			315
 #define RPL_CHANNELMODEIS       324
 #define RPL_CREATIONTIME		329  
-#define RPL_WHOREPLY			352
+#define RPL_WHOREPLY			352//who
 #define RPL_NAMREPLY 			353
 #define RPL_ENDOFNAMES			366
-#define RPL_ENDOFBANLIST		368
+#define RPL_ENDOFBANLIST		368//modes
 #define PRINT_SCREEN            372
 #define RPL_TIME 				391
 
-
 #define ERR_NOSUCHNICK          401
-#define ERR_NOSUCHCHANNEL		403
+#define ERR_NOSUCHCHANNEL		403//who
 #define ERR_NORECIPIENT         411
 #define ERR_NOTEXTTOSEND        412
 #define ERR_NONICKNAMEGIVEN     431
