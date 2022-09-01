@@ -6,7 +6,7 @@
 /*   By: hbanthiy <hbanthiy@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/08/24 13:21:32 by hbanthiy          #+#    #+#             */
-/*   Updated: 2022/08/30 16:44:06 by hbanthiy         ###   ########.fr       */
+/*   Updated: 2022/09/01 13:18:52 by hbanthiy         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,6 +27,7 @@
 #define RPL_ENDOFWHO			315
 #define RPL_CHANNELMODEIS       324
 #define RPL_CREATIONTIME		329  
+#define RPL_TOPIC               332
 #define RPL_WHOREPLY			352
 #define RPL_NAMREPLY 			353
 #define RPL_ENDOFNAMES			366
@@ -45,7 +46,9 @@
 #define ERR_NEEDMOREPARAMS      461
 #define ERR_ALREADYREGISTERED   462
 #define ERR_PASSWDMISMATCH      464
-
+#define ERR_UNKNOWNMODE		    472
+#define ERR_BADCHANNELKEY		475 
+#define ERR_CHANOPRIVSNEEDED	482
 #define END_DELIM       "\r\n"
 /*
 std::string ERR_NOORIGIN() { return ":No origin specified"; }

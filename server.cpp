@@ -212,22 +212,32 @@ int 	Server::send_msg(std::string &msg, std::string target) const
 		return (ERR_NOSUCHNICK);
 	return (0);
 }
-/*
+
 int		Server::send_msg(std::string &msg, std::string target, Client const &owner)
 {
 	if (check_channel(target))
 	{
 		Channel& tmp_chan = get_channel(target);  // needs to implemented
-	//	if (tmp_chan.canSendMsg(owner)) // needs to be implemented based on user rights 
-	//		tmp_chan.send_to_all(msg); // Also needs to be added
-		// else 
+		if (tmp_chan.canSendMsg(owner)) // needs to be implemented based on user rights 
+			tmp_chan.send_to_all(msg); // Also needs to be added
+		else 
 			return (0);
 	}
 	else 
 		return (ERR_NOSUCHNICK);
 	return (0);
 }
-*/
+
+bool 			Server::add_channel(Channel ch)
+{
+	if (list_of_all_channels.find(ch.get_name()) == list_of_all_channels.end())
+	{
+		list_of_all_channels.insert(std::pair<std::string, Channel>(ch.get_name(), ch));
+		return (true);
+	}
+	return (false);
+}
+
 Channel	 &Server::get_channel(std::string channelName)
 {
 	return (list_of_all_channels[channelName]);
