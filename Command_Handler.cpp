@@ -6,7 +6,7 @@
 /*   By: hbanthiy <hbanthiy@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/08/17 13:37:38 by hbanthiy          #+#    #+#             */
-/*   Updated: 2022/09/01 13:24:35 by hbanthiy         ###   ########.fr       */
+/*   Updated: 2022/09/01 15:36:40 by hbanthiy         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -173,9 +173,9 @@ void	CommandHandler::handle_nick(Client &owner)
  		std::string curr_target = targets.substr(0, pos);
 		std::string msg = head + curr_target + text + END_DELIM;
  		int rv;
- 		// if (curr_target[0] == '#')
-			//rv = this->serv.send_msg(msg, curr_target, owner); // put all the logic in the overloaded function
- 	//	else
+ 		if (curr_target[0] == '#')
+			rv = this->serv.send_msg(msg, curr_target, owner); // put all the logic in the overloaded function
+ 		else
  			rv = this->serv.send_msg(msg, curr_target);
  		if (rv == ERR_NOSUCHNICK)
  			get_replies(rv, owner, curr_target);
