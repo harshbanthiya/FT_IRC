@@ -6,7 +6,7 @@
 /*   By: hbanthiy <hbanthiy@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/08/17 13:37:38 by hbanthiy          #+#    #+#             */
-/*   Updated: 2022/09/05 14:59:20 by hbanthiy         ###   ########.fr       */
+/*   Updated: 2022/09/05 15:19:25 by hbanthiy         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,7 +25,7 @@ CommandHandler::CommandHandler(Server &_server): serv(_server)
 	this->handlers["TIME"] = &CommandHandler::handle_time;
 	this->handlers["PRIVMSG"] = &CommandHandler::handle_privmsg;
 	this->handlers["JOIN"] = &CommandHandler::handle_join;
-	this->handlers["WHO"] = &CommandHandler::handle_who;
+	//this->handlers["WHO"] = &CommandHandler::handle_who;
 	this->handlers["MODE"] = &CommandHandler::handle_mode;
 	this->handlers["INVITE"] = &CommandHandler::handle_invite;
 	this->handlers["KICK"] = &CommandHandler::handle_kick;
@@ -63,7 +63,7 @@ void 	CommandHandler::parse_cmd(std::string cmd_line)
 				break ;
 			}
 			parameters.push_back(cmd_line);
-			cmd_line.erase();
+			cmd_line.erase(0);
 		}
 		else 
 		{
@@ -82,9 +82,9 @@ void CommandHandler::handle(std::string cmd_line, Client &owner)
 	if (!owner.is_passed() && command != "PASS")
 		return ;
 	else if (owner.is_passed() &&  !owner.is_registered() && command != "NICK" && command != "USER")
-		return get_replies(451, owner, command);
+		return get_replies(ERR_NOTREGISTERED, owner, command);
 	if (handlers.find(command) == handlers.end())
-		get_replies(421, owner, command);
+		get_replies(ERR_UNKNOWNCOMMAND, owner, command);
 	else 
 		(*this.*(this->handlers[this->command]))(owner);
 } 
@@ -123,7 +123,7 @@ void 	CommandHandler::handle_ping(Client &owner)
 {
 	if (!parameters.size() || parameters.front() == "")
 		return get_replies(ERR_NEEDMOREPARAMS, owner, command);
-	std::string msg = ":" + std::string("MyIRC") + " PONG " + ":" + parameters.front() + END_DELIM;
+	std::string msg = ":" + std::string("MyIRC") + " PONG " + std::string("MyIRC") + ":" + parameters.front() + END_DELIM;
 	this->serv.send_msg(msg, owner);
 }
 
@@ -267,11 +267,17 @@ void 	CommandHandler::get_replies(int code, Client const &owner, std::string ext
 		case RPL_ENDOFNAMES:
 			msg += extra + " :End of NAMES list";
 			break;
+		case ERR_UNKNOWNCOMMAND:
+			msg += extra + " :Unknown command";
+			break;
 		case ERR_USERNOTINCHANNEL:
 			msg += extra + " :They aren't on that channel";
 			break;
 		case ERR_NOTONCHANNEL:
 			msg += extra + " :You're not on that channel";
+			break;
+		case ERR_NOTREGISTERED:
+			msg += extra + " :You have not registered";
 			break;
 		case ERR_USERONCHANNEL:
 			msg += extra + " :is already on channel";
@@ -347,8 +353,8 @@ void CommandHandler::handle_admin(Client &target)
 void CommandHandler::handle_join(Client &owner)
 {
 
-	if (!this->parameters.size())
-		return get_replies(ERR_NEEDMOREPARAMS, owner);
+	if (parameters.empty())
+		return get_replies(ERR_NEEDMOREPARAMS, owner, command);
 	
 	int 					pos;
 	std::list<std::string> 	names;
@@ -390,14 +396,14 @@ void CommandHandler::handle_join(Client &owner)
 		names.pop_front();
 	}
 }
-
+/*
 // fucking basic just to make JOIN work
 void CommandHandler::handle_who(Client &target)
 {
 	get_replies(352, target);
 	get_replies(315, target);
 }
-
+*/
 //  fucking basic just to make JOIN work
 void CommandHandler::handle_mode(Client &owner)
 {
@@ -411,7 +417,7 @@ void CommandHandler::handle_mode(Client &owner)
 		Channel &ch = serv.get_channel(target);
 		if (this->parameters.size() == 1)
 		{
-			get_replies(RPL_CHANNELMODEIS, owner, target + "+" + serv.get_channel(target).get_modes());
+			get_replies(RPL_CHANNELMODEIS, owner, target + " +" + serv.get_channel(target).get_modes());
 			get_replies(RPL_CREATIONTIME, owner, target +  " " + serv.get_channel(target).get_creation_time());
 			return ;
 		}

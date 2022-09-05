@@ -217,9 +217,9 @@ int		Server::send_msg(std::string &msg, std::string target, Client const &owner)
 {
 	if (check_channel(target))
 	{
-		Channel& tmp_chan = get_channel(target);  // needs to implemented
-		if (tmp_chan.canSendMsg(owner)) // needs to be implemented based on user rights 
-			tmp_chan.send_to_all(msg); // Also needs to be added
+		Channel& tmp_chan = get_channel(target); 
+		if (tmp_chan.canSendMsg(owner)) 
+			tmp_chan.send_to_all(msg);
 		else 
 			return (0);
 	}
