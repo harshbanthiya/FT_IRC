@@ -6,7 +6,7 @@
 /*   By: hbanthiy <hbanthiy@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/08/17 13:37:38 by hbanthiy          #+#    #+#             */
-/*   Updated: 2022/09/01 15:36:40 by hbanthiy         ###   ########.fr       */
+/*   Updated: 2022/09/05 13:54:28 by hbanthiy         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,19 +27,17 @@ CommandHandler::CommandHandler(Server &_server): serv(_server)
 	this->handlers["JOIN"] = &CommandHandler::handle_join;
 	this->handlers["WHO"] = &CommandHandler::handle_who;
 	this->handlers["MODE"] = &CommandHandler::handle_mode;
+	this->handlers["INVITE"] = &CommandHandler::handle_invite;
+	this->handlers["KICK"] = &CommandHandler::handle_kick;
+	
 	// this->handlers["DIE"] = &CommandHandler::handle_user;
 	/*
 		LUSERS
-		JOIN
 		PART
-		PRIVMSG
 		AWAY
 		QUIT
 		WHO
-		KICK
-		MODE
 		NAMES
-		INVITE
 		LIST
 		TOPIC
 	*/
@@ -222,6 +220,9 @@ void 	CommandHandler::get_replies(int code, Client const &owner, std::string ext
 		case RPL_TIME:
 			msg += extra;
 			break;
+		case RPL_INVITING:
+			msg += extra;
+			break;
 		case RPL_TOPIC:
 			msg += extra;
 			break;
@@ -251,14 +252,29 @@ void 	CommandHandler::get_replies(int code, Client const &owner, std::string ext
 		case RPL_CREATIONTIME:
 			msg += extra;
 			break;
+		case ERR_CANNOTSENDTOCHAN:
+			msg += extra + " :Cannot send to channel";
+			break;
+		case RPL_BANLIST:
+			msg += extra + " :End of channel ban list.";
+			break;
 		case RPL_ENDOFBANLIST:
-			msg += extra + " :End of channel ban list";
+			msg += extra + " :End of /NAMES list";
 			break;
 		case RPL_NAMREPLY:
 			msg += extra + " :Channel Create";
 			break;
 		case RPL_ENDOFNAMES:
 			msg += extra + " :End of NAMES list";
+			break;
+		case ERR_USERNOTINCHANNEL:
+			msg += extra + " :They aren't on that channel";
+			break;
+		case ERR_NOTONCHANNEL:
+			msg += extra + " :You're not on that channel";
+			break;
+		case ERR_USERONCHANNEL:
+			msg += extra + " :is already on channel";
 			break;
 		case ERR_NORECIPIENT:
 			msg += ":No recepient given ( " + extra + ")";
@@ -274,6 +290,12 @@ void 	CommandHandler::get_replies(int code, Client const &owner, std::string ext
 			break;
 		case ERR_UNKNOWNMODE:
 			msg += extra + " :is unknown mode char to me";
+			break;
+		case ERR_INVITEONLYCHAN:
+			msg += extra + " :Cannot join channel (+i)";
+			break;
+		case ERR_BANNEDFROMCHAN:
+			msg += extra + " :Cannot join channel (+b)";
 			break;
 		case ERR_CHANOPRIVSNEEDED:
 			msg += extra + " :You're not channel operator";
@@ -356,7 +378,7 @@ void CommandHandler::handle_join(Client &owner)
 		char 	stat  = 0;
 		if (!serv.check_channel(names.front())) 
 		{
-			printf("yeeehhaaa\n");
+			//printf("yeeehhaaa\n");
 			Channel new_chan(names.front(), keys.front(), serv);
 			serv.add_channel(new_chan);
 			stat = '@';
@@ -368,8 +390,6 @@ void CommandHandler::handle_join(Client &owner)
 		names.pop_front();
 	}
 }
-	
-
 
 // fucking basic just to make JOIN work
 void CommandHandler::handle_who(Client &target)
@@ -406,4 +426,64 @@ void CommandHandler::handle_mode(Client &owner)
 		}
 	}
 
+}
+
+// =============== Handle kick and invite 
+
+void 	CommandHandler::handle_kick(Client &owner)
+{
+	if (parameters.size() < 2)
+		return (get_replies(ERR_NEEDMOREPARAMS, owner, "KICK"));
+	std::list<std::string> 	channels;
+	std::list<std::string> 	clients;
+	int 					pos;
+
+
+	while (parameters.front() != "")
+	{
+		pos = parameters.front().find(",");
+		channels.push_back(parameters.front().substr(0, pos));
+		parameters.front().erase(0, (pos != 1) ? pos + 1 : pos);
+	}
+	parameters.pop_front();
+	while (parameters.front() != "")
+	{
+		pos = parameters.front().find(",");
+		clients.push_back(parameters.front().substr(0, pos));
+		parameters.front().erase(0, (pos != -1) ? pos + 1 : pos);
+	}
+	parameters.pop_front();
+	while (!channels.empty())
+	{
+		if (serv.check_channel(channels.front()))
+		{
+			Channel &chan = serv.get_channel(channels.front());
+			if (!parameters.empty())
+				chan.kick(owner, clients, parameters.front());
+			else 
+				chan.kick(owner, clients);
+			if (chan.empty())
+				serv.remove_channel(chan.get_name());
+			channels.pop_front();
+		}
+		else 
+			get_replies(ERR_NOSUCHCHANNEL, owner, channels.front());
+	}
+}
+
+void 	CommandHandler::handle_invite(Client &owner)
+{
+	std::string msg = "";
+	std::string nick;
+
+	if (parameters.size() < 2 || parameters.back() == "")
+		return (get_replies(ERR_NEEDMOREPARAMS, owner, command));
+	nick = parameters.front();
+	if(!serv.user_exists(parameters.front()))
+		return(get_replies(ERR_NOSUCHNICK, owner, parameters.front()));
+	parameters.pop_front();
+	if (!serv.check_channel(parameters.front()))
+		return (get_replies(ERR_NOSUCHCHANNEL, owner, parameters.front()));
+	Channel &ch = serv.get_channel(parameters.front());
+	ch.invite(owner, nick);
 }

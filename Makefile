@@ -3,13 +3,13 @@
 #                                                         :::      ::::::::    #
 #    Makefile                                           :+:      :+:    :+:    #
 #                                                     +:+ +:+         +:+      #
-#    By: olabrecq <olabrecq@student.42.fr>          +#+  +:+       +#+         #
+#    By: hbanthiy <hbanthiy@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2022/08/16 12:14:47 by hbanthiy          #+#    #+#              #
-#    Updated: 2022/08/28 18:17:38 by olabrecq         ###   ########.fr        #
-#    Updated: 2022/08/26 13:17:57 by olabrecq         ###   ########.fr        #
-#    By: sheeed <sheeed@student.42.fr>              +#+  +:+       +#+         #
-#                                                 +#+#+#+#+#+   +#+            #
+#    Updated: 2022/09/05 13:54:27 by hbanthiy         ###   ########.fr        #
+#                                                                              #
+# **************************************************************************** #
+
 #    Created: 2022/08/16 12:14:47 by hbanthiy          #+#    #+#              #
 #    Updated: 2022/08/26 08:47:24 by sheeed           ###   ########.fr        #
 #                                                                              #

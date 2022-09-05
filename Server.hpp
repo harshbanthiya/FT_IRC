@@ -6,7 +6,7 @@
 /*   By: hbanthiy <hbanthiy@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/08/15 19:55:13 by hbanthiy          #+#    #+#             */
-/*   Updated: 2022/09/01 12:43:03 by hbanthiy         ###   ########.fr       */
+/*   Updated: 2022/09/05 13:54:30 by hbanthiy         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -70,6 +70,7 @@ class Server
 
 			void						create_channel(std::string ch_name);
 			bool 						add_channel(Channel ch); // Implement later once channel class has all the getters and setters
+			void						remove_channel(std::string name);
 		// Setters 
 
 		private:

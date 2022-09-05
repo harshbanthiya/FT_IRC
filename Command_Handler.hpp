@@ -6,7 +6,7 @@
 /*   By: hbanthiy <hbanthiy@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/08/16 23:58:30 by sheeed            #+#    #+#             */
-/*   Updated: 2022/08/31 12:27:07 by hbanthiy         ###   ########.fr       */
+/*   Updated: 2022/09/05 12:42:58 by hbanthiy         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -50,6 +50,8 @@
 			void 	handle_join(Client &owner);
 			void 	handle_who(Client &owner);
 			void 	handle_mode(Client &owner);
+			void 	handle_kick(Client &owner);
+			void 	handle_invite(Client &owner);
 	};
 
 #endif

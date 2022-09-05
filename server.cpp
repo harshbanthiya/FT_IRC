@@ -242,6 +242,10 @@ Channel	 &Server::get_channel(std::string channelName)
 {
 	return (list_of_all_channels[channelName]);
 }
+void	Server::remove_channel(std::string name)
+{
+	list_of_all_channels.erase(name);
+}
 
 bool 	Server::check_channel(std::string target) const
 {
