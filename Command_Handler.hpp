@@ -6,7 +6,7 @@
 /*   By: hbanthiy <hbanthiy@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/08/16 23:58:30 by sheeed            #+#    #+#             */
-/*   Updated: 2022/09/06 14:53:28 by hbanthiy         ###   ########.fr       */
+/*   Updated: 2022/09/06 16:28:50 by hbanthiy         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -46,7 +46,7 @@ class CommandHandler
 		void 	welcomescreen(Client &owner);
 		void 	handle_invite(Client &owner);
 		void 	handle_time(Client &owner);
-		void 	handle_who(Client &owner);
+		//void 	handle_who(Client &owner);
 		//void 	handle_admin(Client &owner);
 	};
 

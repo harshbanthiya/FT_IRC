@@ -6,7 +6,7 @@
 /*   By: hbanthiy <hbanthiy@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/08/26 08:56:40 by hbanthiy          #+#    #+#             */
-/*   Updated: 2022/09/06 16:16:58 by hbanthiy         ###   ########.fr       */
+/*   Updated: 2022/09/06 16:27:28 by hbanthiy         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -204,21 +204,20 @@ bool				Channel::is_banned(std::string const &owner) const
 
 bool 	Channel::can_join(Client const &owner) const
 {
+	
 	if (this->is_user_in_channel(owner))
 	{
-		std::cout << "ALREADY IN CHANNEL \n";
 		_serv->getHandler().get_replies(ERR_USERONCHANNEL, owner, owner.get_nickname() + " " + _name);
 		return (false);
 	}
 	if (_modes.find('i') != std::string::npos && !this->is_invited(owner))
 	{
-			std::cout << "IT IS FINDING I  \n";
 		_serv->getHandler().get_replies(ERR_INVITEONLYCHAN, owner, _name);
 		return false;
 	}
+	
 	if (is_banned(owner) && (_invite_list.find(owner.get_nickname()) == _invite_list.end()))
 	{
-			std::cout << "IT IS BANNED!\n";
 		_serv->getHandler().get_replies(ERR_BANNEDFROMCHAN, owner, _name);
 		return (false);
 	}
@@ -254,11 +253,9 @@ void 	Channel::send_ban_list(Client &owner) const
 
 void 	Channel::add_client( Client &new_client, std::string key, char status = 0)
 {
-	/*
-	if (this->can_join(new_client)) 
+	
+	if (!this->can_join(new_client)) 
 		return ;
-	*/
-
 	if (_key == key)
 	{
 		new_client.add_channel(_name);

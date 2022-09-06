@@ -6,7 +6,7 @@
 /*   By: hbanthiy <hbanthiy@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/08/17 13:37:38 by hbanthiy          #+#    #+#             */
-/*   Updated: 2022/09/06 16:09:17 by hbanthiy         ###   ########.fr       */
+/*   Updated: 2022/09/06 16:28:07 by hbanthiy         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,7 +26,7 @@ CommandHandler::CommandHandler(Server &_server): serv(_server)
 	this->handlers["MODE"] = &CommandHandler::handle_mode;
 	this->handlers["INVITE"] = &CommandHandler::handle_invite;
 	this->handlers["TIME"] = &CommandHandler::handle_time;
-	this->handlers["WHO"] = &CommandHandler::handle_who;
+	//this->handlers["WHO"] = &CommandHandler::handle_who;
 	//this->handlers["ADMIN"] = &CommandHandler::handle_admin;
 	// this->handlers["DIE"] = &CommandHandler::handle_user;
 	/*
@@ -361,7 +361,7 @@ void 	CommandHandler::handle_invite(Client &owner)
 	Channel &ch = serv.get_channel(parameters.front());
 	ch.invite(owner, nick);
 }
-
+/*
 void CommandHandler::handle_who(Client &owner)
 {
 	const 	std::vector<Client *> &cl = serv.get_all_clients();
@@ -396,7 +396,7 @@ void CommandHandler::handle_who(Client &owner)
 		get_replies(RPL_ENDOFWHO, owner, ch.get_name(true));
 	}
 }
-
+*/
 void CommandHandler::welcomescreen(Client &target)
 {
 	target.set_registered();
