@@ -6,7 +6,7 @@
 /*   By: hbanthiy <hbanthiy@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/09/06 10:16:39 by hbanthiy          #+#    #+#             */
-/*   Updated: 2022/09/06 16:17:21 by hbanthiy         ###   ########.fr       */
+/*   Updated: 2022/09/06 16:38:54 by hbanthiy         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -231,7 +231,7 @@ int		Server::send_msg(std::string &msg, std::string target, Client const &owner)
 	{
 		Channel& tmp_chan = get_channel(target); 
 		if (tmp_chan.can_send_msg(owner)) 
-			tmp_chan.send_to_all(msg);
+			tmp_chan.send_to_all(msg, owner.get_nickname());
 		else 
 			return (0);
 	}
