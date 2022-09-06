@@ -6,7 +6,7 @@
 /*   By: hbanthiy <hbanthiy@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/08/15 19:55:13 by hbanthiy          #+#    #+#             */
-/*   Updated: 2022/09/06 10:30:53 by hbanthiy         ###   ########.fr       */
+/*   Updated: 2022/09/06 11:57:11 by hbanthiy         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,7 +37,7 @@
 #define UMODES std::string("oiws")
 #define CMODES std::string("obtkmlvsn")
 #define MOTD_PATH "welcome_screen.txt"
-#define SERV_NAME std::string("myIRC")
+#define SERV_NAME std::string("MyIRC")
 
 
 class Server
