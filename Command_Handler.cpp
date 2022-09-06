@@ -560,7 +560,7 @@ void CommandHandler::handle_admin(Client &target)
 
 
 // fucking basic just to make JOIN work
-/*void CommandHandler::handle_who(Client &target)
+void CommandHandler::handle_who(Client &target)
 {
 	get_replies(352, target);
 	get_replies(315, target);
