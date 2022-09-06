@@ -6,7 +6,7 @@
 /*   By: hbanthiy <hbanthiy@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/08/17 13:37:38 by hbanthiy          #+#    #+#             */
-/*   Updated: 2022/09/06 12:45:18 by hbanthiy         ###   ########.fr       */
+/*   Updated: 2022/09/06 14:07:15 by hbanthiy         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -222,7 +222,6 @@ void CommandHandler::handle_join(Client &owner)
 		char 	stat  = 0;
 		if (!serv.check_channel(names.front())) 
 		{
-			//printf("yeeehhaaa\n");
 			Channel new_chan(names.front(), keys.front(), serv);
 			serv.add_channel(new_chan);
 			stat = '@';
