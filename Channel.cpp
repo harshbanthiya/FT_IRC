@@ -3,7 +3,7 @@
 /*                                                        :::      ::::::::   */
 /*   Channel.cpp                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: hbanthiy <hbanthiy@student.42.fr>          +#+  +:+       +#+        */
+/*   By: olabrecq <olabrecq@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/08/26 08:56:40 by hbanthiy          #+#    #+#             */
 /*   Updated: 2022/09/05 13:47:41 by hbanthiy         ###   ########.fr       */
@@ -23,7 +23,7 @@ Channel::Channel(std::string name, Server &serv) :
 {
     _creation_time	= std::time(nullptr);
     _topic_time		= std::time(nullptr);
-	_limit			= INT32_MAX;		  
+	_limit			= INT32_MAX;
 }
 
 Channel::Channel(std::string name, std::string key, Server &server) :
@@ -33,7 +33,7 @@ Channel::Channel(std::string name, std::string key, Server &server) :
 		_modes = "k";
 	_creation_time	= std::time(nullptr);
     _topic_time		= std::time(nullptr);
-	_limit			= INT32_MAX;			
+	_limit			= INT32_MAX;
 }
 
 Channel::Channel(Channel const &ch) :
@@ -47,7 +47,7 @@ Channel::Channel(Channel const &ch) :
 
 Channel::~Channel() {}
 
-//================================ 
+//================================
 
 
 bool				Channel::empty()
@@ -55,7 +55,7 @@ bool				Channel::empty()
 	return (_clients.empty());
 }
 void 	Channel::ban(Client &owner, std::string nick)
-{	
+{
 	if (!this->is_operator(owner))
 		return (_serv->getHandler().get_replies(ERR_CHANOPRIVSNEEDED, owner, _name));
 	if ((_ban_list.find(nick) != _ban_list.end()))
@@ -140,7 +140,7 @@ void 	Channel::send_ban_list(Client &owner) const
 		_serv->getHandler().get_replies(RPL_BANLIST, owner, msg);
 	}
 	_serv->getHandler().get_replies(RPL_ENDOFBANLIST, owner, _name);
-	
+
 }
 
 std::string const & Channel::get_modes() const { return (this->_modes); }
@@ -184,7 +184,7 @@ bool 	Channel::canSendMsg(Client const &owner) const
 	{
 		_serv->getHandler().get_replies(ERR_CANNOTSENDTOCHAN, owner, _name);
 		_serv->getHandler().get_replies(ERR_NOTONCHANNEL, owner, _name);
-		return (false);		
+		return (false);
 	}
 	if (this->is_banned(owner))
 	{
@@ -225,18 +225,20 @@ bool 	Channel::can_join(Client const &owner) const
 
 void 	Channel::add_client( Client &new_client, std::string key, char status = 0)
 {
-	if (this->can_join(new_client)) 
+	if (this->can_join(new_client))
 		return ; //already in channel, dont send anything back and invite and ban list check
 	if (key == _key)
 	{
 		new_client.add_channel(_name);
 		_invite_list.erase(new_client.get_nickname());
 		_clients.push_back(std::pair<char, Client*>(status, &new_client));
-		std::string msg = ":" + new_client.get_nickname() + "!" + new_client.get_username() + '@' + new_client.get_hostname() + "JOIN" + _name + END_DELIM;
+		//std::string msg = ":" + new_client.get_nickname() + "!" + new_client.get_username() + '@' + new_client.get_hostname() + "JOIN" + _name + END_DELIM;
+		std::string msg = new_client.get_username() + " " + "JOIN" + " " + this->get_name() + " " + "*" + " " + new_client.get_realname() + "\r\n";
+		//this->_serv->send_msg(msg, new_client);
 		this->send_to_all(msg);
 		if (!_topic.empty())
 			_serv->getHandler().get_replies(RPL_TOPIC, new_client, _name);
-		_serv->getHandler().get_replies(RPL_NAMREPLY, new_client, "= " + _name + " :" + this->get_str_clients());
+		_serv->getHandler().get_replies(RPL_NAMREPLY, new_client, new_client.get_username() + " " + "= " + _name + " :" + this->get_str_clients());
 		_serv->getHandler().get_replies(RPL_ENDOFNAMES, new_client, _name);
 		return ;
 	}
@@ -280,7 +282,7 @@ bool	Channel::mode_ban(Client &owner, char mode, std::string params)
 	}
 	else if (mode == '+')
 		ban(owner, params);
-	else 
+	else
 		unBan(owner, params);
 	return (true);
 }
@@ -292,14 +294,14 @@ bool 				Channel::mode_invite(Client &owner, char mode)
 		_serv->getHandler().get_replies(ERR_CHANOPRIVSNEEDED, owner, _name);
 	else if (mode == '-' && _modes.find('i') != std::string::npos)
 	{
-		msg = ":" + owner.get_nickname() + "!" + owner.get_username() + '@' + owner.get_hostname() + 
+		msg = ":" + owner.get_nickname() + "!" + owner.get_username() + '@' + owner.get_hostname() +
 				" MODE " + _name + " -i" + END_DELIM;
 		this->send_to_all(msg);
 		this->delete_mode('i');
  	}
 	else if (_modes.find('i') == std::string::npos)
 	{
-		msg = ":" + owner.get_nickname() + "!" + owner.get_username() + '@' + owner.get_hostname() + 
+		msg = ":" + owner.get_nickname() + "!" + owner.get_username() + '@' + owner.get_hostname() +
 				" MODE " + _name + " +i" + END_DELIM;
 		this->send_to_all(msg);
 		if (this->_modes.find('i') == std::string::npos)
@@ -327,7 +329,7 @@ bool				Channel::mode_operator(Client &owner, char mode, std::string params)
 				_clients[i].first = '@';
 			else
 				_clients[i].first = '\0';
-			msg = ":" + owner.get_nickname() + "!" +  owner.get_username() + '@' + owner.get_hostname() + 
+			msg = ":" + owner.get_nickname() + "!" +  owner.get_username() + '@' + owner.get_hostname() +
 						" MODE " + _name + " " + mode +"o " + params + END_DELIM;
 			this->send_to_all(msg);
 		}
@@ -350,7 +352,7 @@ bool		Channel::is_operator(Client const &user) const
 }
 
 
-/// INVITE AND KICK COMMANDS 
+/// INVITE AND KICK COMMANDS
 
 void 	Channel::kick(Client &client, std::list<std::string> &clients, std::string msg)
 {
@@ -372,7 +374,7 @@ void 	Channel::kick(Client &client, std::list<std::string> &clients, std::string
 			send_to_all(msg);
 			this->remove_client(*i);
 		}
-		else 
+		else
 			_serv->getHandler().get_replies(ERR_USERNOTINCHANNEL, client, *i + " " + _name);
 	}
 }

@@ -29,7 +29,7 @@ CommandHandler::CommandHandler(Server &_server): serv(_server)
 	this->handlers["MODE"] = &CommandHandler::handle_mode;
 	this->handlers["INVITE"] = &CommandHandler::handle_invite;
 	this->handlers["KICK"] = &CommandHandler::handle_kick;
-	
+
 	// this->handlers["DIE"] = &CommandHandler::handle_user;
 	/*
 		LUSERS
@@ -45,7 +45,7 @@ CommandHandler::CommandHandler(Server &_server): serv(_server)
 
 void 	CommandHandler::parse_cmd(std::string cmd_line)
 {
-	//std::cout << cmd_line << std::endl;
+	std::cout << cmd_line << std::endl;
 	if (cmd_line.empty())
 		return ;
 	int pos = cmd_line.find(" ");
@@ -396,9 +396,11 @@ void CommandHandler::handle_join(Client &owner)
 		names.pop_front();
 	}
 }
-/*
+
+
+
 // fucking basic just to make JOIN work
-void CommandHandler::handle_who(Client &target)
+/*void CommandHandler::handle_who(Client &target)
 {
 	get_replies(352, target);
 	get_replies(315, target);
@@ -434,7 +436,7 @@ void CommandHandler::handle_mode(Client &owner)
 
 }
 
-// =============== Handle kick and invite 
+// =============== Handle kick and invite
 
 void 	CommandHandler::handle_kick(Client &owner)
 {
@@ -466,13 +468,13 @@ void 	CommandHandler::handle_kick(Client &owner)
 			Channel &chan = serv.get_channel(channels.front());
 			if (!parameters.empty())
 				chan.kick(owner, clients, parameters.front());
-			else 
+			else
 				chan.kick(owner, clients);
 			if (chan.empty())
 				serv.remove_channel(chan.get_name());
 			channels.pop_front();
 		}
-		else 
+		else
 			get_replies(ERR_NOSUCHCHANNEL, owner, channels.front());
 	}
 }
