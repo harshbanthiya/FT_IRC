@@ -46,7 +46,7 @@ class CommandHandler
 		void 	welcomescreen(Client &owner);
 		void 	handle_invite(Client &owner);
 		void 	handle_time(Client &owner);
-		//void 	handle_who(Client &owner);
+		void 	handle_who(Client &owner);
 	};
 
 #endif

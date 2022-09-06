@@ -256,6 +256,7 @@ void 	Channel::add_client( Client &new_client, std::string key, char status = 0)
 		return ;
 	if (key == _key)
 	{
+		std::cout << "weeeee2\n";
 		new_client.add_channel(_name);
 		_invite_list.erase(new_client.get_nickname());
 		_clients.push_back(std::pair<char, Client*>(status, &new_client));
@@ -263,7 +264,7 @@ void 	Channel::add_client( Client &new_client, std::string key, char status = 0)
 		this->send_to_all(msg);
 		if (!_topic.empty())
 			_serv->getHandler().get_replies(RPL_TOPIC, new_client, _name);
-		_serv->getHandler().get_replies(RPL_NAMREPLY, new_client, "= " + _name + " :" + this->get_str_clients());
+		_serv->getHandler().get_replies(RPL_NAMREPLY, new_client, ": = " + _name + this->get_str_clients());
 		_serv->getHandler().get_replies(RPL_ENDOFNAMES, new_client, _name);
 		return ;
 	}

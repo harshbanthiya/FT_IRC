@@ -26,7 +26,7 @@ CommandHandler::CommandHandler(Server &_server): serv(_server)
 	this->handlers["MODE"] = &CommandHandler::handle_mode;
 	this->handlers["INVITE"] = &CommandHandler::handle_invite;
 	this->handlers["TIME"] = &CommandHandler::handle_time;
-	//this->handlers["WHO"] = &CommandHandler::handle_who;
+	this->handlers["WHO"] = &CommandHandler::handle_who;
 	// this->handlers["DIE"] = &CommandHandler::handle_user;
 	/*
 		LUSERS
@@ -42,7 +42,7 @@ CommandHandler::CommandHandler(Server &_server): serv(_server)
 
 void 	CommandHandler::parse_cmd(std::string cmd_line)
 {
-	//std::cout << cmd_line << std::endl;
+	std::cout << cmd_line << std::endl;
 	if (cmd_line.empty())
 		return ;
 	int pos = cmd_line.find(" ");
@@ -222,6 +222,7 @@ void CommandHandler::handle_join(Client &owner)
 		char 	stat  = 0;
 		if (!serv.check_channel(names.front())) 
 		{
+			std::cout << "weeeeee\n";
 			Channel new_chan(names.front(), keys.front(), serv);
 			serv.add_channel(new_chan);
 			stat = '@';
@@ -555,7 +556,7 @@ void CommandHandler::handle_admin(Client &target)
 	get_replies(RPL_ADMINLOC2, target, "Nickname - #Routing");
 	get_replies(RPL_ADMINEMAIL,target, "E-Mail   - routing@");
 }
-
+*/
 
 
 // fucking basic just to make JOIN work
@@ -564,7 +565,7 @@ void CommandHandler::handle_who(Client &target)
 	get_replies(352, target);
 	get_replies(315, target);
 }
-*/
+
 //  fucking basic just to make JOIN work
 
 
