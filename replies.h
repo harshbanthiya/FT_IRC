@@ -6,7 +6,7 @@
 /*   By: hbanthiy <hbanthiy@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/08/24 13:21:32 by hbanthiy          #+#    #+#             */
-/*   Updated: 2022/09/05 15:03:37 by hbanthiy         ###   ########.fr       */
+/*   Updated: 2022/09/06 11:03:58 by hbanthiy         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -59,12 +59,6 @@
 #define ERR_BADCHANNELKEY		475 
 #define ERR_CHANOPRIVSNEEDED	482
 #define END_DELIM               "\r\n"
-/*
-std::string ERR_NOORIGIN() { return ":No origin specified"; }
-std::string ERR_NONICKNAMEGIVEN() { return ":No nickname given"; }
-std::string ERR_ERRONEUSNICKNAME(std::string nick) { return nick + " :Erroneus nickname"; }
-std::string ERR_NICKNAMEINUSE(std::string nick) { return nick + " :Nickname is already in use"; }
-std::string RPL_PRINTWELCOME(std::string text) { return "- " + text; }
-*/
+
 #endif 
 

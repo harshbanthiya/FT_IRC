@@ -6,7 +6,7 @@
 /*   By: hbanthiy <hbanthiy@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/08/16 12:18:18 by hbanthiy          #+#    #+#             */
-/*   Updated: 2022/09/01 12:53:57 by hbanthiy         ###   ########.fr       */
+/*   Updated: 2022/09/06 10:33:26 by hbanthiy         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,7 +28,6 @@ int main(int argc, char **argv)
 	{
 	    Server server(argv[1], argv[2]);
         signal(SIGINT, handler);
-        server.init();  
 		while (!stop)
             server.execute();
 	}

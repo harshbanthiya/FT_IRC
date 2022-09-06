@@ -6,7 +6,7 @@
 /*   By: hbanthiy <hbanthiy@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/08/17 13:37:38 by hbanthiy          #+#    #+#             */
-/*   Updated: 2022/09/05 15:19:25 by hbanthiy         ###   ########.fr       */
+/*   Updated: 2022/09/06 10:11:27 by hbanthiy         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -113,7 +113,7 @@ void	CommandHandler::handle_pass(Client &owner)
 		return get_replies(ERR_NEEDMOREPARAMS, owner, command); //ERR_NEEDMOREPARAMS
 	if(owner.is_registered())
 		return get_replies(ERR_ALREADYREGISTERED, owner); //ERR_ALREADYREGISTRED
-	if (serv.checkPass(this->parameters.front()))
+	if (serv.check_pass(this->parameters.front()))
 		owner.set_passed();
 	else 
 		get_replies(ERR_PASSWDMISMATCH, owner);
