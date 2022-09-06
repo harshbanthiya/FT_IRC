@@ -6,7 +6,7 @@
 /*   By: hbanthiy <hbanthiy@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/08/15 19:08:30 by hbanthiy          #+#    #+#             */
-/*   Updated: 2022/09/06 11:32:58 by hbanthiy         ###   ########.fr       */
+/*   Updated: 2022/09/06 14:19:54 by hbanthiy         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -43,6 +43,15 @@ std::string	toUpper(std::string const & str)
 		result += std::toupper(str[i]);
 	return (result);
 }
+
+bool		Client::common_channel(const std::vector<std::string> &chnls) const
+{
+	std::vector<std::string>::const_iterator i = chnls.begin();
+	for (;i != chnls.end() ;i++)
+		if (std::find(channels.begin(),channels.end(), *i) != channels.end())
+			return (true);
+	return (false);
+}	
 
 // ================ EQUALITY OPERATORS ===================
 

@@ -6,7 +6,7 @@
 /*   By: hbanthiy <hbanthiy@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/08/16 12:18:18 by hbanthiy          #+#    #+#             */
-/*   Updated: 2022/09/06 10:33:26 by hbanthiy         ###   ########.fr       */
+/*   Updated: 2022/09/06 14:47:46 by hbanthiy         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,6 +19,7 @@ void handler(int) { stop = true;}
 
 int main(int argc, char **argv)
 {
+	Server *server = NULL;
     if (argc != 3) 
 	{
         std::cout << "Usage: ./irc <port> <password> \n";
@@ -26,15 +27,21 @@ int main(int argc, char **argv)
     }
     try 
 	{
-	    Server server(argv[1], argv[2]);
-        signal(SIGINT, handler);
-		while (!stop)
-            server.execute();
+		server = new Server(argv[1], argv[2]);
+	}
+	catch(const std::exception& e)
+	{
+		std::cerr << "Error occured in creating server: " << e.what() << std::endl;
+		return (1);
+	}
+	try
+	{
+        server->execute();
 	}
 	catch (std::exception& e)
 	{
-		std::cerr << "Error: " << e.what() << std::endl;
-		return -1;
+		std::cerr << "Erroro occured while the server was running  " << e.what() << std::endl;
 	}
+	delete(server);
     return (0);
 }

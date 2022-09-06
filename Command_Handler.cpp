@@ -6,7 +6,7 @@
 /*   By: hbanthiy <hbanthiy@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/08/17 13:37:38 by hbanthiy          #+#    #+#             */
-/*   Updated: 2022/09/06 14:07:15 by hbanthiy         ###   ########.fr       */
+/*   Updated: 2022/09/06 16:09:17 by hbanthiy         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,7 +26,8 @@ CommandHandler::CommandHandler(Server &_server): serv(_server)
 	this->handlers["MODE"] = &CommandHandler::handle_mode;
 	this->handlers["INVITE"] = &CommandHandler::handle_invite;
 	this->handlers["TIME"] = &CommandHandler::handle_time;
-	//this->handlers["WHO"] = &CommandHandler::handle_who;
+	this->handlers["WHO"] = &CommandHandler::handle_who;
+	//this->handlers["ADMIN"] = &CommandHandler::handle_admin;
 	// this->handlers["DIE"] = &CommandHandler::handle_user;
 	/*
 		LUSERS
@@ -361,6 +362,40 @@ void 	CommandHandler::handle_invite(Client &owner)
 	ch.invite(owner, nick);
 }
 
+void CommandHandler::handle_who(Client &owner)
+{
+	const 	std::vector<Client *> &cl = serv.get_all_clients();
+	std::string msg;
+	Channel 	ch;
+	if (parameters.empty())
+	{
+		for (size_t i = 0; i != cl.size(); i++)
+		{
+			if (!((cl[i]->common_channel(owner.get_channels())) || cl[i]->has_mode('i')) || *cl[i] == owner)
+			{
+				msg = (cl[i]->get_channels().empty() ? "* " : cl[i]->get_channels().back() + " ") + cl[i]->get_username() + " " + cl[i]->get_hostname() + " " + SERV_NAME + " " + cl[i]->get_nickname() +
+						" H :0 " + cl[i]->get_realname();
+				get_replies(RPL_WHOREPLY, owner, msg);
+			}
+		}
+		get_replies(RPL_ENDOFWHO, owner, "*");
+	}
+	else if (serv.check_channel(parameters.front()))
+	{
+		ch = serv.get_channel(parameters.front());
+		const std::vector<std::pair<char,Client *> > &clients = ch.get_client_list();
+		std::string header = ch.get_name(true) + " ";
+		for (size_t i = 0; i != clients.size(); i++)
+		{
+			msg = header + clients[i].second->get_username() + " " + clients[i].second->get_hostname() + " " + SERV_NAME + " " + clients[i].second->get_nickname() + " H";
+			if (clients[i].first)
+				msg += clients[i].first;
+			msg += " :0" + clients[i].second->get_realname();
+			get_replies(RPL_WHOREPLY, owner, msg);
+		}
+		get_replies(RPL_ENDOFWHO, owner, ch.get_name(true));
+	}
+}
 
 void CommandHandler::welcomescreen(Client &target)
 {
@@ -415,7 +450,7 @@ void 	CommandHandler::get_replies(int code, Client const &owner, std::string ext
 			msg += extra;
 			break ;
 		case RPL_ENDOFWHO:
-			msg += extra + " :End of WHO list";
+			msg += extra + " :End of /WHO list";
 			break;
 		case RPL_CHANNELMODEIS: 
 			msg += extra;
@@ -430,7 +465,7 @@ void 	CommandHandler::get_replies(int code, Client const &owner, std::string ext
 			msg += extra;
 			break;
 		case RPL_WHOREPLY:
-			msg += extra + " :<hopcount> <real name>";
+			msg += extra;
 			break;
 		case RPL_NAMREPLY:
 			msg += extra + " :Channel Create";
@@ -546,8 +581,8 @@ void 	CommandHandler::get_replies(int code, Client const &owner, std::string ext
 	this->serv.send_msg(msg, owner);
 }
 
-
 /*
+
 void CommandHandler::handle_admin(Client &target)
 {
 	get_replies(RPL_ADMINME, target, " :Administrative info");
@@ -555,16 +590,12 @@ void CommandHandler::handle_admin(Client &target)
 	get_replies(RPL_ADMINLOC2, target, "Nickname - #Routing");
 	get_replies(RPL_ADMINEMAIL,target, "E-Mail   - routing@");
 }
-
+*/
 
 
 // fucking basic just to make JOIN work
-void CommandHandler::handle_who(Client &target)
-{
-	get_replies(352, target);
-	get_replies(315, target);
-}
-*/
+
+
 //  fucking basic just to make JOIN work
 
 

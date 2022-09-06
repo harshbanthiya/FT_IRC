@@ -6,7 +6,7 @@
 /*   By: hbanthiy <hbanthiy@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/08/15 18:53:47 by hbanthiy          #+#    #+#             */
-/*   Updated: 2022/09/06 13:39:50 by hbanthiy         ###   ########.fr       */
+/*   Updated: 2022/09/06 14:18:03 by hbanthiy         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,12 +32,12 @@ class Client
 			//Channel stuff
 			void 							add_channel(std::string name);
 			void 							remove_channel(std::string name);
-			
+			bool 							common_channel(const std::vector<std::string> &channels) const;
+
 			// Modes
 			bool							has_mode(char mode) const;
 			void 							add_mode(char mode);
 			void 							del_mode(char mode);
-
 
 			// Getters 
 			

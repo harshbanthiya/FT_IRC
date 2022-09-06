@@ -6,7 +6,7 @@
 /*   By: hbanthiy <hbanthiy@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/09/06 10:16:39 by hbanthiy          #+#    #+#             */
-/*   Updated: 2022/09/06 13:40:23 by hbanthiy         ###   ########.fr       */
+/*   Updated: 2022/09/06 16:17:21 by hbanthiy         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,8 +35,7 @@ Server::Server(std::string _port, std::string passwd) : port(_port), passwrd(pas
 		throw std::runtime_error(gai_strerror(ret));
 	if ((sock_fd = socket(ai->ai_family, ai->ai_socktype, ai->ai_protocol)) < 0)
 		throw Server::SocketFailException();
-	if (setsockopt(sock_fd, SOL_SOCKET, SO_REUSEADDR, &yes, sizeof(int)) == -1)
-		throw Server::SetsockoptFailException();
+	setsockopt(sock_fd, SOL_SOCKET, SO_REUSEADDR, &yes, sizeof(int));
 	if ((bind(sock_fd, ai->ai_addr, ai->ai_addrlen) < 0))
 	{
 		close(sock_fd);

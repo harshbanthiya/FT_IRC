@@ -6,7 +6,7 @@
 /*   By: hbanthiy <hbanthiy@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/08/26 08:56:40 by hbanthiy          #+#    #+#             */
-/*   Updated: 2022/09/06 13:42:34 by hbanthiy         ###   ########.fr       */
+/*   Updated: 2022/09/06 16:16:58 by hbanthiy         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -111,7 +111,6 @@ bool 	Channel::add_mode(Client &owner, char m, char mode, std::string params)
 	return (false);
 }
 
-
 bool 				Channel::mode_invite(Client &owner, char mode)
 {
 	std::string msg;
@@ -207,16 +206,19 @@ bool 	Channel::can_join(Client const &owner) const
 {
 	if (this->is_user_in_channel(owner))
 	{
+		std::cout << "ALREADY IN CHANNEL \n";
 		_serv->getHandler().get_replies(ERR_USERONCHANNEL, owner, owner.get_nickname() + " " + _name);
 		return (false);
 	}
 	if (_modes.find('i') != std::string::npos && !this->is_invited(owner))
 	{
+			std::cout << "IT IS FINDING I  \n";
 		_serv->getHandler().get_replies(ERR_INVITEONLYCHAN, owner, _name);
 		return false;
 	}
 	if (is_banned(owner) && (_invite_list.find(owner.get_nickname()) == _invite_list.end()))
 	{
+			std::cout << "IT IS BANNED!\n";
 		_serv->getHandler().get_replies(ERR_BANNEDFROMCHAN, owner, _name);
 		return (false);
 	}
@@ -252,14 +254,17 @@ void 	Channel::send_ban_list(Client &owner) const
 
 void 	Channel::add_client( Client &new_client, std::string key, char status = 0)
 {
+	/*
 	if (this->can_join(new_client)) 
 		return ;
-	if (key == _key)
+	*/
+
+	if (_key == key)
 	{
 		new_client.add_channel(_name);
 		_invite_list.erase(new_client.get_nickname());
 		_clients.push_back(std::pair<char, Client*>(status, &new_client));
-		std::string msg = ":" + new_client.get_nickname() + "!" + new_client.get_username() + '@' + new_client.get_hostname() + " JOIN : " + _name + END_DELIM;
+		std::string msg = ":" + new_client.get_nickname() + "!" + new_client.get_username() + '@' + new_client.get_hostname() + " JOIN :" + _name + END_DELIM;
 		this->send_to_all(msg);
 		if (!_topic.empty())
 			_serv->getHandler().get_replies(RPL_TOPIC, new_client, _name);
@@ -269,7 +274,6 @@ void 	Channel::add_client( Client &new_client, std::string key, char status = 0)
 	}
 	else 
 		_serv->getHandler().get_replies(ERR_BADCHANNELKEY, new_client, _name);
-	
 }
 
 void 	Channel::send_to_all(std::string msg, std::string sender) const 
