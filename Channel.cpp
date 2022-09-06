@@ -6,7 +6,7 @@
 /*   By: hbanthiy <hbanthiy@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/08/26 08:56:40 by hbanthiy          #+#    #+#             */
-/*   Updated: 2022/09/06 13:39:49 by hbanthiy         ###   ########.fr       */
+/*   Updated: 2022/09/06 13:42:34 by hbanthiy         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -403,10 +403,6 @@ std::string 		Channel::get_topic()const {return (_topic);}
 std::string 		Channel::get_key()const{return (_key);}
 std::string 		Channel::get_creation_time()const{return (std::to_string(_creation_time));}
 
-bool				Channel::is_banned(Client const &owner) const
-{
-	return (_ban_list.find(owner.get_nickname()) != _ban_list.end());
-}
 
 const std::vector<std::pair<char, Client *> >  &Channel::get_client_list() const {
 	return _clients;
