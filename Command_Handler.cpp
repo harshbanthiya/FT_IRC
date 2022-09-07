@@ -6,7 +6,7 @@
 /*   By: hbanthiy <hbanthiy@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/08/17 13:37:38 by hbanthiy          #+#    #+#             */
-/*   Updated: 2022/09/07 15:02:37 by hbanthiy         ###   ########.fr       */
+/*   Updated: 2022/09/07 15:52:17 by hbanthiy         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -597,15 +597,13 @@ void CommandHandler::handle_admin(Client &target)
 // =============== Handle kick and invite 
 void CommandHandler::handle_quit(Client &owner)
 {
-	std::string msg = "ERROR Closing link: (" + owner.get_username() + "@" + owner.get_hostname() + ") ";
-	std::string param = "[Client exited]";
-	if (!parameters.empty())
-	{
-		param = "[Quit: " + parameters.front() + "]";
-	}
-	msg = msg + param;
+	std::string reason = (parameters.size() == 1) ? parameters.front() : owner.get_nickname();
+	std::string msg = "ERROR Closing link: " + owner.get_nickname() + "[" + owner.get_hostname() + "]" "(Quit:  " + reason + ")" + END_DELIM;
+
 	std::cout << msg << std::endl;
 	this->serv.send_msg(msg, owner);
+	msg = ":" + owner.get_nickname() + "!" + owner.get_username() + "@" + owner.get_hostname() +" QUIT :Quit:" + reason + END_DELIM;
+	this->serv.send_to_all_chans(msg, owner);
 	this->serv.disconnect_client(owner.get_nickname());
 }
 
