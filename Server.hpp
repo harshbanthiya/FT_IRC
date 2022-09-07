@@ -6,7 +6,7 @@
 /*   By: hbanthiy <hbanthiy@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/08/15 19:55:13 by hbanthiy          #+#    #+#             */
-/*   Updated: 2022/09/06 15:51:30 by hbanthiy         ###   ########.fr       */
+/*   Updated: 2022/09/07 13:41:27 by hbanthiy         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -70,7 +70,7 @@ class Server
 			void										send_msg(std::string& msg, Client const &target) const;
 			int											send_msg(std::string& msg, std::string target) const;
 			int 										send_msg(std::string& msg, std::string target, Client const &owner);
-			void 										send_to_all(std::string msg, Client &owner);
+			void 										send_to_all_chans(std::string msg, Client &owner);
 
 			void										create_channel(std::string ch_name);
 			bool 										add_channel(Channel ch);

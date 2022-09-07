@@ -6,7 +6,7 @@
 /*   By: hbanthiy <hbanthiy@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/09/06 10:16:39 by hbanthiy          #+#    #+#             */
-/*   Updated: 2022/09/06 16:38:54 by hbanthiy         ###   ########.fr       */
+/*   Updated: 2022/09/07 13:42:16 by hbanthiy         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -279,15 +279,16 @@ const std::map<std::string, Channel> &Server::get_channel_list() const {
 	return this->list_of_all_channels;
 }
 
-void Server::send_to_all(std::string msg, Client &owner)
+void Server::send_to_all_chans(std::string msg, Client &owner)
 {
-	std::map<std::string, Channel>::iterator it = list_of_all_channels.begin();
+	std::map<std::string, Channel>::const_iterator it = list_of_all_channels.cbegin();
 	std::cout << msg << std::endl;
 	while (it != list_of_all_channels.cend())
 	{
 		std::cout << "ok" << std::endl;
-		send_msg(msg, (*it).first, owner);
-		list_of_all_channels[(*it).first].remove_client(owner);
+		std::string ch_name = (*it).first;
+		send_msg(msg, ch_name, owner);
+		list_of_all_channels[ch_name].remove_client(owner);
 		it++;
 	}
 }
