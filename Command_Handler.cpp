@@ -612,6 +612,8 @@ void CommandHandler::handle_quit(Client &owner)
 	msg = msg + param;
 	std::cout << msg << std::endl;
 	this->serv.send_msg(msg, owner);
+	std::string head = owner.get_username() + " QUIT :Client exited";
+	this->serv.send_to_all(head, owner);
 	this->serv.disconnect_client(owner.get_nickname());
 }
 

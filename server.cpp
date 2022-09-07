@@ -275,6 +275,22 @@ Client const		&Server::get_client(std::string nickname) const
 	return (*list_of_all_clients[i]);
 }
 
+const std::map<std::string, Channel> &Server::get_channel_list() const {
+	return this->list_of_all_channels;
+}
+
+void Server::send_to_all(std::string msg, Client &owner)
+{
+	std::map<std::string, Channel>::iterator it = list_of_all_channels.begin();
+	std::cout << msg << std::endl;
+	while (it != list_of_all_channels.cend())
+	{
+		std::cout << "ok" << std::endl;
+		send_msg(msg, (*it).first, owner);
+		list_of_all_channels[(*it).first].remove_client(owner);
+		it++;
+	}
+}
 
 // ================ EXCEPTIONS ===================
 
