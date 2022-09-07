@@ -6,7 +6,7 @@
 #    By: hbanthiy <hbanthiy@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2022/08/16 12:14:47 by hbanthiy          #+#    #+#              #
-#    Updated: 2022/09/05 13:54:27 by hbanthiy         ###   ########.fr        #
+#    Updated: 2022/09/07 14:26:18 by hbanthiy         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -34,6 +34,10 @@ $(NAME): $(OBJS)
 		@$(CC) $(CPPFLAGS) $(OBJS) -o $(NAME)
 run: all 
 	./$(NAME) $(ARGUMENTS)
+
+bot: 
+		@ make -C ./bender_the_bot/
+		@ mv ./bender_the_bot/bender .
 
 clean:
 		rm -rf $(OBJS_DIR) $(OBJS)
