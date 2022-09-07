@@ -6,7 +6,7 @@
 /*   By: olabrecq <olabrecq@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/08/26 08:47:31 by sheeed            #+#    #+#             */
-/*   Updated: 2022/08/31 12:42:14 by olabrecq         ###   ########.fr       */
+/*   Updated: 2022/09/01 14:50:14 by olabrecq         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,18 +36,19 @@ class Channel
 		Channel(std::string name, std::string key, Server &serv);
 		~Channel();
 
-		std::string  	get_name(void) const { return _name; }
+		std::string  	get_name(bool ck = false) const;
 		std::string  	get_key(void) const { return _key; }
 		std::string  	get_topic(void) const { return _topic; }
 		// std::string		get_modes(void) const { return _modes; }
 		Server* 		get_server(void) const { return _serv; }
 		bool 			is_user_in_channel(std::string nickname)const;
 		const std::vector<std::pair<char, Client *> > &getClients() const;
+		std::string		get_str_clients() const;
 		//void 	message_all_users();
 
 		void	send_to_all(std::string msg) const; // Needs to be added
 		bool 	canSendMsg(Client const &owner) const; // Also needs to be added 
-		void 	add_client( Client *new_client );
+		void 	add_client( Client &new_client, std::string key, char status);
 
 		// Mode stuff
 		std::string const	&get_modes()const;
@@ -57,7 +58,7 @@ class Channel
 		bool 				is_operator(Client const &owner) const;
 
 		// Actual Mode functions 
-		bool 				mode_invite(Client &owner, char mode);
+		//bool 				mode_invite(Client &owner, char mode);
 		bool 				mode_ban(Client &owner, char mode, std::string params);
 		bool 				mode_operator(Client &owner, char mode, std::string params);
 

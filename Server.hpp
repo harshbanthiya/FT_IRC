@@ -6,7 +6,7 @@
 /*   By: olabrecq <olabrecq@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/08/15 19:55:13 by hbanthiy          #+#    #+#             */
-/*   Updated: 2022/08/30 16:35:45 by olabrecq         ###   ########.fr       */
+/*   Updated: 2022/09/01 14:51:19 by olabrecq         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -69,8 +69,8 @@ class Server
 			const std::vector<std::string, Channel> &get_channel_list() const ;
 
 			void						create_channel(std::string ch_name);
+			bool 						add_channel(Channel ch); // Implement later once channel class has all the getters and setters
 		// Setters 
-			// bool 						add_channel(Channel ch); // Implement later once channel class has all the getters and setters
 
 		private:
 		

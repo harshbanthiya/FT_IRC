@@ -6,7 +6,7 @@
 /*   By: olabrecq <olabrecq@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/08/17 13:37:38 by hbanthiy          #+#    #+#             */
-/*   Updated: 2022/09/01 11:09:59 by olabrecq         ###   ########.fr       */
+/*   Updated: 2022/09/01 15:04:22 by olabrecq         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -43,7 +43,7 @@ CommandHandler::CommandHandler(Server &_server): serv(_server)
 
 void 	CommandHandler::parse_cmd(std::string cmd_line)
 {
-	std::cout << cmd_line << std::endl;
+	//std::cout << cmd_line << std::endl;
 	if (cmd_line.empty())
 		return ;
 	int pos = cmd_line.find(" ");
@@ -171,7 +171,7 @@ void	CommandHandler::handle_nick(Client &owner)
  		int rv;
  		// if (curr_target[0] == '#')
 			//rv = this->serv.send_msg(msg, curr_target, owner); // put all the logic in the overloaded function
- 		// else
+ 	//	else
  			rv = this->serv.send_msg(msg, curr_target);
  		if (rv == ERR_NOSUCHNICK)
  			get_replies(rv, owner, curr_target);
@@ -216,6 +216,9 @@ void 	CommandHandler::get_replies(int code, Client const &owner, std::string ext
 			msg += extra + " :Nickname is already in use"; 
 			break;
 		case RPL_TIME:
+			msg += extra;
+			break;
+		case RPL_TOPIC:
 			msg += extra;
 			break;
 		case RPL_ADMINME:
@@ -271,6 +274,9 @@ void 	CommandHandler::get_replies(int code, Client const &owner, std::string ext
 		case ERR_CHANOPRIVSNEEDED:
 			msg += extra + " :You're not channel operator";
 			break;
+		case ERR_BADCHANNELKEY:
+			msg += extra + " :Cannot join channel (+k)";
+			break;
 		
     }
 	msg += END_DELIM;
@@ -317,9 +323,10 @@ void CommandHandler::handle_join(Client &owner)
 
 	if (!this->parameters.size())
 		return get_replies(ERR_NEEDMOREPARAMS, owner);
-	int 	pos;
-	std::list<std::string> names;
-	std::list<std::string>::iterator it;
+	
+	int 					pos;
+	std::list<std::string> 	names;
+	std::list<std::string> 	keys;
 
 	while (parameters.front() != "")
 	{
@@ -328,19 +335,34 @@ void CommandHandler::handle_join(Client &owner)
 		parameters.front().erase(0, (pos != -1) ? pos + 1 : pos);
 	}
 	parameters.pop_front();
+	if (!parameters.empty())
+	{
+		while(parameters.front() != "")
+			{
+				pos = parameters.front().find(",");
+				keys.push_back(parameters.front().substr(0, pos));
+				parameters.front().erase(0, (pos != -1) ? pos + 1 : pos);
+			}
+		parameters.pop_front();
+	}
 	if (names.front()[0] != '#')
 		return get_replies(ERR_NOSUCHCHANNEL, owner, names.front());
-	for (it = names.begin(); it != names.end(); it++)//while (!names.empty()) -> infini loop bad idea
+	while (!names.empty())// for (it = names.begin(); it != names.end(); it++)-> infini loop bad idea
 	{
+		char 	stat  = 0;
 		if (!serv.check_channel(names.front())) 
 		{
 			printf("yeeehhaaa\n");
-			Channel new_chan(names.front(), serv);
-			// if (serv.add_channel(new_chan)); implement
+			Channel new_chan(names.front(), keys.front(), serv);
+			serv.add_channel(new_chan);
+			stat = '@';
 		}
-
+		Channel &chan = serv.get_channel(names.front());
+		chan.add_client(owner, keys.front(), stat);
+		if (!keys.empty())
+			keys.pop_front();
+		names.pop_front();
 	}
-
 }
 	
 
