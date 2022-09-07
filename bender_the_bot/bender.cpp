@@ -6,7 +6,7 @@
 /*   By: hbanthiy <hbanthiy@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/08/26 12:17:12 by hbanthiy          #+#    #+#             */
-/*   Updated: 2022/09/07 14:24:15 by hbanthiy         ###   ########.fr       */
+/*   Updated: 2022/09/07 15:47:48 by hbanthiy         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -58,7 +58,7 @@ void Bot::load_insults(const char *file)
         }
         else 
             line += ch;
-    }while (insult_file.eof());
+    }while (!insult_file.eof());
 	insult_file.close();
 }
 
@@ -106,10 +106,13 @@ int Bot::_register()
     send_msg(msg);
     msg = "NICK " + BOT_NAME + END_DELIM;
     send_msg(msg);
-    msg = "USER bot_user 0 * :It's Bender Baby!" + END_DELIM;
+    msg = "USER bot_user 0 * :bender BOT" + END_DELIM;
+    send_msg(msg);
+    msg = "JOIN #" + BOT_NAME + END_DELIM;
     send_msg(msg);
     memset(this->buff, 0, sizeof(buff));
     nbytes = recv(this->socket_fd, this->buff, sizeof(this->buff), 0);
+    //std::cout << buff << '\n';
     if (nbytes <= 0)
         return (nbytes);
     int num = get_numeric(this->buff);
@@ -118,8 +121,8 @@ int Bot::_register()
 
 std::string Bot::get_cmd(std::string buff) const
 {
-    buff.erase(0, buff.find(" ") + 1); // delete first : 
-    return (buff.substr(0, buff.find("!")));
+    buff.erase(0, buff.find(" ") + 1); 
+    return (buff.substr(0, buff.find(" ")));
 }
 
 void    Bot::handle_cmd(std::string cmd) const
@@ -153,19 +156,20 @@ void    Bot::handle_privmsg() const
     std::string   text = get_text(this->buff);
     srand(time(nullptr));
     std::string msg = "PRIVMSG #" + BOT_NAME + " :";
-    if (text == ":COMMAND" + END_DELIM || text.substr(0, text.find(" ")) == "COMMAND")
+    if (text == ":COMMAND" + END_DELIM || text.substr(0, text.find(" ")) == ":COMMAND")
         msg += "Command available -- /INSULT <NAME> /INSULTME" + END_DELIM;
     else
     {
         std::string insult = insults[rand() % this->insults.size()];
         std::string sender = get_sender(this->buff);
-        if (text == "INSULTME" + END_DELIM || text.substr(0, text.find(" ")) == ":INSULTME")
+        if (text == ":INSULTME" + END_DELIM || text.substr(0, text.find(" ")) == ":INSULTME")
             msg += sender + ", " + insult + END_DELIM;
         else if (text == ":INSULT" + END_DELIM || text.substr(0, text.find(" ")) == ":INSULT")
         {
             int pos = std::string(text).find(" ");
             if (pos != -1)
             {
+                sender = std::string(text).substr(pos);
                 sender.pop_back();
                 sender.pop_back();
             }

@@ -6,7 +6,7 @@
 /*   By: hbanthiy <hbanthiy@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/08/15 19:08:30 by hbanthiy          #+#    #+#             */
-/*   Updated: 2022/09/06 14:19:54 by hbanthiy         ###   ########.fr       */
+/*   Updated: 2022/09/07 15:37:48 by hbanthiy         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -67,7 +67,7 @@ std::string const	&Client::get_nickname(void) const {return nickname;}
 std::string	const 	&Client::get_username(void) const {return username;}
 std::string	const  	&Client::get_realname(void) const {return realname;}
 std::string	const 	&Client::get_hostname(void) const {return hostname;}
-int					Client::get_socket(void) const{ return (this->socket_fd); };
+int					Client::get_socket() const{ return (this->socket_fd); };
 std::string const 	&Client::get_modes() const{ return (this->modes); }
 std::vector<std::string> const &Client::get_channels() const{return (channels);}
 

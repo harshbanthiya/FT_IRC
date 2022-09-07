@@ -6,7 +6,7 @@
 /*   By: hbanthiy <hbanthiy@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/08/26 12:17:02 by hbanthiy          #+#    #+#             */
-/*   Updated: 2022/08/26 15:05:10 by hbanthiy         ###   ########.fr       */
+/*   Updated: 2022/09/07 15:49:01 by hbanthiy         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -47,7 +47,7 @@ int main(int ac, char **argv)
         std::cerr << "Error occured in creating bot: " << e.what() << std::endl;
         return (1);
     }
-    	try
+    try
 	{
 		bot->run();
 	}
@@ -57,5 +57,4 @@ int main(int ac, char **argv)
 		return (1);
 	}
 	delete bot;
-    return (1);
 }

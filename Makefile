@@ -6,7 +6,7 @@
 #    By: hbanthiy <hbanthiy@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2022/08/16 12:14:47 by hbanthiy          #+#    #+#              #
-#    Updated: 2022/09/07 14:26:18 by hbanthiy         ###   ########.fr        #
+#    Updated: 2022/09/07 15:48:58 by hbanthiy         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -44,6 +44,8 @@ clean:
 
 fclean:	clean
 		rm -rf $(NAME)
+		rm -rf bender
+		@ make fclean -C ./bender_the_bot/ 
 	
 re:			fclean all
 
