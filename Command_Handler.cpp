@@ -26,6 +26,7 @@ CommandHandler::CommandHandler(Server &_server): serv(_server)
 	this->handlers["MODE"] = &CommandHandler::handle_mode;
 	this->handlers["INVITE"] = &CommandHandler::handle_invite;
 	this->handlers["TIME"] = &CommandHandler::handle_time;
+	this->handlers["QUIT"] = &CommandHandler::handle_quit;
 	//this->handlers["WHO"] = &CommandHandler::handle_who;
 	//this->handlers["ADMIN"] = &CommandHandler::handle_admin;
 	// this->handlers["DIE"] = &CommandHandler::handle_user;
@@ -43,7 +44,7 @@ CommandHandler::CommandHandler(Server &_server): serv(_server)
 
 void 	CommandHandler::parse_cmd(std::string cmd_line)
 {
-	//std::cout << cmd_line << std::endl;
+	std::cout << cmd_line << std::endl;
 	if (cmd_line.empty())
 		return ;
 	int pos = cmd_line.find(" ");
@@ -600,5 +601,17 @@ void CommandHandler::handle_admin(Client &target)
 
 
 // =============== Handle kick and invite 
-
+void CommandHandler::handle_quit(Client &owner)
+{
+	std::string msg = "ERROR Closing link: (" + owner.get_username() + "@" + owner.get_hostname() + ") ";
+	std::string param = "[Client exited]";
+	if (!parameters.empty())
+	{
+		param = "[Quit: " + parameters.front() + "]";
+	}
+	msg = msg + param;
+	std::cout << msg << std::endl;
+	this->serv.send_msg(msg, owner);
+	this->serv.disconnect_client(owner.get_nickname());
+}
 
