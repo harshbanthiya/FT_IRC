@@ -6,7 +6,7 @@
 /*   By: hbanthiy <hbanthiy@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/08/26 12:17:12 by hbanthiy          #+#    #+#             */
-/*   Updated: 2022/08/26 14:56:22 by hbanthiy         ###   ########.fr       */
+/*   Updated: 2022/09/07 14:24:15 by hbanthiy         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -45,9 +45,20 @@ void Bot::load_insults(const char *file)
     insult_file.open(file, std::ios::in);
     if (!insult_file)
         throw std::runtime_error("Open : no file");
-    std::string line;
-	while (std::getline(insult_file, line))
-		insults.push_back(line);
+    insult_file >> std::noskipws;
+    std::string     line;
+    char            ch;
+
+    do{
+        insult_file >> ch;
+        if (ch == '\n')
+        {
+            insults.push_back(line);
+            line.clear();
+        }
+        else 
+            line += ch;
+    }while (insult_file.eof());
 	insult_file.close();
 }
 
@@ -95,7 +106,7 @@ int Bot::_register()
     send_msg(msg);
     msg = "NICK " + BOT_NAME + END_DELIM;
     send_msg(msg);
-    msg = "USER bot_user 0 *: It's Bender Baby!" + END_DELIM;
+    msg = "USER bot_user 0 * :It's Bender Baby!" + END_DELIM;
     send_msg(msg);
     memset(this->buff, 0, sizeof(buff));
     nbytes = recv(this->socket_fd, this->buff, sizeof(this->buff), 0);
@@ -107,7 +118,7 @@ int Bot::_register()
 
 std::string Bot::get_cmd(std::string buff) const
 {
-    buff.erase(0, 1); // delete first : 
+    buff.erase(0, buff.find(" ") + 1); // delete first : 
     return (buff.substr(0, buff.find("!")));
 }
 
@@ -115,6 +126,8 @@ void    Bot::handle_cmd(std::string cmd) const
 {
     if (cmd == "PRIVMSG")
         handle_privmsg();
+    if (cmd == "JOIN")
+        handle_join();
     
 }
 
@@ -123,19 +136,41 @@ void    Bot::send_msg(std::string msg) const
     send(this->socket_fd, msg.c_str(), msg.length(), 0);
 }
 
+void    Bot::handle_join() const
+{
+    std::string sender = get_sender(this->buff);
+    if (sender == BOT_NAME)
+        return ;
+    std::string header = "PRIVMSG #" + BOT_NAME + " :";
+    std::string msg = header + sender + "BLAHH BLLAH HUMAN" + END_DELIM;
+    send_msg(msg);
+    msg = header + "Commands available /INSULTME / INSULT <NAME> /COMMAND " + END_DELIM;
+    send_msg(msg);
+}
+
 void    Bot::handle_privmsg() const
 {
     std::string   text = get_text(this->buff);
     srand(time(nullptr));
     std::string msg = "PRIVMSG #" + BOT_NAME + " :";
     if (text == ":COMMAND" + END_DELIM || text.substr(0, text.find(" ")) == "COMMAND")
-        msg += "Command available -- /INSULT <NAME> " + END_DELIM;
+        msg += "Command available -- /INSULT <NAME> /INSULTME" + END_DELIM;
     else
     {
         std::string insult = insults[rand() % this->insults.size()];
         std::string sender = get_sender(this->buff);
-        if (text == "INSULT" + END_DELIM)
+        if (text == "INSULTME" + END_DELIM || text.substr(0, text.find(" ")) == ":INSULTME")
             msg += sender + ", " + insult + END_DELIM;
+        else if (text == ":INSULT" + END_DELIM || text.substr(0, text.find(" ")) == ":INSULT")
+        {
+            int pos = std::string(text).find(" ");
+            if (pos != -1)
+            {
+                sender.pop_back();
+                sender.pop_back();
+            }
+            msg += sender + ", " + insult + END_DELIM;
+        }
 
     }   
     if (msg != ("PRIVMSG #" + BOT_NAME + " :"))

@@ -6,7 +6,7 @@
 /*   By: hbanthiy <hbanthiy@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/08/26 12:17:08 by hbanthiy          #+#    #+#             */
-/*   Updated: 2022/08/26 15:11:10 by hbanthiy         ###   ########.fr       */
+/*   Updated: 2022/09/07 14:28:44 by hbanthiy         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,7 +23,7 @@
 #include <fstream>
 #include <iostream>
 
-#define INSULTS_FILEPATH "insults.txt"
+#define INSULTS_FILEPATH "./bender_the_bot/insults.txt"
 #define BOT_NAME std::string("Bender")
 #define END_DELIM std::string("\r\n")
 
@@ -46,15 +46,18 @@ class Bot
     std::vector<std::string> insults;
 
     int             _register();
-    int			    get_numeric(std::string buff) const;
-    void            send_msg(std::string buff)const;
     void            load_insults(const char *file);
+    
+    int			    get_numeric(std::string buff) const;
+    std::string     get_cmd(std::string buff)const;
+    std::string	    get_sender(std::string buff) const;
+    std::string     get_text(std::string buff) const;
+    
+    void            send_msg(std::string buff)const;
 
     void            handle_cmd(std::string msg) const;
-    std::string     get_cmd(std::string buff)const;
+    void            handle_join()const;
     void            handle_privmsg()const;
-    std::string     get_text(std::string buff) const;
-    std::string	    get_sender(std::string buff) const;
 		
 };
 
