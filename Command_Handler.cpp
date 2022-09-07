@@ -6,7 +6,7 @@
 /*   By: hbanthiy <hbanthiy@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/08/17 13:37:38 by hbanthiy          #+#    #+#             */
-/*   Updated: 2022/09/06 16:28:07 by hbanthiy         ###   ########.fr       */
+/*   Updated: 2022/09/07 12:43:51 by hbanthiy         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -592,12 +592,6 @@ void CommandHandler::handle_admin(Client &target)
 	get_replies(RPL_ADMINEMAIL,target, "E-Mail   - routing@");
 }
 */
-
-
-// fucking basic just to make JOIN work
-
-
-//  fucking basic just to make JOIN work
 
 
 // =============== Handle kick and invite 
