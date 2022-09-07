@@ -6,7 +6,7 @@
 /*   By: olabrecq <olabrecq@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/08/15 19:55:13 by hbanthiy          #+#    #+#             */
-/*   Updated: 2022/09/01 14:51:19 by olabrecq         ###   ########.fr       */
+/*   Updated: 2022/09/07 11:16:57 by olabrecq         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,26 +17,28 @@
 #include <netdb.h>
 #include <sys/socket.h>
 #include <sys/types.h>
+#include <stdexcept>
 #include <cerrno>
 #include <unistd.h>
 #include <vector>
 # include <poll.h> 
 #include <arpa/inet.h>
 #include <fcntl.h>
-# include <iostream>
-# include <exception>
-# include <cstdio>
+#include <cstdio>
 #include <fstream>
-#include <netinet/in.h>
 #include <map>
-#include <list>
-#include <unordered_map>
 
 #include "Client.hpp"
 #include "Channel.hpp"
 #include "Command_Handler.hpp"
 #include "replies.h"
-#include <ctime>
+
+#define BACKLOG_CONNECTIONS 10
+#define UMODES std::string("oiws")
+#define CMODES std::string("obtkmlvsn")
+#define MOTD_PATH "welcome_screen.txt"
+#define SERV_NAME std::string("MyIRC")
+
 
 class Server
 {
@@ -45,50 +47,54 @@ class Server
 
 			Server(std::string port, std::string paswd);
 			~Server();
-			void 			init();
-			void 			execute();
-			bool 			checkPass(std::string &pass);
-			bool 			user_exists(std::string name);
+
+			void 										init();
+			void 										execute();
+			bool 										check_pass(std::string &pass);
+			bool 										user_exists(std::string name);
 
 
-		// Getters 
-			std::vector<Client *> const &get_all_clients();
-			Client const				&get_client(std::string nickname) const;
-			void 						disconnect_client(std::string nick);
-			void 						disconnect_client(int index);
-			std::string 				getcreatedTime();
-			void 						sendPing();
-			std::string 				getPasswrd();
-			CommandHandler				getHandler() const;
+			// Getters 
+			std::vector<Client *> const 				&get_all_clients();
+			Client const								&get_client(std::string nickname) const;
+			std::string 								getcreatedTime();
+			Channel										&get_channel(std::string channelName);
+			const std::vector<std::string, Channel> 	&get_channel_list() const ;
+			std::string 								getPasswrd();
+			CommandHandler								getHandler() const;
+			std::vector<std::string> const				&get_motd() const;
+			
+			void 										disconnect_client(std::string nick);
+			void 										disconnect_client(int index);
 
-			void						send_msg(std::string& msg, Client const &target) const;
-			int							send_msg(std::string& msg, std::string target) const;
-			int 						send_msg(std::string& msg, std::string target, Client const &owner); // Added for channel priv
-			bool						check_channel(std::string target) const;
-			Channel						&get_channel(std::string channelName);
-			const std::vector<std::string, Channel> &get_channel_list() const ;
+			void										send_msg(std::string& msg, Client const &target) const;
+			int											send_msg(std::string& msg, std::string target) const;
+			int 										send_msg(std::string& msg, std::string target, Client const &owner);
 
-			void						create_channel(std::string ch_name);
-			bool 						add_channel(Channel ch); // Implement later once channel class has all the getters and setters
-		// Setters 
+			void										create_channel(std::string ch_name);
+			bool 										add_channel(Channel ch);
+			bool										check_channel(std::string target) const;
+			void										remove_channel(std::string name);
+	
 
 		private:
 		
-			std::string					port;
-			int 						sock_fd;
-			time_t						last_ping;
-			std::string 				createdTime;
-			std::vector<struct pollfd> 	pfds;
-			std::string 				passwrd;
-			std::vector<Client *> 		list_of_all_clients;
+			std::string									port;
+			int 										sock_fd;
+			std::string 								createdTime;
+			std::vector<struct pollfd> 					pfds;
+			std::string 								passwrd;
+			std::map<std::string, Channel>				list_of_all_channels;
+			std::vector<Client*> 						list_of_all_clients;
+			CommandHandler 								handler;
+			std::vector<std::string>					motd; 
 			
-			std::map<std::string, Channel>	list_of_all_channels;
 			
-			void 						acceptClient();
-			CommandHandler 				_handler; 
-			void 						add_fd(int new_fd);
-			void 						add_client();
-			void						exec_command(Client &executor);
+			void 										load_motd(const char *file);
+			void 										accept_client();
+			void 										add_fd(int new_fd);
+			void 										add_client();
+			void										exec_command(Client &executor);
 		
 		
 		// Exceptions 

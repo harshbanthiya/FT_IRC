@@ -29,3 +29,13 @@
 ⣦⣈⠉⢛⠻⠿⠿⢿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⡿⠿⠛⣁⣴⣾⣿⣿⣿⣿
 ⣿⣿⣿⣶⣮⣭⣁⣒⣒⣒⠂⠠⠬⠭⠭⠭⢀⣀⣠⣄⡘⠿⣿⣿⣿⣿⣿⣿⣿
 ⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣦⡈⢿⣿⣿⣿⣿⣿
+
+         AVAILABLE COMMANDS:
+          - PASS        - NICK
+          - USER        - MOTD
+          - PING        - JOIN
+          - PART        - PRIVMSG
+          - KICK        - WHO  
+          - MODE        - TOPIC  
+          - INVITE      - QUIT 
+ 
