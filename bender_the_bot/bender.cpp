@@ -6,7 +6,7 @@
 /*   By: hbanthiy <hbanthiy@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/08/26 12:17:12 by hbanthiy          #+#    #+#             */
-/*   Updated: 2022/09/07 15:47:48 by hbanthiy         ###   ########.fr       */
+/*   Updated: 2022/09/08 11:22:37 by hbanthiy         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -145,9 +145,9 @@ void    Bot::handle_join() const
     if (sender == BOT_NAME)
         return ;
     std::string header = "PRIVMSG #" + BOT_NAME + " :";
-    std::string msg = header + sender + "BLAHH BLLAH HUMAN" + END_DELIM;
+    std::string msg = header + sender + " GET READY TO BE ROASTED HUMAN!" + END_DELIM;
     send_msg(msg);
-    msg = header + "Commands available /INSULTME / INSULT <NAME> /COMMAND " + END_DELIM;
+    msg = header + "Commands available :: ROASTME / ROAST <NAME> /COMMAND " + END_DELIM;
     send_msg(msg);
 }
 
@@ -157,14 +157,14 @@ void    Bot::handle_privmsg() const
     srand(time(nullptr));
     std::string msg = "PRIVMSG #" + BOT_NAME + " :";
     if (text == ":COMMAND" + END_DELIM || text.substr(0, text.find(" ")) == ":COMMAND")
-        msg += "Command available -- /INSULT <NAME> /INSULTME" + END_DELIM;
+        msg += "Commands available :: ROASTME /  ROAST <NAME> / COMMAND" + END_DELIM;
     else
     {
         std::string insult = insults[rand() % this->insults.size()];
         std::string sender = get_sender(this->buff);
-        if (text == ":INSULTME" + END_DELIM || text.substr(0, text.find(" ")) == ":INSULTME")
+        if (text == ":ROASTME" + END_DELIM || text.substr(0, text.find(" ")) == ":ROASTME")
             msg += sender + ", " + insult + END_DELIM;
-        else if (text == ":INSULT" + END_DELIM || text.substr(0, text.find(" ")) == ":INSULT")
+        else if (text == ":ROAST" + END_DELIM || text.substr(0, text.find(" ")) == ":ROAST")
         {
             int pos = std::string(text).find(" ");
             if (pos != -1)

@@ -6,7 +6,7 @@
 /*   By: hbanthiy <hbanthiy@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/08/26 12:17:08 by hbanthiy          #+#    #+#             */
-/*   Updated: 2022/09/07 15:51:20 by hbanthiy         ###   ########.fr       */
+/*   Updated: 2022/09/08 11:16:33 by hbanthiy         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,7 +23,7 @@
 #include <fstream>
 #include <iostream>
 
-#define INSULTS_FILEPATH "./bender_the_bot/insults.txt"
+#define INSULTS_FILEPATH "./bender_the_bot/roastJokes.txt"
 #define BOT_NAME std::string("benderBOT")
 #define END_DELIM std::string("\r\n")
 
