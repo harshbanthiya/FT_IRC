@@ -6,7 +6,7 @@
 /*   By: hbanthiy <hbanthiy@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/08/26 12:17:08 by hbanthiy          #+#    #+#             */
-/*   Updated: 2022/09/08 11:16:33 by hbanthiy         ###   ########.fr       */
+/*   Updated: 2022/09/08 16:01:02 by hbanthiy         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -57,6 +57,7 @@ class Bot
     void            handle_cmd(std::string msg) const;
     void            handle_join()const;
     void            handle_privmsg()const;
+    void            handle_part() const;
 		
 };
 

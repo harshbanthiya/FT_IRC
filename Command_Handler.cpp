@@ -6,7 +6,7 @@
 /*   By: hbanthiy <hbanthiy@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/08/17 13:37:38 by hbanthiy          #+#    #+#             */
-/*   Updated: 2022/09/08 15:46:25 by hbanthiy         ###   ########.fr       */
+/*   Updated: 2022/09/08 16:35:39 by hbanthiy         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,11 +29,10 @@ CommandHandler::CommandHandler(Server &_server): serv(_server)
 	this->handlers["QUIT"] = &CommandHandler::handle_quit;
 	this->handlers["WHO"] = &CommandHandler::handle_who;
 	this->handlers["PART"] = &CommandHandler::handle_part;
+	this->handlers["TOPIC"] = &CommandHandler::handle_topic;
 	//this->handlers["ADMIN"] = &CommandHandler::handle_admin;
-	// this->handlers["DIE"] = &CommandHandler::handle_user;
 	/*
 		LUSERS
-		PART
 		AWAY
 		NAMES
 		LIST
@@ -345,6 +344,25 @@ void CommandHandler::handle_mode(Client &owner)
 
 }
 
+void 	CommandHandler::handle_topic(Client &owner)
+{
+	if (parameters.size() < 1 || parameters.front() == "")
+		get_replies(ERR_NEEDMOREPARAMS, owner, "TOPIC");
+	else if (!serv.check_channel(parameters.front()))
+		get_replies(ERR_NOSUCHCHANNEL, owner, parameters.front());
+	else
+	{
+		Channel &ch = serv.get_channel(parameters.front());
+		if (parameters.size() == 1)
+		{
+			ch.get_topic(owner);
+			return ;
+		}
+		parameters.pop_front();
+		ch.set_topic(owner, parameters.front());
+	}
+}
+
 void 	CommandHandler::handle_invite(Client &owner)
 {
 	std::string msg = "";
@@ -394,6 +412,61 @@ void CommandHandler::handle_who(Client &owner)
 			get_replies(RPL_WHOREPLY, owner, msg);
 		}
 		get_replies(RPL_ENDOFWHO, owner, ch.get_name(true));
+	}
+}
+
+
+void CommandHandler::handle_quit(Client &owner)
+{
+	std::string reason = (parameters.size() == 1) ? parameters.front() : owner.get_nickname();
+	std::string msg = "ERROR Closing link: " + owner.get_nickname() + "[" + owner.get_hostname() + "]" "(Quit:  " + reason + ")" + END_DELIM;
+
+	std::cout << msg << std::endl;
+	this->serv.send_msg(msg, owner);
+	msg = ":" + owner.get_nickname() + "!" + owner.get_username() + "@" + owner.get_hostname() +" QUIT :Quit:" + reason + END_DELIM;
+	this->serv.send_to_all_chans(msg, owner);
+	this->serv.disconnect_client(owner.get_nickname());
+}
+
+void CommandHandler::handle_part(Client &owner) {
+	if (!parameters.size() || parameters.front() == "")
+		return (get_replies(ERR_NEEDMOREPARAMS, owner, command));
+	
+	std::string targets = parameters.front();
+	std::string reason;
+	if (parameters.size() > 1 && parameters.front() != "")
+	{
+		std::list<std::string>::iterator it = ++parameters.begin();
+		reason = " :\"" + *it;
+		for (++it; it != parameters.cend(); ++it)
+			reason += " " + *it;
+		reason += "\"";
+	}
+	std::string head =  ":" + owner.get_nickname() + "!" + owner.get_username() + "@" + owner.get_hostname() + " PART ";
+	
+	while(!targets.empty())
+	{
+		int pos = targets.find(",");
+		std::string curr_target = targets.substr(0, pos);
+		std::string msg = head + curr_target + reason + END_DELIM;
+
+		if (!this->serv.check_channel(curr_target)) 
+			get_replies(ERR_NOSUCHCHANNEL, owner, curr_target);
+		else 
+		{
+			Channel &tmp = serv.get_channel(curr_target);
+			if (!tmp.is_user_in_channel(owner))
+				get_replies(ERR_NOTONCHANNEL, owner, curr_target);
+			else 
+			{
+				serv.send_msg(msg, owner);
+				serv.send_msg(msg, curr_target, owner);
+				tmp.make_user_part(owner);
+				if (tmp.empty())
+					serv.remove_channel(tmp.get_name());
+			}
+		}
+		targets.erase(0, (pos != -1) ? pos + 1 : pos);
 	}
 }
 
@@ -458,7 +531,13 @@ void 	CommandHandler::get_replies(int code, Client const &owner, std::string ext
 		case RPL_CREATIONTIME:
 			msg += extra;
 			break;
+		case RPL_NOTOPIC:
+			msg += extra + " :No topic is set";
+			break;
 		case RPL_TOPIC:
+			msg += extra;
+			break;
+		case RPL_TOPICWHOTIME:
 			msg += extra;
 			break;
 		case RPL_INVITING:
@@ -593,58 +672,4 @@ void CommandHandler::handle_admin(Client &target)
 */
 
 
-// =============== Handle kick and invite 
-void CommandHandler::handle_quit(Client &owner)
-{
-	std::string reason = (parameters.size() == 1) ? parameters.front() : owner.get_nickname();
-	std::string msg = "ERROR Closing link: " + owner.get_nickname() + "[" + owner.get_hostname() + "]" "(Quit:  " + reason + ")" + END_DELIM;
-
-	std::cout << msg << std::endl;
-	this->serv.send_msg(msg, owner);
-	msg = ":" + owner.get_nickname() + "!" + owner.get_username() + "@" + owner.get_hostname() +" QUIT :Quit:" + reason + END_DELIM;
-	this->serv.send_to_all_chans(msg, owner);
-	this->serv.disconnect_client(owner.get_nickname());
-}
-
-void CommandHandler::handle_part(Client &owner) {
-	if (!parameters.size() || parameters.front() == "")
-		return (get_replies(ERR_NEEDMOREPARAMS, owner, command));
-	
-	std::string targets = parameters.front();
-	std::string reason;
-	if (parameters.size() > 1 && parameters.front() != "")
-	{
-		std::list<std::string>::iterator it = ++parameters.begin();
-		reason = " :\"" + *it;
-		for (++it; it != parameters.cend(); ++it)
-			reason += " " + *it;
-		reason += "\"";
-	}
-	std::string head =  ":" + owner.get_nickname() + "!" + owner.get_username() + "@" + owner.get_hostname() + " PART ";
-	
-	while(!targets.empty())
-	{
-		int pos = targets.find(",");
-		std::string curr_target = targets.substr(0, pos);
-		std::string msg = head + curr_target + reason + END_DELIM;
-
-		if (!this->serv.check_channel(curr_target)) 
-			get_replies(ERR_NOSUCHCHANNEL, owner, curr_target);
-		else 
-		{
-			Channel &tmp = serv.get_channel(curr_target);
-			if (!tmp.is_user_in_channel(owner))
-				get_replies(ERR_NOTONCHANNEL, owner, curr_target);
-			else 
-			{
-				serv.send_msg(msg, owner);
-				serv.send_msg(msg, curr_target, owner);
-				tmp.make_user_part(owner);
-				if (tmp.empty())
-					serv.remove_channel(tmp.get_name());
-			}
-		}
-		targets.erase(0, (pos != -1) ? pos + 1 : pos);
-	}
-}
 

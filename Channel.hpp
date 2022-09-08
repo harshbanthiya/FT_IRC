@@ -6,7 +6,7 @@
 /*   By: hbanthiy <hbanthiy@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/08/26 08:47:31 by sheeed            #+#    #+#             */
-/*   Updated: 2022/09/08 15:24:29 by hbanthiy         ###   ########.fr       */
+/*   Updated: 2022/09/08 16:32:11 by hbanthiy         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -65,20 +65,23 @@ class Channel
 		bool 					mode_invite(Client &owner, char mode);
 		bool 					mode_ban(Client &owner, char mode, std::string params);
 		bool 					mode_operator(Client &owner, char mode, std::string params);
+		bool					mode_topic(Client &owner, char mode);
 
 		
 		std::string				get_str_clients() const;
 		std::string const		&get_modes()const;
 		std::string  			get_name(bool ck = false) const;
 		std::string  			get_key(void) const;
-		std::string  			get_topic(void) const;
+		std::string  			get_topic() const;
+		void 					get_topic(Client &owner) const;
+		std::string  			get_topic_time() const;
 		std::string 			get_creation_time() const;
 
 		const std::vector<std::pair<char,Client *> > &get_client_list()const;
 		const std::set<std::string> &get_ban_list()const;
 
 		
-		void	set_topic( std::string topic ) { _topic = topic; }
+		void	set_topic( Client &owner, std::string &topic );
 
 
 	private:

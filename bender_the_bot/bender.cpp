@@ -6,7 +6,7 @@
 /*   By: hbanthiy <hbanthiy@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/08/26 12:17:12 by hbanthiy          #+#    #+#             */
-/*   Updated: 2022/09/08 11:24:15 by hbanthiy         ###   ########.fr       */
+/*   Updated: 2022/09/08 16:03:06 by hbanthiy         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -131,7 +131,8 @@ void    Bot::handle_cmd(std::string cmd) const
         handle_privmsg();
     if (cmd == "JOIN")
         handle_join();
-    
+    if (cmd == "PART")
+        handle_part();
 }
 
 void    Bot::send_msg(std::string msg) const
@@ -180,6 +181,14 @@ void    Bot::handle_privmsg() const
     if (msg != ("PRIVMSG #" + BOT_NAME + " :"))
         send_msg(msg);
     
+}
+
+void    Bot::handle_part()const
+{
+    std::string msg = "PRIVMSG #" + BOT_NAME + " :";
+    std::string sender = get_sender(this->buff);
+    msg += sender + "HASTA LA VISTA BABY" + END_DELIM;
+    send_msg(msg);
 }
 
 std::string Bot::get_text(std::string buff) const

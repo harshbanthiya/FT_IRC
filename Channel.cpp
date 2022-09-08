@@ -6,7 +6,7 @@
 /*   By: hbanthiy <hbanthiy@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/08/26 08:56:40 by hbanthiy          #+#    #+#             */
-/*   Updated: 2022/09/08 15:26:50 by hbanthiy         ###   ########.fr       */
+/*   Updated: 2022/09/08 16:53:53 by hbanthiy         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -106,10 +106,40 @@ bool 	Channel::add_mode(Client &owner, char m, char mode, std::string params)
 			return (mode_invite(owner, mode));
 		case 'o':
 			return (mode_operator(owner, mode, params));
+		case 't':
+			return (mode_topic(owner, mode));
 	}
 	_serv->getHandler().get_replies(ERR_UNKNOWNMODE, owner, std::string(1, m));
 	return (false);
 }
+
+
+bool 				Channel::mode_topic(Client &owner, char mode)
+{
+	std::string 	msg;
+
+	if (!is_operator(owner))
+		_serv->getHandler().get_replies(ERR_CHANOPRIVSNEEDED, owner, _name);
+	else if (mode == '+')
+	{
+		if (_modes.find('t') != std::string::npos)
+			return false;
+		_modes += "t";
+		msg = ":" + owner.get_nickname() + "!" + owner.get_username() + '@' + owner.get_hostname() +
+				" MODE " + _name + " +t" + END_DELIM;
+		send_to_all(msg);
+	}
+	else 
+	{
+		if (_modes.find('t') == std::string::npos)
+			return false;
+		delete_mode('t');
+		msg = ":" + owner.get_nickname() + "!" + owner.get_username() + '@' + owner.get_hostname() +
+				" MODE " + _name + " -t" + END_DELIM;
+		send_to_all(msg);
+	}
+	return false;
+ }
 
 bool 				Channel::mode_invite(Client &owner, char mode)
 {
@@ -400,7 +430,36 @@ std::string 		Channel::get_name(bool ck) const
 	else 
 		return ("*");
 }
+std::string 		Channel::get_topic_time()const {return (std::to_string(_topic_time));}
 std::string 		Channel::get_topic()const {return (_topic);}
+
+void  				Channel::get_topic(Client &owner)const 
+{
+	if (_topic == "")
+		_serv->getHandler().get_replies(RPL_NOTOPIC, owner, _name);
+	else 
+	{
+		_serv->getHandler().get_replies(RPL_TOPIC, owner, _name + " :" +  _topic);
+		_serv->getHandler().get_replies(RPL_TOPICWHOTIME, owner, _name + " " + _topic_setter + " " +  get_topic_time());
+	}
+}
+
+void 		Channel::set_topic(Client &owner, std::string &topic)
+{
+	if (!is_user_in_channel(owner))
+		_serv->getHandler().get_replies(ERR_NOTONCHANNEL, owner, _name);
+	else if (_modes.find('t') != std::string::npos && !is_operator(owner))
+		_serv->getHandler().get_replies(ERR_CHANOPRIVSNEEDED, owner, _name);
+	else 
+	{
+		_topic = topic;
+		_topic_setter = owner.get_nickname();
+		_topic_time = std::time(nullptr);
+		std::string msg = ":" + owner.get_nickname() + "!" + owner.get_username() + " TOPIC " + _name + " :" + _topic + END_DELIM;
+		_serv->send_msg(msg, owner);
+	}
+}
+
 std::string 		Channel::get_key()const{return (_key);}
 std::string 		Channel::get_creation_time()const{return (std::to_string(_creation_time));}
 
