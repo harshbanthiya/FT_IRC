@@ -285,10 +285,13 @@ void Server::send_to_all_chans(std::string msg, Client &owner)
 	std::cout << msg << std::endl;
 	while (it != list_of_all_channels.cend())
 	{
-		std::cout << "ok" << std::endl;
 		std::string ch_name = (*it).first;
 		send_msg(msg, ch_name, owner);
 		list_of_all_channels[ch_name].remove_client(owner);
+		if (list_of_all_channels[ch_name].empty()) //channel size is 0, meaning we were the last ones in it
+		{
+			this->remove_channel(ch_name);
+		}
 		it++;
 	}
 }
