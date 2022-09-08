@@ -6,7 +6,7 @@
 /*   By: hbanthiy <hbanthiy@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/08/26 08:47:31 by sheeed            #+#    #+#             */
-/*   Updated: 2022/09/06 13:42:17 by hbanthiy         ###   ########.fr       */
+/*   Updated: 2022/09/08 15:24:29 by hbanthiy         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,6 +37,7 @@ class Channel
 		void 					add_client( Client &new_client, std::string key, char status);
 		bool					remove_client(Client &client);
 		bool 					remove_client(std::string const & nick);
+		void 					make_user_part(Client &cl);
 		void					send_to_all(std::string msg, std::string sender = "") const;
 		bool 					is_user_in_channel(Client const &user)const;
 		bool 					is_user_in_channel(std::string nickname)const;

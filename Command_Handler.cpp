@@ -6,7 +6,7 @@
 /*   By: hbanthiy <hbanthiy@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/08/17 13:37:38 by hbanthiy          #+#    #+#             */
-/*   Updated: 2022/09/08 12:51:23 by hbanthiy         ###   ########.fr       */
+/*   Updated: 2022/09/08 15:46:25 by hbanthiy         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -607,22 +607,44 @@ void CommandHandler::handle_quit(Client &owner)
 }
 
 void CommandHandler::handle_part(Client &owner) {
-	if (parameters.empty()) {
-		get_replies(ERR_NEEDMOREPARAMS, owner);
-		return;
+	if (!parameters.size() || parameters.front() == "")
+		return (get_replies(ERR_NEEDMOREPARAMS, owner, command));
+	
+	std::string targets = parameters.front();
+	std::string reason;
+	if (parameters.size() > 1 && parameters.front() != "")
+	{
+		std::list<std::string>::iterator it = ++parameters.begin();
+		reason = " :\"" + *it;
+		for (++it; it != parameters.cend(); ++it)
+			reason += " " + *it;
+		reason += "\"";
 	}
-	std::string channel = parameters.front();
-	channel = channel.erase(0, 0);
-	std::cout << channel << std::endl;
-	if (this->serv.check_channel(channel) == false) {
-		get_replies(ERR_NOSUCHCHANNEL, owner);
-		return;
+	std::string head =  ":" + owner.get_nickname() + "!" + owner.get_username() + "@" + owner.get_hostname() + " PART ";
+	
+	while(!targets.empty())
+	{
+		int pos = targets.find(",");
+		std::string curr_target = targets.substr(0, pos);
+		std::string msg = head + curr_target + reason + END_DELIM;
+
+		if (!this->serv.check_channel(curr_target)) 
+			get_replies(ERR_NOSUCHCHANNEL, owner, curr_target);
+		else 
+		{
+			Channel &tmp = serv.get_channel(curr_target);
+			if (!tmp.is_user_in_channel(owner))
+				get_replies(ERR_NOTONCHANNEL, owner, curr_target);
+			else 
+			{
+				serv.send_msg(msg, owner);
+				serv.send_msg(msg, curr_target, owner);
+				tmp.make_user_part(owner);
+				if (tmp.empty())
+					serv.remove_channel(tmp.get_name());
+			}
+		}
+		targets.erase(0, (pos != -1) ? pos + 1 : pos);
 	}
-	if (this->serv.get_channel(channel).is_user_in_channel(owner) == false) {
-		get_replies(ERR_NOTONCHANNEL, owner);
-		return;
-	}
-	std::string msg = ":" + owner.get_nickname() + "!" + owner.get_username() + "@" + owner.get_hostname() + " PART " + parameters.front() + END_DELIM;
-	this->serv.make_user_part(channel, msg, owner);
 }
 
