@@ -622,7 +622,6 @@ void CommandHandler::handle_part(Client &owner) {
 		get_replies(ERR_NOTONCHANNEL, owner);
 		return;
 	}
-	std::cout << "ok again" << std::endl;
 	std::string msg = ":" + owner.get_nickname() + "!" + owner.get_username() + "@" + owner.get_hostname() + " PART " + parameters.front() + END_DELIM;
 	this->serv.make_user_part(channel, msg, owner);
 }
