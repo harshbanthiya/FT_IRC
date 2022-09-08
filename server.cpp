@@ -289,10 +289,25 @@ void Server::send_to_all_chans(std::string msg, Client &owner)
 		std::string ch_name = (*it).first;
 		send_msg(msg, ch_name, owner);
 		list_of_all_channels[ch_name].remove_client(owner);
+		if (list_of_all_channels[ch_name].empty())
+		{
+			remove_channel(ch_name);
+		}
 		it++;
 	}
 }
 
+void Server::make_user_part(std::string ch, std::string msg, Client &owner)
+{
+	std::cout << msg << std::endl;
+	send_msg(msg, owner);
+	send_msg(msg, ch, owner);
+	list_of_all_channels[ch].remove_client(owner);
+	if (list_of_all_channels[ch].empty())
+	{
+		remove_channel(ch);
+	}
+}
 // ================ EXCEPTIONS ===================
 
 const char*	Server::SocketFailException::what() const throw(){return "Error:  Socket Failed\n";}

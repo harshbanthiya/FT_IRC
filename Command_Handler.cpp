@@ -6,7 +6,7 @@
 /*   By: hbanthiy <hbanthiy@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/08/17 13:37:38 by hbanthiy          #+#    #+#             */
-/*   Updated: 2022/09/07 15:52:17 by hbanthiy         ###   ########.fr       */
+/*   Updated: 2022/09/08 15:46:25 by hbanthiy         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,14 +28,13 @@ CommandHandler::CommandHandler(Server &_server): serv(_server)
 	this->handlers["TIME"] = &CommandHandler::handle_time;
 	this->handlers["QUIT"] = &CommandHandler::handle_quit;
 	this->handlers["WHO"] = &CommandHandler::handle_who;
+	this->handlers["PART"] = &CommandHandler::handle_part;
 	//this->handlers["ADMIN"] = &CommandHandler::handle_admin;
 	// this->handlers["DIE"] = &CommandHandler::handle_user;
 	/*
 		LUSERS
 		PART
 		AWAY
-		QUIT
-		WHO
 		NAMES
 		LIST
 		TOPIC
@@ -44,7 +43,7 @@ CommandHandler::CommandHandler(Server &_server): serv(_server)
 
 void 	CommandHandler::parse_cmd(std::string cmd_line)
 {
-	//std::cout << cmd_line << std::endl;
+	std::cout << cmd_line << std::endl;
 	if (cmd_line.empty())
 		return ;
 	int pos = cmd_line.find(" ");
@@ -605,5 +604,47 @@ void CommandHandler::handle_quit(Client &owner)
 	msg = ":" + owner.get_nickname() + "!" + owner.get_username() + "@" + owner.get_hostname() +" QUIT :Quit:" + reason + END_DELIM;
 	this->serv.send_to_all_chans(msg, owner);
 	this->serv.disconnect_client(owner.get_nickname());
+}
+
+void CommandHandler::handle_part(Client &owner) {
+	if (!parameters.size() || parameters.front() == "")
+		return (get_replies(ERR_NEEDMOREPARAMS, owner, command));
+	
+	std::string targets = parameters.front();
+	std::string reason;
+	if (parameters.size() > 1 && parameters.front() != "")
+	{
+		std::list<std::string>::iterator it = ++parameters.begin();
+		reason = " :\"" + *it;
+		for (++it; it != parameters.cend(); ++it)
+			reason += " " + *it;
+		reason += "\"";
+	}
+	std::string head =  ":" + owner.get_nickname() + "!" + owner.get_username() + "@" + owner.get_hostname() + " PART ";
+	
+	while(!targets.empty())
+	{
+		int pos = targets.find(",");
+		std::string curr_target = targets.substr(0, pos);
+		std::string msg = head + curr_target + reason + END_DELIM;
+
+		if (!this->serv.check_channel(curr_target)) 
+			get_replies(ERR_NOSUCHCHANNEL, owner, curr_target);
+		else 
+		{
+			Channel &tmp = serv.get_channel(curr_target);
+			if (!tmp.is_user_in_channel(owner))
+				get_replies(ERR_NOTONCHANNEL, owner, curr_target);
+			else 
+			{
+				serv.send_msg(msg, owner);
+				serv.send_msg(msg, curr_target, owner);
+				tmp.make_user_part(owner);
+				if (tmp.empty())
+					serv.remove_channel(tmp.get_name());
+			}
+		}
+		targets.erase(0, (pos != -1) ? pos + 1 : pos);
+	}
 }
 

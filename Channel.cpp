@@ -6,7 +6,7 @@
 /*   By: hbanthiy <hbanthiy@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/08/26 08:56:40 by hbanthiy          #+#    #+#             */
-/*   Updated: 2022/09/06 16:27:28 by hbanthiy         ###   ########.fr       */
+/*   Updated: 2022/09/08 15:26:50 by hbanthiy         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -413,3 +413,17 @@ const std::set<std::string>  &Channel::get_ban_list() const {
 	return _ban_list;
 }
 
+
+void Channel::make_user_part(Client &owner)
+{
+	if (!is_user_in_channel(owner))
+		return ;
+	u_int 	i = 0;
+	for (; i < _clients.size() ; i++)
+	{
+		if (*(_clients[i].second) == owner)
+			break ;
+	}
+	owner.remove_channel(_name);
+	_clients.erase(_clients.begin() + i);
+}
