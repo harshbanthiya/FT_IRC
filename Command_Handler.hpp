@@ -48,6 +48,7 @@ class CommandHandler
 		void 	handle_time(Client &owner);
 		void 	handle_quit(Client &owner);
 		void 	handle_who(Client &owner);
+		void 	handle_part(Client &owner);
 		//void 	handle_admin(Client &owner);
 	};
 

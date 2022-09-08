@@ -28,14 +28,13 @@ CommandHandler::CommandHandler(Server &_server): serv(_server)
 	this->handlers["TIME"] = &CommandHandler::handle_time;
 	this->handlers["QUIT"] = &CommandHandler::handle_quit;
 	this->handlers["WHO"] = &CommandHandler::handle_who;
+	this->handlers["PART"] = &CommandHandler::handle_part;
 	//this->handlers["ADMIN"] = &CommandHandler::handle_admin;
 	// this->handlers["DIE"] = &CommandHandler::handle_user;
 	/*
 		LUSERS
 		PART
 		AWAY
-		QUIT
-		WHO
 		NAMES
 		LIST
 		TOPIC
@@ -44,7 +43,7 @@ CommandHandler::CommandHandler(Server &_server): serv(_server)
 
 void 	CommandHandler::parse_cmd(std::string cmd_line)
 {
-	//std::cout << cmd_line << std::endl;
+	std::cout << cmd_line << std::endl;
 	if (cmd_line.empty())
 		return ;
 	int pos = cmd_line.find(" ");
@@ -605,5 +604,26 @@ void CommandHandler::handle_quit(Client &owner)
 	msg = ":" + owner.get_nickname() + "!" + owner.get_username() + "@" + owner.get_hostname() +" QUIT :Quit:" + reason + END_DELIM;
 	this->serv.send_to_all_chans(msg, owner);
 	this->serv.disconnect_client(owner.get_nickname());
+}
+
+void CommandHandler::handle_part(Client &owner) {
+	if (parameters.empty()) {
+		get_replies(ERR_NEEDMOREPARAMS, owner);
+		return;
+	}
+	std::string channel = parameters.front();
+	channel = channel.erase(0, 0);
+	std::cout << channel << std::endl;
+	if (this->serv.check_channel(channel) == false) {
+		get_replies(ERR_NOSUCHCHANNEL, owner);
+		return;
+	}
+	if (this->serv.get_channel(channel).is_user_in_channel(owner) == false) {
+		get_replies(ERR_NOTONCHANNEL, owner);
+		return;
+	}
+	std::cout << "ok again" << std::endl;
+	std::string msg = ":" + owner.get_nickname() + "!" + owner.get_username() + "@" + owner.get_hostname() + " PART " + parameters.front() + END_DELIM;
+	this->serv.make_user_part(channel, msg, owner);
 }
 

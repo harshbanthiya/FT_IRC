@@ -71,6 +71,7 @@ class Server
 			int											send_msg(std::string& msg, std::string target) const;
 			int 										send_msg(std::string& msg, std::string target, Client const &owner);
 			void 										send_to_all_chans(std::string msg, Client &owner);
+			void 										make_user_part(std::string ch, std::string msg, Client &owner);
 
 			void										create_channel(std::string ch_name);
 			bool 										add_channel(Channel ch);

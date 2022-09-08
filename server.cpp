@@ -293,6 +293,12 @@ void Server::send_to_all_chans(std::string msg, Client &owner)
 	}
 }
 
+void Server::make_user_part(std::string ch, std::string msg, Client &owner)
+{
+	std::cout << msg << std::endl;
+	send_msg(msg, ch, owner);
+	list_of_all_channels[ch].remove_client(owner);
+}
 // ================ EXCEPTIONS ===================
 
 const char*	Server::SocketFailException::what() const throw(){return "Error:  Socket Failed\n";}
