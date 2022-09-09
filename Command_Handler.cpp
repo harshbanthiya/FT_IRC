@@ -114,7 +114,7 @@ void	CommandHandler::handle_nick(Client &owner)
 	owner.set_nickname(nick);
 	if (old_nick != "")
 	{
-		std::string msg = ":" + old_nick + "!" + owner.get_username() + "@" + owner.get_hostname() + " NICK: " + owner.get_nickname() + END_DELIM;
+		std::string msg = ":" + old_nick + "!" + owner.get_username() + "@" + owner.get_hostname() + " NICK :" + nick + END_DELIM;
 		this->serv.send_msg(msg, owner);
 	}
 	if (!owner.is_registered() && !owner.get_username().empty())
