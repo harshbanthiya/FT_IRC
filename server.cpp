@@ -6,7 +6,7 @@
 /*   By: hbanthiy <hbanthiy@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/09/06 10:16:39 by hbanthiy          #+#    #+#             */
-/*   Updated: 2022/09/07 15:52:18 by hbanthiy         ###   ########.fr       */
+/*   Updated: 2022/09/14 15:44:48 by hbanthiy         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,7 +25,7 @@ Server::Server(std::string _port, std::string passwd) : port(_port), passwrd(pas
 	struct addrinfo hints, *ai;
 
 	std::time_t result = std::time(nullptr);
-	createdTime = std::asctime(std::localtime(&result));
+	created_time = std::asctime(std::localtime(&result));
 	memset(&hints, 0, sizeof(hints));
 	hints.ai_family = AF_UNSPEC;
 	hints.ai_socktype = SOCK_STREAM;
@@ -240,6 +240,31 @@ int		Server::send_msg(std::string &msg, std::string target, Client const &owner)
 	return (0);
 }
 
+void Server::send_to_all_chans(std::string msg, Client &owner)
+{
+	std::map<std::string, Channel>::const_iterator it = list_of_all_channels.cbegin();
+	std::map<std::string, Channel>::const_iterator tmp;
+
+	while (it != list_of_all_channels.cend())
+	{
+		std::string ch_name = (*it).first;
+		send_msg(msg, ch_name, owner);
+		list_of_all_channels[ch_name].remove_client(owner);
+		it++;
+	}
+	it = list_of_all_channels.cbegin();
+	while (it != list_of_all_channels.cend())
+	{
+		tmp = it;
+		tmp++;
+		std::string ch_name = (*it).first;
+		if (list_of_all_channels[ch_name].empty())
+			remove_channel(ch_name);
+		it = tmp;
+	}
+}
+
+
 // ================ OTHER CHANNEL COMMANDS ===================
 
 void	Server::create_channel(std::string ch_name){list_of_all_channels[ch_name];}
@@ -258,10 +283,10 @@ bool 			Server::add_channel(Channel ch)
 // ================ GETTERS ===================
 
 std::vector<Client *> const &Server::get_all_clients(){ return (this->list_of_all_clients);}
-std::string Server::getPasswrd() {return passwrd;}
+std::string Server::get_password() {return passwrd;}
 Channel	 &Server::get_channel(std::string channelName){return (list_of_all_channels[channelName]);}
-std::string Server::getcreatedTime() { return createdTime; }
-CommandHandler Server::getHandler() const { return (handler); }
+std::string Server::get_created_time() { return created_time; }
+CommandHandler Server::get_handler() const { return (handler); }
 std::vector<std::string>const &Server::get_motd()const {return (motd);}
 
 Client const		&Server::get_client(std::string nickname) const
@@ -279,23 +304,6 @@ const std::map<std::string, Channel> &Server::get_channel_list() const {
 	return this->list_of_all_channels;
 }
 
-void Server::send_to_all_chans(std::string msg, Client &owner)
-{
-	std::map<std::string, Channel>::const_iterator it = list_of_all_channels.cbegin();
-	std::cout << msg << std::endl;
-	while (it != list_of_all_channels.cend())
-	{
-		std::cout << "ok" << std::endl;
-		std::string ch_name = (*it).first;
-		send_msg(msg, ch_name, owner);
-		list_of_all_channels[ch_name].remove_client(owner);
-		if (list_of_all_channels[ch_name].empty())
-		{
-			remove_channel(ch_name);
-		}
-		it++;
-	}
-}
 
 
 // ================ EXCEPTIONS ===================

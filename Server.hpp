@@ -6,7 +6,7 @@
 /*   By: hbanthiy <hbanthiy@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/08/15 19:55:13 by hbanthiy          #+#    #+#             */
-/*   Updated: 2022/09/08 16:27:49 by hbanthiy         ###   ########.fr       */
+/*   Updated: 2022/09/14 15:04:36 by hbanthiy         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,7 +35,7 @@
 
 #define BACKLOG_CONNECTIONS 10
 #define UMODES std::string("oiws")
-#define CMODES std::string("obtkmlvsn")
+#define CMODES std::string("bikot")
 #define MOTD_PATH "welcome_screen.txt"
 #define SERV_NAME std::string("MyIRC")
 
@@ -48,7 +48,6 @@ class Server
 			Server(std::string port, std::string paswd);
 			~Server();
 
-			void 										init();
 			void 										execute();
 			bool 										check_pass(std::string &pass);
 			bool 										user_exists(std::string name);
@@ -57,11 +56,11 @@ class Server
 			// Getters 
 			std::vector<Client *> const 				&get_all_clients();
 			Client const								&get_client(std::string nickname) const;
-			std::string 								getcreatedTime();
+			std::string 								get_created_time();
 			Channel										&get_channel(std::string channelName);
 			const std::map<std::string, Channel> 		&get_channel_list() const ;
-			std::string 								getPasswrd();
-			CommandHandler								getHandler() const;
+			std::string 								get_password();
+			CommandHandler								get_handler() const;
 			std::vector<std::string> const				&get_motd() const;
 			
 			void 										disconnect_client(std::string nick);
@@ -83,7 +82,7 @@ class Server
 		
 			std::string									port;
 			int 										sock_fd;
-			std::string 								createdTime;
+			std::string 								created_time;
 			std::vector<struct pollfd> 					pfds;
 			std::string 								passwrd;
 			std::map<std::string, Channel>				list_of_all_channels;

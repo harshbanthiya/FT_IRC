@@ -6,7 +6,7 @@
 /*   By: hbanthiy <hbanthiy@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/08/17 13:37:38 by hbanthiy          #+#    #+#             */
-/*   Updated: 2022/09/14 12:58:38 by hbanthiy         ###   ########.fr       */
+/*   Updated: 2022/09/14 15:00:57 by hbanthiy         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -467,7 +467,7 @@ void CommandHandler::welcomescreen(Client &target)
 	target.set_registered();
 	get_replies(RPL_WELCOME, target);
 	get_replies(RPL_YOURHOST, target);
-	get_replies(RPL_CREATED, target, this->serv.getcreatedTime());
+	get_replies(RPL_CREATED, target, this->serv.get_created_time());
 	get_replies(RPL_MYINFO, target);
 	handle_motd(target);
 }
