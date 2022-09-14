@@ -6,7 +6,7 @@
 /*   By: hbanthiy <hbanthiy@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/08/17 13:37:38 by hbanthiy          #+#    #+#             */
-/*   Updated: 2022/09/08 16:35:39 by hbanthiy         ###   ########.fr       */
+/*   Updated: 2022/09/14 12:58:38 by hbanthiy         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,14 +30,6 @@ CommandHandler::CommandHandler(Server &_server): serv(_server)
 	this->handlers["WHO"] = &CommandHandler::handle_who;
 	this->handlers["PART"] = &CommandHandler::handle_part;
 	this->handlers["TOPIC"] = &CommandHandler::handle_topic;
-	//this->handlers["ADMIN"] = &CommandHandler::handle_admin;
-	/*
-		LUSERS
-		AWAY
-		NAMES
-		LIST
-		TOPIC
-	*/
 }
 
 void 	CommandHandler::parse_cmd(std::string cmd_line)
@@ -654,6 +646,9 @@ void 	CommandHandler::get_replies(int code, Client const &owner, std::string ext
 			break;
 		case RPL_ADMINEMAIL:
 			msg += extra;
+			break;
+		case ERR_INVALIDMODEPARAM:
+			msg += extra ;
 			break;
     }
 	msg += END_DELIM;

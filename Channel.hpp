@@ -6,7 +6,7 @@
 /*   By: hbanthiy <hbanthiy@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/08/26 08:47:31 by sheeed            #+#    #+#             */
-/*   Updated: 2022/09/08 16:32:11 by hbanthiy         ###   ########.fr       */
+/*   Updated: 2022/09/14 12:25:11 by hbanthiy         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -64,6 +64,7 @@ class Channel
 
 		bool 					mode_invite(Client &owner, char mode);
 		bool 					mode_ban(Client &owner, char mode, std::string params);
+		bool 					mode_key(Client &owner, char mode, std::string params);
 		bool 					mode_operator(Client &owner, char mode, std::string params);
 		bool					mode_topic(Client &owner, char mode);
 

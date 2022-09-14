@@ -6,7 +6,7 @@
 /*   By: hbanthiy <hbanthiy@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/08/26 08:56:40 by hbanthiy          #+#    #+#             */
-/*   Updated: 2022/09/08 16:53:53 by hbanthiy         ###   ########.fr       */
+/*   Updated: 2022/09/14 13:04:28 by hbanthiy         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -104,6 +104,8 @@ bool 	Channel::add_mode(Client &owner, char m, char mode, std::string params)
 			return (mode_ban(owner, mode, params));
 		case 'i':
 			return (mode_invite(owner, mode));
+		case 'k':
+			return (mode_key(owner, mode, params));
 		case 'o':
 			return (mode_operator(owner, mode, params));
 		case 't':
@@ -113,6 +115,42 @@ bool 	Channel::add_mode(Client &owner, char m, char mode, std::string params)
 	return (false);
 }
 
+bool 				Channel::mode_key(Client &owner, char mode, std::string params)
+{
+		std::string	msg;
+		if (!is_operator(owner))
+			_serv->getHandler().get_replies(ERR_CHANOPRIVSNEEDED, owner, _name);
+		if (params == "")
+		{
+			msg = _name + " k * :You must specify a parameter.";
+			_serv->getHandler().get_replies(ERR_INVALIDMODEPARAM, owner, msg);
+			return (false);
+		}
+		else if (mode == '-')
+		{
+			if (params == _key)
+			{
+				_key = "";
+				delete_mode('k');
+				msg = ":" + owner.get_nickname() + "!" + owner.get_username() + '@' + owner.get_hostname() + 
+						" MODE " + _name + " -k :" + params + END_DELIM;
+				send_to_all(msg);
+			}
+			return (true);
+		}
+		else 
+		{
+			if (_key == "")
+			{
+				msg = ":" + owner.get_nickname() + "!" + owner.get_username() + '@' + owner.get_hostname() + 
+						" MODE " + _name + " +k :" + params + END_DELIM;
+				send_to_all(msg);
+				if (_modes.find('k') == std::string::npos)
+					_modes += "k";
+			}
+			return (true);
+		}
+}
 
 bool 				Channel::mode_topic(Client &owner, char mode)
 {
@@ -286,7 +324,7 @@ void 	Channel::add_client( Client &new_client, std::string key, char status = 0)
 	
 	if (!this->can_join(new_client)) 
 		return ;
-	if (_key == key)
+	if (key == _key)
 	{
 		new_client.add_channel(_name);
 		_invite_list.erase(new_client.get_nickname());

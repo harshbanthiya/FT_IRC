@@ -6,7 +6,7 @@
 /*   By: hbanthiy <hbanthiy@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/08/24 13:21:32 by hbanthiy          #+#    #+#             */
-/*   Updated: 2022/09/08 16:29:59 by hbanthiy         ###   ########.fr       */
+/*   Updated: 2022/09/14 12:38:18 by hbanthiy         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -66,7 +66,8 @@
 #define ERR_CHANOPRIVSNEEDED	482
 
 #define ERR_UMODEUNKNOWNFLAG	501 
-#define ERR_USERSDONTMATCH		502 
+#define ERR_USERSDONTMATCH		502
+#define ERR_INVALIDMODEPARAM	696 
 
 #define END_DELIM               "\r\n"
 
