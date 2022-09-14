@@ -6,7 +6,7 @@
 /*   By: hbanthiy <hbanthiy@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/08/17 13:37:38 by hbanthiy          #+#    #+#             */
-/*   Updated: 2022/09/14 15:00:57 by hbanthiy         ###   ########.fr       */
+/*   Updated: 2022/09/14 17:02:06 by hbanthiy         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,7 +34,7 @@ CommandHandler::CommandHandler(Server &_server): serv(_server)
 
 void 	CommandHandler::parse_cmd(std::string cmd_line)
 {
-	std::cout << cmd_line << std::endl;
+	//std::cout << cmd_line << std::endl;
 	if (cmd_line.empty())
 		return ;
 	int pos = cmd_line.find(" ");
@@ -106,7 +106,7 @@ void	CommandHandler::handle_nick(Client &owner)
 	owner.set_nickname(nick);
 	if (old_nick != "")
 	{
-		std::string msg = ":" + old_nick + "!" + owner.get_username() + "@" + owner.get_hostname() + " NICK :" + nick + END_DELIM;
+		std::string msg = ":" + old_nick + "!" + owner.get_username() + "@" + owner.get_hostname() + " NICK :" + owner.get_nickname() + END_DELIM;
 		this->serv.send_msg(msg, owner);
 	}
 	if (!owner.is_registered() && !owner.get_username().empty())
@@ -412,8 +412,6 @@ void CommandHandler::handle_quit(Client &owner)
 {
 	std::string reason = (parameters.size() == 1) ? parameters.front() : owner.get_nickname();
 	std::string msg = "ERROR Closing link: " + owner.get_nickname() + "[" + owner.get_hostname() + "]" "(Quit:  " + reason + ")" + END_DELIM;
-
-	std::cout << msg << std::endl;
 	this->serv.send_msg(msg, owner);
 	msg = ":" + owner.get_nickname() + "!" + owner.get_username() + "@" + owner.get_hostname() +" QUIT :Quit:" + reason + END_DELIM;
 	this->serv.send_to_all_chans(msg, owner);
@@ -506,7 +504,7 @@ void 	CommandHandler::get_replies(int code, Client const &owner, std::string ext
 			msg += ":This server was created " + extra;
 			break;
 		case RPL_MYINFO:
-			msg += SERV_NAME + " IRC1.0 " + UMODES + " " + CMODES;
+			msg += SERV_NAME + " IRC1.0 " + " " + CMODES;
 			break ;
 		case RPL_UMODEIS:
 			msg += owner.get_modes();
