@@ -6,7 +6,11 @@
 /*   By: hbanthiy <hbanthiy@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/08/17 13:37:38 by hbanthiy          #+#    #+#             */
+<<<<<<< HEAD
 /*   Updated: 2022/09/14 14:05:12 by hbanthiy         ###   ########.fr       */
+=======
+/*   Updated: 2022/09/15 11:52:13 by hbanthiy         ###   ########.fr       */
+>>>>>>> feature/final_testing
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -106,7 +110,7 @@ void	CommandHandler::handle_nick(Client &owner)
 	owner.set_nickname(nick);
 	if (old_nick != "")
 	{
-		std::string msg = ":" + old_nick + "!" + owner.get_username() + "@" + owner.get_hostname() + " NICK :" + nick + END_DELIM;
+		std::string msg = ":" + old_nick + "!" + owner.get_username() + "@" + owner.get_hostname() + " NICK :" + owner.get_nickname() + END_DELIM;
 		this->serv.send_msg(msg, owner);
 	}
 	if (!owner.is_registered() && !owner.get_username().empty())
@@ -412,8 +416,6 @@ void CommandHandler::handle_quit(Client &owner)
 {
 	std::string reason = (parameters.size() == 1) ? parameters.front() : owner.get_nickname();
 	std::string msg = "ERROR Closing link: " + owner.get_nickname() + "[" + owner.get_hostname() + "]" "(Quit:  " + reason + ")" + END_DELIM;
-
-	std::cout << msg << std::endl;
 	this->serv.send_msg(msg, owner);
 	msg = ":" + owner.get_nickname() + "!" + owner.get_username() + "@" + owner.get_hostname() +" QUIT :Quit:" + reason + END_DELIM;
 	this->serv.send_to_all_chans(msg, owner);
@@ -467,7 +469,7 @@ void CommandHandler::welcomescreen(Client &target)
 	target.set_registered();
 	get_replies(RPL_WELCOME, target);
 	get_replies(RPL_YOURHOST, target);
-	get_replies(RPL_CREATED, target, this->serv.getcreatedTime());
+	get_replies(RPL_CREATED, target, this->serv.get_created_time());
 	get_replies(RPL_MYINFO, target);
 	handle_motd(target);
 }
@@ -506,7 +508,7 @@ void 	CommandHandler::get_replies(int code, Client const &owner, std::string ext
 			msg += ":This server was created " + extra;
 			break;
 		case RPL_MYINFO:
-			msg += SERV_NAME + " IRC1.0 " + UMODES + " " + CMODES;
+			msg += SERV_NAME + " IRC1.0 " + " " + CMODES;
 			break ;
 		case RPL_UMODEIS:
 			msg += owner.get_modes();

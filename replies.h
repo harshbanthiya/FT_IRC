@@ -6,7 +6,7 @@
 /*   By: hbanthiy <hbanthiy@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/08/24 13:21:32 by hbanthiy          #+#    #+#             */
-/*   Updated: 2022/09/14 12:38:18 by hbanthiy         ###   ########.fr       */
+/*   Updated: 2022/09/14 15:54:14 by hbanthiy         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,7 +28,7 @@
 #define RPL_ENDOFWHO			315
 #define RPL_CHANNELMODEIS       324
 #define RPL_CREATIONTIME		329  
-#define RPL_NOTOPIC			331 
+#define RPL_NOTOPIC			    331 
 #define RPL_TOPIC               332
 #define RPL_TOPICWHOTIME		333 
 #define RPL_INVITING			341 

@@ -6,7 +6,7 @@
 /*   By: hbanthiy <hbanthiy@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/08/15 19:08:30 by hbanthiy          #+#    #+#             */
-/*   Updated: 2022/09/07 15:37:48 by hbanthiy         ###   ########.fr       */
+/*   Updated: 2022/09/14 16:32:36 by hbanthiy         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -84,8 +84,8 @@ void 				Client::set_hostname(std::string host_n){hostname = host_n;}
 bool 				Client::has_mode(char mode) const
 {
 	if (this->modes.find(mode) == std::string::npos)
-		return (true);
-	return (false);
+		return (false);
+	return (true);
 }
 
 void 				Client::add_mode(char mode)

@@ -6,7 +6,7 @@
 /*   By: hbanthiy <hbanthiy@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/08/26 08:56:40 by hbanthiy          #+#    #+#             */
-/*   Updated: 2022/09/14 13:04:28 by hbanthiy         ###   ########.fr       */
+/*   Updated: 2022/09/15 11:52:04 by hbanthiy         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -55,7 +55,7 @@ bool				Channel::empty(){return (_clients.empty());}
 void 	Channel::ban(Client &owner, std::string nick)
 {	
 	if (!this->is_operator(owner))
-		return (_serv->getHandler().get_replies(ERR_CHANOPRIVSNEEDED, owner, _name));
+		return (_serv->get_handler().get_replies(ERR_CHANOPRIVSNEEDED, owner, _name));
 	if ((_ban_list.find(nick) != _ban_list.end()))
 		return ;
 	_ban_list.insert(nick);
@@ -69,7 +69,7 @@ void 	Channel::ban(Client &owner, std::string nick)
 void 	Channel::unBan(Client &owner, std::string nick)
 {
 	if (!this->is_operator(owner))
-		return (_serv->getHandler().get_replies(ERR_CHANOPRIVSNEEDED, owner, _name));
+		return (_serv->get_handler().get_replies(ERR_CHANOPRIVSNEEDED, owner, _name));
 	if ((_ban_list.find(nick) != _ban_list.end()))
 		return ;
 	_ban_list.erase(nick);
@@ -111,7 +111,7 @@ bool 	Channel::add_mode(Client &owner, char m, char mode, std::string params)
 		case 't':
 			return (mode_topic(owner, mode));
 	}
-	_serv->getHandler().get_replies(ERR_UNKNOWNMODE, owner, std::string(1, m));
+	_serv->get_handler().get_replies(ERR_UNKNOWNMODE, owner, std::string(1, m));
 	return (false);
 }
 
@@ -119,11 +119,11 @@ bool 				Channel::mode_key(Client &owner, char mode, std::string params)
 {
 		std::string	msg;
 		if (!is_operator(owner))
-			_serv->getHandler().get_replies(ERR_CHANOPRIVSNEEDED, owner, _name);
+			_serv->get_handler().get_replies(ERR_CHANOPRIVSNEEDED, owner, _name);
 		if (params == "")
 		{
 			msg = _name + " k * :You must specify a parameter.";
-			_serv->getHandler().get_replies(ERR_INVALIDMODEPARAM, owner, msg);
+			_serv->get_handler().get_replies(ERR_INVALIDMODEPARAM, owner, msg);
 			return (false);
 		}
 		else if (mode == '-')
@@ -157,7 +157,7 @@ bool 				Channel::mode_topic(Client &owner, char mode)
 	std::string 	msg;
 
 	if (!is_operator(owner))
-		_serv->getHandler().get_replies(ERR_CHANOPRIVSNEEDED, owner, _name);
+		_serv->get_handler().get_replies(ERR_CHANOPRIVSNEEDED, owner, _name);
 	else if (mode == '+')
 	{
 		if (_modes.find('t') != std::string::npos)
@@ -183,7 +183,7 @@ bool 				Channel::mode_invite(Client &owner, char mode)
 {
 	std::string msg;
 	if (!this->is_operator(owner))
-		_serv->getHandler().get_replies(ERR_CHANOPRIVSNEEDED, owner, _name);
+		_serv->get_handler().get_replies(ERR_CHANOPRIVSNEEDED, owner, _name);
 	else if (mode == '-' && _modes.find('i') != std::string::npos)
 	{
 		msg = ":" + owner.get_nickname() + "!" + owner.get_username() + '@' + owner.get_hostname() + 
@@ -224,7 +224,7 @@ bool				Channel::mode_operator(Client &owner, char mode, std::string params)
 {
 	std::string msg;
 	if (!this->is_operator(owner))
-		_serv->getHandler().get_replies(ERR_CHANOPRIVSNEEDED, owner, _name);
+		_serv->get_handler().get_replies(ERR_CHANOPRIVSNEEDED, owner, _name);
 	else if (params == "")
 		return false;
 	else 
@@ -244,7 +244,7 @@ bool				Channel::mode_operator(Client &owner, char mode, std::string params)
 			this->send_to_all(msg);
 		}
 		else
-			_serv->getHandler().get_replies(ERR_NOSUCHNICK, owner, params);
+			_serv->get_handler().get_replies(ERR_NOSUCHNICK, owner, params);
 	}
 	return true;
 }
@@ -275,18 +275,18 @@ bool 	Channel::can_join(Client const &owner) const
 	
 	if (this->is_user_in_channel(owner))
 	{
-		_serv->getHandler().get_replies(ERR_USERONCHANNEL, owner, owner.get_nickname() + " " + _name);
+		_serv->get_handler().get_replies(ERR_USERONCHANNEL, owner, owner.get_nickname() + " " + _name);
 		return (false);
 	}
 	if (_modes.find('i') != std::string::npos && !this->is_invited(owner))
 	{
-		_serv->getHandler().get_replies(ERR_INVITEONLYCHAN, owner, _name);
+		_serv->get_handler().get_replies(ERR_INVITEONLYCHAN, owner, _name);
 		return false;
 	}
 	
 	if (is_banned(owner) && (_invite_list.find(owner.get_nickname()) == _invite_list.end()))
 	{
-		_serv->getHandler().get_replies(ERR_BANNEDFROMCHAN, owner, _name);
+		_serv->get_handler().get_replies(ERR_BANNEDFROMCHAN, owner, _name);
 		return (false);
 	}
 	return (true);
@@ -296,13 +296,13 @@ bool 	Channel::can_send_msg(Client const &owner) const
 {
 	if (_modes.find('n') != std::string::npos && !this->is_user_in_channel(owner))
 	{
-		_serv->getHandler().get_replies(ERR_CANNOTSENDTOCHAN, owner, _name);
-		_serv->getHandler().get_replies(ERR_NOTONCHANNEL, owner, _name);
+		_serv->get_handler().get_replies(ERR_CANNOTSENDTOCHAN, owner, _name);
+		_serv->get_handler().get_replies(ERR_NOTONCHANNEL, owner, _name);
 		return (false);		
 	}
 	if (this->is_banned(owner))
 	{
-		_serv->getHandler().get_replies(ERR_BANNEDFROMCHAN, owner, _name);
+		_serv->get_handler().get_replies(ERR_BANNEDFROMCHAN, owner, _name);
 		return (false);
 	}
 	return (true);
@@ -313,9 +313,9 @@ void 	Channel::send_ban_list(Client &owner) const
 	for(std::set<std::string>::iterator i = _ban_list.begin(); i != _ban_list.end(); i++)
 	{
 		std::string msg = _name + " " + *i;
-		_serv->getHandler().get_replies(RPL_BANLIST, owner, msg);
+		_serv->get_handler().get_replies(RPL_BANLIST, owner, msg);
 	}
-	_serv->getHandler().get_replies(RPL_ENDOFBANLIST, owner, _name);
+	_serv->get_handler().get_replies(RPL_ENDOFBANLIST, owner, _name);
 	
 }
 
@@ -332,13 +332,13 @@ void 	Channel::add_client( Client &new_client, std::string key, char status = 0)
 		std::string msg = ":" + new_client.get_nickname() + "!" + new_client.get_username() + '@' + new_client.get_hostname() + " JOIN :" + _name + END_DELIM;
 		this->send_to_all(msg);
 		if (!_topic.empty())
-			_serv->getHandler().get_replies(RPL_TOPIC, new_client, _name);
-		_serv->getHandler().get_replies(RPL_NAMREPLY, new_client, "= " + _name + " :" + this->get_str_clients());
-		_serv->getHandler().get_replies(RPL_ENDOFNAMES, new_client, _name);
+			_serv->get_handler().get_replies(RPL_TOPIC, new_client, _name);
+		_serv->get_handler().get_replies(RPL_NAMREPLY, new_client, "= " + _name + " :" + this->get_str_clients());
+		_serv->get_handler().get_replies(RPL_ENDOFNAMES, new_client, _name);
 		return ;
 	}
 	else 
-		_serv->getHandler().get_replies(ERR_BADCHANNELKEY, new_client, _name);
+		_serv->get_handler().get_replies(ERR_BADCHANNELKEY, new_client, _name);
 }
 
 void 	Channel::send_to_all(std::string msg, std::string sender) const 
@@ -424,12 +424,12 @@ void 	Channel::kick(Client &client, std::list<std::string> &clients, std::string
 {
 	if (!this->is_user_in_channel(client))
 	{
-		_serv->getHandler().get_replies(ERR_NOTONCHANNEL, client, _name);
+		_serv->get_handler().get_replies(ERR_NOTONCHANNEL, client, _name);
 		return ;
 	}
 	if (!is_operator(client))
 	{
-		_serv->getHandler().get_replies(ERR_CHANOPRIVSNEEDED, client, _name);
+		_serv->get_handler().get_replies(ERR_CHANOPRIVSNEEDED, client, _name);
 		return ;
 	}
 	for (std::list<std::string>::iterator i = clients.begin(); i != clients.end(); i++)
@@ -441,20 +441,20 @@ void 	Channel::kick(Client &client, std::list<std::string> &clients, std::string
 			this->remove_client(*i);
 		}
 		else 
-			_serv->getHandler().get_replies(ERR_USERNOTINCHANNEL, client, *i + " " + _name);
+			_serv->get_handler().get_replies(ERR_USERNOTINCHANNEL, client, *i + " " + _name);
 	}
 }
 
 void 	Channel::invite(Client &owner, std::string nick)
 {
 	if (!this->is_user_in_channel(owner))
-		return (_serv->getHandler().get_replies(ERR_NOTONCHANNEL, owner, _name));
+		return (_serv->get_handler().get_replies(ERR_NOTONCHANNEL, owner, _name));
 	if (!this->is_operator(owner))
-		return (_serv->getHandler().get_replies(ERR_CHANOPRIVSNEEDED, owner, _name));
+		return (_serv->get_handler().get_replies(ERR_CHANOPRIVSNEEDED, owner, _name));
 	if (this->is_user_in_channel(nick))
-		return (_serv->getHandler().get_replies(ERR_USERONCHANNEL, owner, nick + " " + _name));
+		return (_serv->get_handler().get_replies(ERR_USERONCHANNEL, owner, nick + " " + _name));
 	_invite_list.insert(nick);
-	_serv->getHandler().get_replies(RPL_INVITING, owner, nick + " " + _name);
+	_serv->get_handler().get_replies(RPL_INVITING, owner, nick + " " + _name);
 	std::string msg = ":" + owner.get_nickname() + "!" + owner.get_username() + '@' + owner.get_hostname()
 						+ " INVITE " + nick + " :" + _name + END_DELIM;
 	_serv->send_msg(msg, nick);
@@ -474,20 +474,20 @@ std::string 		Channel::get_topic()const {return (_topic);}
 void  				Channel::get_topic(Client &owner)const 
 {
 	if (_topic == "")
-		_serv->getHandler().get_replies(RPL_NOTOPIC, owner, _name);
+		_serv->get_handler().get_replies(RPL_NOTOPIC, owner, _name);
 	else 
 	{
-		_serv->getHandler().get_replies(RPL_TOPIC, owner, _name + " :" +  _topic);
-		_serv->getHandler().get_replies(RPL_TOPICWHOTIME, owner, _name + " " + _topic_setter + " " +  get_topic_time());
+		_serv->get_handler().get_replies(RPL_TOPIC, owner, _name + " :" +  _topic);
+		_serv->get_handler().get_replies(RPL_TOPICWHOTIME, owner, _name + " " + _topic_setter + " " +  get_topic_time());
 	}
 }
 
 void 		Channel::set_topic(Client &owner, std::string &topic)
 {
 	if (!is_user_in_channel(owner))
-		_serv->getHandler().get_replies(ERR_NOTONCHANNEL, owner, _name);
+		_serv->get_handler().get_replies(ERR_NOTONCHANNEL, owner, _name);
 	else if (_modes.find('t') != std::string::npos && !is_operator(owner))
-		_serv->getHandler().get_replies(ERR_CHANOPRIVSNEEDED, owner, _name);
+		_serv->get_handler().get_replies(ERR_CHANOPRIVSNEEDED, owner, _name);
 	else 
 	{
 		_topic = topic;

@@ -6,16 +6,13 @@
 /*   By: hbanthiy <hbanthiy@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/08/16 12:18:18 by hbanthiy          #+#    #+#             */
-/*   Updated: 2022/09/06 14:47:46 by hbanthiy         ###   ########.fr       */
+/*   Updated: 2022/09/14 14:56:59 by hbanthiy         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "Server.hpp"
 #include <iostream>
-#include <csignal>
 
-bool stop = false;
-void handler(int) { stop = true;}
 
 int main(int argc, char **argv)
 {
@@ -38,9 +35,9 @@ int main(int argc, char **argv)
 	{
         server->execute();
 	}
-	catch (std::exception& e)
+	catch (const std::exception& e)
 	{
-		std::cerr << "Erroro occured while the server was running  " << e.what() << std::endl;
+		std::cerr << "Error occured while the server was running \n" << e.what() << std::endl;
 	}
 	delete(server);
     return (0);
