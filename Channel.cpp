@@ -6,7 +6,7 @@
 /*   By: hbanthiy <hbanthiy@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/08/26 08:56:40 by hbanthiy          #+#    #+#             */
-/*   Updated: 2022/09/15 14:36:31 by hbanthiy         ###   ########.fr       */
+/*   Updated: 2022/09/15 15:56:31 by hbanthiy         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -523,4 +523,9 @@ void Channel::make_user_part(Client &owner)
 	}
 	owner.remove_channel(_name);
 	_clients.erase(_clients.begin() + i);
+}
+
+size_t		Channel::get_user_count()const
+{
+	return (_clients.size());
 }

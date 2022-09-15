@@ -6,7 +6,7 @@
 /*   By: hbanthiy <hbanthiy@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/08/17 13:37:38 by hbanthiy          #+#    #+#             */
-/*   Updated: 2022/09/15 13:33:49 by hbanthiy         ###   ########.fr       */
+/*   Updated: 2022/09/15 16:04:30 by hbanthiy         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,6 +30,8 @@ CommandHandler::CommandHandler(Server &_server): serv(_server)
 	this->handlers["WHO"] = &CommandHandler::handle_who;
 	this->handlers["PART"] = &CommandHandler::handle_part;
 	this->handlers["TOPIC"] = &CommandHandler::handle_topic;
+	this->handlers["LIST"] = &CommandHandler::handle_list;
+	
 }
 
 void 	CommandHandler::parse_cmd(std::string cmd_line)
@@ -143,6 +145,18 @@ void	CommandHandler::handle_motd(Client &owner)
 	get_replies(RPL_ENDOFMOTD, owner);	
 }
 
+void 	CommandHandler::handle_list(Client &owner)
+{
+	get_replies(RPL_LISTSTART, owner);
+	std::string msg = "";
+	const std::map<std::string, Channel> &chs = serv.get_channel_list();
+	for (std::map<std::string, Channel>::const_iterator i = chs.begin(); i != chs.cend(); i++)
+	{
+		msg = (*i).second.get_name(true) + " " + std::to_string((*i).second.get_user_count()) + " :[+" + (*i).second.get_modes() + "]" + (*i).second.get_topic();
+		get_replies(RPL_LIST, owner, msg);
+	}
+	get_replies(RPL_LISTEND, owner);
+}
 void 	CommandHandler::handle_ping(Client &owner)
 {
 	if (!parameters.size() || parameters.front() == "")
@@ -514,6 +528,15 @@ void 	CommandHandler::get_replies(int code, Client const &owner, std::string ext
 			break ;
 		case RPL_ENDOFWHO:
 			msg += extra + " :End of /WHO list";
+			break;
+		case RPL_LISTSTART:
+			msg += "Channel :Users  Name";
+			break;
+		case RPL_LIST:
+			msg += extra;
+			break;
+		case RPL_LISTEND: 
+			msg += extra + " :End of /LIST";
 			break;
 		case RPL_CHANNELMODEIS: 
 			msg += extra;

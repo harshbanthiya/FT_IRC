@@ -6,7 +6,7 @@
 /*   By: hbanthiy <hbanthiy@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/08/26 08:47:31 by sheeed            #+#    #+#             */
-/*   Updated: 2022/09/14 12:25:11 by hbanthiy         ###   ########.fr       */
+/*   Updated: 2022/09/15 15:55:55 by hbanthiy         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -77,6 +77,7 @@ class Channel
 		void 					get_topic(Client &owner) const;
 		std::string  			get_topic_time() const;
 		std::string 			get_creation_time() const;
+		size_t					get_user_count()const;
 
 		const std::vector<std::pair<char,Client *> > &get_client_list()const;
 		const std::set<std::string> &get_ban_list()const;
