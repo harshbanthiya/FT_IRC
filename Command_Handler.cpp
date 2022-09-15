@@ -6,7 +6,7 @@
 /*   By: hbanthiy <hbanthiy@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/08/17 13:37:38 by hbanthiy          #+#    #+#             */
-/*   Updated: 2022/09/15 12:20:21 by hbanthiy         ###   ########.fr       */
+/*   Updated: 2022/09/15 13:33:49 by hbanthiy         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -239,7 +239,7 @@ void 	CommandHandler::handle_kick(Client &owner)
 	{
 		pos = parameters.front().find(",");
 		channels.push_back(parameters.front().substr(0, pos));
-		parameters.front().erase(0, (pos != 1) ? pos + 1 : pos);
+		parameters.front().erase(0, (pos != -1) ? pos + 1 : pos);
 	}
 	parameters.pop_front();
 	while (parameters.front() != "")
