@@ -6,7 +6,7 @@
 /*   By: hbanthiy <hbanthiy@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/08/26 08:56:40 by hbanthiy          #+#    #+#             */
-/*   Updated: 2022/09/15 11:52:04 by hbanthiy         ###   ########.fr       */
+/*   Updated: 2022/09/15 14:36:31 by hbanthiy         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -70,7 +70,7 @@ void 	Channel::unBan(Client &owner, std::string nick)
 {
 	if (!this->is_operator(owner))
 		return (_serv->get_handler().get_replies(ERR_CHANOPRIVSNEEDED, owner, _name));
-	if ((_ban_list.find(nick) != _ban_list.end()))
+	if (_ban_list.find(nick) == _ban_list.end())
 		return ;
 	_ban_list.erase(nick);
 	std::string msg = ":" + owner.get_nickname() + "!" + owner.get_username() + '@' + owner.get_hostname() +
