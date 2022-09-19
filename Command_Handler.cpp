@@ -6,7 +6,7 @@
 /*   By: hbanthiy <hbanthiy@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/08/17 13:37:38 by hbanthiy          #+#    #+#             */
-/*   Updated: 2022/09/15 16:04:30 by hbanthiy         ###   ########.fr       */
+/*   Updated: 2022/09/19 10:57:24 by hbanthiy         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -92,12 +92,26 @@ void	CommandHandler::handle_pass(Client &owner)
 		get_replies(ERR_PASSWDMISMATCH, owner);
 }
 
+
+bool is_letter(char c) { return (c >= 'A' && c <= 'Z') || (c >= 'a' && c <= 'z'); }
+bool is_special(char c) { return (c >= '[' && c <= '`') || (c >= '{' && c <= '}'); }
+bool is_digit(char c) { return (c >= '0' && c <= '9'); }
+
 void	CommandHandler::handle_nick(Client &owner)
 {
 	if (!parameters.size() || parameters.front() == "")
 		return get_replies(ERR_NONICKNAMEGIVEN, owner);
 	
 	std::string& nick = this->parameters.front();
+	if (nick.length() > 9)
+		return (get_replies(ERR_ERRONEUSNICKNAME, owner, nick));
+	size_t index = 0;
+	if (!is_letter(nick[index]) && !is_special(nick[index]))
+		return (get_replies(ERR_ERRONEUSNICKNAME, owner, nick));
+	++index;
+	for (; index < nick.length(); ++index)
+		if (!is_letter(nick[index]) && !is_special(nick[index]) && !is_digit(nick[index]) && nick[index] != '-')
+			return (get_replies(ERR_ERRONEUSNICKNAME, owner, nick));
 	std::vector<Client *> const &clients = this->serv.get_all_clients();
 	for(u_int i = 0; i < clients.size(); i++)
 	{
@@ -606,6 +620,9 @@ void 	CommandHandler::get_replies(int code, Client const &owner, std::string ext
 			break;
 		case ERR_NONICKNAMEGIVEN:
 			msg += ":No nickname given";
+			break;
+		case ERR_ERRONEUSNICKNAME:
+			msg +=  extra + ":Is an invalid nickname";
 			break;
 		case ERR_NICKNAMEINUSE:
 			msg += extra + " :Nickname is already in use"; 

@@ -6,7 +6,7 @@
 /*   By: hbanthiy <hbanthiy@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/08/24 13:21:32 by hbanthiy          #+#    #+#             */
-/*   Updated: 2022/09/15 15:55:03 by hbanthiy         ###   ########.fr       */
+/*   Updated: 2022/09/19 10:48:23 by hbanthiy         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -54,6 +54,7 @@
 #define ERR_UNKNOWNCOMMAND		421 
 #define ERR_NOMOTD				422 
 #define ERR_NONICKNAMEGIVEN     431
+#define ERR_ERRONEUSNICKNAME    432
 #define ERR_NICKNAMEINUSE       433
 #define ERR_USERNOTINCHANNEL	441  
 #define ERR_NOTONCHANNEL		442  
