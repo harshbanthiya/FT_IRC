@@ -30,12 +30,15 @@
 ⣿⣿⣿⣶⣮⣭⣁⣒⣒⣒⠂⠠⠬⠭⠭⠭⢀⣀⣠⣄⡘⠿⣿⣿⣿⣿⣿⣿⣿
 ⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣦⡈⢿⣿⣿⣿⣿⣿
 
-         AVAILABLE COMMANDS:
-          - PASS        - NICK
-          - USER        - MOTD
-          - PING        - JOIN
-          - PART        - PRIVMSG
-          - KICK        - WHO  
-          - MODE        - TOPIC  
-          - INVITE      - QUIT 
+AVAILABLE COMMANDS:                 AVAILABLE CHANNEL MODES:
+- PASS        - NICK                - BAN
+- USER        - MOTD                - OPERATOR
+- PING        - JOIN                - TOPIC
+- PART        - PRIVMSG             - INVITE
+- KICK        - WHO                 - KEY
+- MODE        - TOPIC
+- INVITE      - QUIT
+- LIST
+
+
  
